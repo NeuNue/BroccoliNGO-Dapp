@@ -6,7 +6,7 @@ import {
   TransactionReceipt,
   decodeEventLog,
 } from "viem";
-import { ABI, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
+import { ABI, BSC_RPC_URL, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
 import { privateKeyToAccount } from "viem/accounts";
 import { createAndHandleEvents } from "@/shared/server/model";
 
@@ -21,7 +21,7 @@ const account = privateKeyToAccount(formattedKey as `0x${string}`);
 
 const walletClient = createWalletClient({
   chain: mainChain,
-  transport: http("https://bsc-dataseed2.binance.org/"),
+  transport: http(BSC_RPC_URL),
   account,
 }).extend(publicActions);
 

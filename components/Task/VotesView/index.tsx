@@ -289,7 +289,7 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
 
         {task?.voteLeftTime ? (
           <VoteEndTime>
-            Voting ends in
+            Voting ends in{" "}
             <b>
               <TimerCountDown
                 leftTime={task?.voteLeftTime || 0}

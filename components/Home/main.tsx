@@ -13,7 +13,7 @@ import DinateDialog from "./donate";
 import RescueDialog from "@/components/Rescue";
 import RescueSuccessfulDialog from "./rescue-successful";
 import { useSearchParams, useRouter } from "next/navigation";
-import { bsc } from "viem/chains";
+import { isBeta, mainChain } from "@/shared/constant";
 import { BSC_RPC_URL } from "@/shared/constant";
 // import { useDisclosure } from "@heroui/react";
 
@@ -42,17 +42,18 @@ function HomeMain() {
 
   useEffect(() => {
     if (!isConnected || !connector) return;
+    if (isBeta) return
     if (connector?.name === "MetaMask") {
       connector?.getProvider().then((provider: any) => {
         provider.request({
           method: "wallet_addEthereumChain",
           params: [
             {
-              chainId: "0x38", // bsc
+              chainId: mainChain.id.toString(16), // bsc
               chainName: `48club`,
               rpcUrls: [BSC_RPC_URL], // Broccoli 私有 Mempool RPC
               blockExplorerUrls: ["https://bscscan.com"],
-              nativeCurrency: bsc.nativeCurrency,
+              nativeCurrency: mainChain.nativeCurrency,
             },
           ],
         });

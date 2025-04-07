@@ -1,4 +1,4 @@
-import { bsc } from "viem/chains";
+import { bsc, bscTestnet } from "viem/chains";
 import B714NGOABI from "./abi/B714NGO";
 import BroccoliABI from "./abi/Broccoli714";
 // import BUSDABI from "./abi/BUSD";
@@ -6,9 +6,10 @@ import USDCABI from "./abi/USDC";
 import USDTABI from "./abi/USDT";
 import { Address } from "viem";
 
-export const mainChain = bsc;
-export const ABI = B714NGOABI;
 export const isBeta = process.env.NEXT_PUBLIC_BETA === "true";
+export const mainChain = isBeta ? bscTestnet : bsc;
+export const ABI = B714NGOABI;
+
 export const CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as Address;
 
@@ -65,7 +66,9 @@ export const hashToTopicMap = (() => {
 
 export const TOKEN_NAME = "broccoli_token";
 
-export const BSC_RPC_URL = "https://broccoli.rpc.48.club";
+export const BSC_RPC_URL = isBeta
+  ? "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+  : "https://broccoli.rpc.48.club";
 
 export const BROCCOLI_ADMIN_WHITELIST =
   process.env.BROCCOLI_ADMIN_WHITELIST?.split(",") || [];

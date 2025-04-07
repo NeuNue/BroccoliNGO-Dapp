@@ -67,6 +67,7 @@ export const FundRecordsView: FC<Props> = ({ tokenId, admin }) => {
         description: "Fund records has been uploaded successfully.",
         type: "success",
       });
+      location.reload();
     } catch (e) {
     } finally {
       setIsFundRecordsSubmitting(false);

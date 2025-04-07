@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { debugLog, handleEvents, syncEvents } from "@/shared/server/sync";
 import { createPublicClient, http } from "viem";
-import { mainChain } from "@/shared/constant";
+import { BSC_RPC_URL, mainChain } from "@/shared/constant";
 import { getConfig, updateConfig } from "@/shared/server/model";
 
 (BigInt.prototype as any).toJSON = function () {
@@ -11,7 +11,7 @@ import { getConfig, updateConfig } from "@/shared/server/model";
 
 export const publicClient = createPublicClient({
   chain: mainChain,
-  transport: http("https://bsc-dataseed2.binance.org/"),
+  transport: http(BSC_RPC_URL),
 });
 
 let start = 0;

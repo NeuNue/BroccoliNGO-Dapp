@@ -10,7 +10,6 @@ import {
 } from "@/shared/task";
 import { NFTMetaData2 } from "@/shared/types/help";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {

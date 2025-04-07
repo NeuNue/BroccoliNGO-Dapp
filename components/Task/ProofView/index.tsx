@@ -106,10 +106,7 @@ export const ProofView: FC<Props> = ({ tokenId }) => {
   const getUploadedProofs = async (tokenId: string) => {
     const res = await fetchProofs(tokenId);
     if (res.code === 0) {
-      setUploadedProofs((prev) => [
-        ...prev,
-        ...(res.data.map(({ URI }: any) => URI) || ""),
-      ]);
+      setUploadedProofs(res.data.map(({ URI }: any) => URI));
     }
     setProofLoading(false);
   };
