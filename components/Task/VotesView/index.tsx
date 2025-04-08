@@ -27,7 +27,7 @@ import { toaster } from "@/components/ui/toaster";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { getVoteSignatureMessage } from "@/shared/vote";
 import TimerCountDown from "@/components/Common/Timer-CountDown";
-import classnames from "classnames";
+import clsx from "clsx";
 import { ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
@@ -240,7 +240,7 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
           {items.map((item) => (
             <RadioCard.Item
               width="full"
-              className={classnames("vote-item", {
+              className={clsx("vote-item", {
                 choosed: item.value === choose,
                 voted: isVoted,
                 ended: isVoteEnded || admin,
