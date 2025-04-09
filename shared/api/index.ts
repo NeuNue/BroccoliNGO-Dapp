@@ -1,8 +1,11 @@
+import { API_BASE_URI } from "../constant";
 import { HelpRequest2, NFTMetaData2 } from "../types/help";
 import { HelpRequest, NFTMetaData } from "../types/rescue";
 
+const BaseURI = API_BASE_URI;
+
 export const fetchXGenerateLink = async (referral_from?: string) => {
-  const res = await fetch("/api/xoauth/generate", {
+  const res = await fetch(`${BaseURI}/api/xoauth/generate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,14 +16,14 @@ export const fetchXGenerateLink = async (referral_from?: string) => {
 };
 
 export const fetchProfile = async () => {
-  const res = await fetch("/api/profile");
+  const res = await fetch(`${BaseURI}/api/profile`);
   return res.json();
 };
 
 export const uploadJson = async (
   data: HelpRequest | NFTMetaData | HelpRequest2 | NFTMetaData2 | string[]
 ) => {
-  const res = await fetch("/api/ipfs/json", {
+  const res = await fetch(`${BaseURI}/api/ipfs/json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,7 +35,7 @@ export const uploadJson = async (
 };
 
 export const createTask = async (tokenURI: string) => {
-  const res = await fetch("/api/createTask", {
+  const res = await fetch(`${BaseURI}/api/createTask`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +46,7 @@ export const createTask = async (tokenURI: string) => {
 };
 
 export const createHumanTask = async (tokenURI: string, pics: string[]) => {
-  const res = await fetch("/api/createTask/human", {
+  const res = await fetch(`${BaseURI}/api/createTask/human`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -53,8 +56,12 @@ export const createHumanTask = async (tokenURI: string, pics: string[]) => {
   return res.json();
 };
 
-export const approveTask = async (tokenId: string, start_date: number, end_date: number) => {
-  const res = await fetch("/api/action/approve", {
+export const approveTask = async (
+  tokenId: string,
+  start_date: number,
+  end_date: number
+) => {
+  const res = await fetch(`${BaseURI}/api/action/approve`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -65,7 +72,7 @@ export const approveTask = async (tokenId: string, start_date: number, end_date:
 };
 
 export const sumbitVoteResult = async (tokenId: string) => {
-  const res = await fetch("/api/action/sumbit-vote-result", {
+  const res = await fetch(`${BaseURI}/api/action/sumbit-vote-result`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -76,7 +83,7 @@ export const sumbitVoteResult = async (tokenId: string) => {
 };
 
 export const addFundRecord = async (tokenId: string, url: string) => {
-  const res = await fetch("/api/action/fund-records", {
+  const res = await fetch(`${BaseURI}/api/action/fund-records`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -87,7 +94,7 @@ export const addFundRecord = async (tokenId: string, url: string) => {
 };
 
 export const addProof = async (tokenId: string, url: string) => {
-  const res = await fetch("/api/action/proof", {
+  const res = await fetch(`${BaseURI}/api/action/proof`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -97,48 +104,57 @@ export const addProof = async (tokenId: string, url: string) => {
   return res.json();
 };
 
-export const submitVote = async (address: string, nftId: string | number, result: boolean, signature: string) => {
-  const res = await fetch('/api/vote/submit', {
-    method: 'POST',
+export const submitVote = async (
+  address: string,
+  nftId: string | number,
+  result: boolean,
+  signature: string
+) => {
+  const res = await fetch(`${BaseURI}/api/vote/submit`, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       address,
       nftId,
       result,
-      signature
-    })
+      signature,
+    }),
   });
   return res.json();
-}
+};
 
 export const fetchTaskDetail = async (id: string) => {
-  const res = await fetch(`/api/task/${id}`);
+  const res = await fetch(`${BaseURI}/api/task/${id}`);
   return res.json();
 };
 
 export const fetchProofs = async (id: string) => {
-  const res = await fetch(`/api/proofs/${id}`);
+  const res = await fetch(`${BaseURI}/api/proofs/${id}`);
   return res.json();
 };
 
 export const fetchFundRecords = async (id: string) => {
-  const res = await fetch(`/api/fundRecords/${id}`);
+  const res = await fetch(`${BaseURI}/api/fundRecords/${id}`);
   return res.json();
 };
 
 export const fetchVotes = async (id: string, page = 1, pageSize = 10) => {
-  const res = await fetch(`/api/vote/list?nftId=${id}&page=${page}&pageSize=${pageSize}`);
+  const res = await fetch(
+    `${BaseURI}/api/vote/list?nftId=${id}&page=${page}&pageSize=${pageSize}`
+  );
   return res.json();
-}
+};
 
 export const fetchVoteBalance = async (address: string, tokenId: string) => {
-  const res = await fetch(`/api/vote/balance?address=${address}&tokenId=${tokenId}`);
+  const res = await fetch(
+    `${BaseURI}/api/vote/balance?address=${address}&tokenId=${tokenId}`
+  );
   return res.json();
-}
+};
 
 export const fetchVoteResult = async (id: string) => {
-  const res = await fetch(`/api/vote/result?nftId=${id}`);
+  const res = await fetch(`${BaseURI}/api/vote/result?nftId=${id}`);
   return res.json();
-}
+};

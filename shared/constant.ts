@@ -6,7 +6,10 @@ import USDCABI from "./abi/USDC";
 import USDTABI from "./abi/USDT";
 import { Address } from "viem";
 
-export const isBeta = process.env.NEXT_PUBLIC_BETA === "true";
+export const isBeta =
+  process.env.NEXT_PUBLIC_BETA === "true" || process.env.PREVIEW === "true";
+export const isTestnet = process.env.LOCAL === "true" || isBeta;
+
 export const mainChain = isBeta ? bscTestnet : bsc;
 export const ABI = B714NGOABI;
 
@@ -37,13 +40,6 @@ export const TOKEN_ABIs = {
 export const BROCCOLI_TREASURY_ADDRESS =
   "0x0022DC116Bed13dDb7635298723B45a582d50C2e" as Address;
 
-export const TWITTER_CODE_CHALLENGE = "Broccoli_NGO";
-
-export const isTestnet =
-  process.env.LOCAL === "true" || process.env.PREVIEW === "true";
-
-export const HOST = process.env.NEXT_PUBLIC_HOST || "http://127.0.0.1:3000";
-
 export const topics = {
   AddProof:
     "0x1c14184783ccad097098b792881fdc26c6f87516fc3e53977ac8e16c2226ae88",
@@ -63,6 +59,11 @@ export const hashToTopicMap = (() => {
   });
   return inverted;
 })();
+
+export const TWITTER_CODE_CHALLENGE = process.env.TWITTER_CODE_CHALLENGE ?? '';
+
+export const HOST = process.env.NEXT_PUBLIC_HOST || "http://127.0.0.1:3000";
+export const API_BASE_URI = process.env.NEXT_PUBLIC_API_BASE_URI || '/';
 
 export const TOKEN_NAME = "broccoli_token";
 
