@@ -190,7 +190,7 @@ export const TaskDetailsProvider = ({
         loadTaskMetaData(data?.URI).then(async (metadata) => {
           setTaskMetaData(metadata);
         });
-        getVoteResult(tokenId)
+        getVoteResult(tokenId);
         checkIsApproved(tokenId).then((bool) => {
           setIsApproved(bool);
         });
@@ -259,7 +259,11 @@ export const TaskDetailsProvider = ({
         tokenId,
         task,
         isApproved,
-        loading: loading || metadataLoading || fetchingFundRecords || parsingFundRecords,
+        loading:
+          loading ||
+          metadataLoading ||
+          fetchingFundRecords ||
+          parsingFundRecords,
         taskMetaData,
         voteResult,
         isVoteEnded,

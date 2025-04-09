@@ -1,5 +1,4 @@
 // app/api/tasks/[id]/route.ts
-import { getTaskDate } from "@/shared/server/dune";
 import { getBalanceOfDate } from "@/shared/server/model";
 import { supabaseClient } from "@/shared/supabase";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,9 +20,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const date = getTaskDate(task.data.vote_start_date || '0');
-
-  const balance = await getBalanceOfDate(address.toLowerCase(), date);
+  const balance = await getBalanceOfDate(address as string, task.data.vote_start_date as string);
 
   const { data: vote, error } = await supabaseClient.from("Vote").select('result,balance').eq("address", address.toLowerCase()).eq("nftId", Number(tokenId)).maybeSingle();
 
