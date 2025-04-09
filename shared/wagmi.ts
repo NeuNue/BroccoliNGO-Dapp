@@ -1,11 +1,6 @@
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   metaMaskWallet,
-  okxWallet,
-  trustWallet,
-  coinbaseWallet,
-  rainbowWallet,
-  walletConnectWallet,
   binanceWallet
 } from "@rainbow-me/rainbowkit/wallets";
 import { createClient, createPublicClient, http, webSocket } from "viem";
