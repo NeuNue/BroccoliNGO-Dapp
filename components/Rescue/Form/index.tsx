@@ -9,4 +9,4 @@ const RescueForm: React.FC<Props> = () => {
       <p>This is the rescue form component.</p>
     </div>
   )
-} 
+}
