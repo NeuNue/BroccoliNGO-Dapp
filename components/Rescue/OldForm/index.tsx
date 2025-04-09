@@ -1,17 +1,9 @@
 import { FC, useEffect, useState } from "react";
-import DrawerFullpage from "@/components/Drawer/fullpage";
 import styled from "@emotion/styled";
-import { isMobileDevice } from "@/shared/utils";
 import { nftMetaDataToHelpRequest, requestToNFTMetadata } from "@/shared/task";
-import {
-  createTask,
-  fetchProfile,
-  fetchXGenerateLink,
-  uploadJson,
-} from "@/shared/api";
+import { createTask, uploadJson } from "@/shared/api";
 import Image from "next/image";
 import XIcon from "@/components/icons/x";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Switch } from "@chakra-ui/react";
 import { HelpRequest, NFTMetaData, RescueTask } from "@/shared/types/rescue";
 import { toaster } from "@/components/ui/toaster";
