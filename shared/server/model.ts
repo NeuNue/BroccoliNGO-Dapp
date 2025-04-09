@@ -1,13 +1,17 @@
-import { decodeEventLog, TransactionReceipt } from "viem";
+import { decodeEventLog, formatUnits, TransactionReceipt } from "viem";
 import { supabaseClient } from "@/shared/supabase";
 import { Json } from "@/shared/supabase/types";
 import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
 import { handleEvents } from "@/shared/server/sync";
-import { ABI, hashToTopicMap, topics } from "@/shared/constant";
-import { nftMetaDataToHelpRequest, nftMetaDataToHelpRequest2 } from "@/shared/task";
+import { ABI, DONATE_TYPE, hashToTopicMap, TOKEN_ABIs, TOKEN_ADDRESSES, topics } from "@/shared/constant";
+import {
+  nftMetaDataToHelpRequest,
+  nftMetaDataToHelpRequest2,
+} from "@/shared/task";
 import { NFTMetaData2 } from "@/shared/types/help";
 import { redis } from "@/shared/server/redis";
-import { getBalanceOfExecution } from "@/shared/server/dune";
+import { ethers } from "ethers";
+import { callDuneAPI, getTaskDate } from "./dune";
 
 export async function getConfig() {
   const { data, error } = await supabaseClient
@@ -119,32 +123,43 @@ export async function createAndHandleEvents(receipt: TransactionReceipt) {
   await handleEvents();
 }
 
+export async function getBalanceOfBlock(address: string, blockNumber: number) {
+  const provider = new ethers.JsonRpcProvider("https://broccoli.rpc.48.club");
+  const tokenAddress = TOKEN_ADDRESSES[DONATE_TYPE.BROCCOLI];
+  const abi = TOKEN_ABIs[DONATE_TYPE.BROCCOLI];
+  const contract = new ethers.Contract(tokenAddress, abi, provider);
+
+  const balance = await contract.balanceOf(address, { blockTag: `0x${blockNumber.toString(16)}` });
+
+  return Math.floor(Number(formatUnits(balance, 18)));
+}
+
 export async function getBalanceOfDate(address: string, date: string) {
-  address = address.toLowerCase();
+  const _address = address.toLowerCase();
+  const _date = getTaskDate(date);
   const cache = await redis.get(`vote:${date}:${address}`);
   console.log("--- cache", cache);
   if (cache) {
     return Number(cache);
   }
-
-  const { data } = await supabaseClient
-    .from("DuneExecution")
-    .select()
-    .eq("queryId", "4933658")
-    .eq("date", date)
-    .maybeSingle();
-
-  if (!data) {
-    return 0;
+  const filter = `(to=${_address} or from=${_address}) and block_time < '${_date}'`;
+  const url = `https://api.dune.com/api/v1/query/4964458/results?filters=${filter}`;
+  const res = await callDuneAPI(url);
+  const rows = res.result.rows;
+  let balance = 0;
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i].to === _address) {
+      balance += rows[i].amount;
+    }
+    if (rows[i].from === _address) {
+      balance -= rows[i].amount;
+    }
   }
 
-  const executionId = data.executionId as string;
+  const _balance = Math.floor(balance)
 
-  const balance = Math.floor(await getBalanceOfExecution(address, executionId));
-
-  await redis.set(`vote:${date}:${address}`, balance, {
+  await redis.set(`vote:${date}:${address}`, _balance, {
     ex: 60 * 60 * 24 * 3, // 7 days
   });
-
-  return balance;
+  return _balance;
 }

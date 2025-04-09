@@ -1,8 +1,7 @@
-import { API_BASE_URI } from "../constant";
 import { HelpRequest2, NFTMetaData2 } from "../types/help";
 import { HelpRequest, NFTMetaData } from "../types/rescue";
 
-const BaseURI = API_BASE_URI;
+const BaseURI = '';
 
 export const fetchXGenerateLink = async (referral_from?: string) => {
   const res = await fetch(`${BaseURI}/api/xoauth/generate`, {

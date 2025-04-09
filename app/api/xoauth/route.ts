@@ -6,7 +6,6 @@ import { generateAuthClient } from "@/shared/server/twitter";
 import { supabaseClient } from "@/shared/supabase";
 import {
   HOST,
-  isTestnet,
   TOKEN_NAME,
   TWITTER_CODE_CHALLENGE,
 } from "@/shared/constant";
@@ -75,7 +74,7 @@ export async function GET(req: Request) {
       value: token,
       path: "/",
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-      secure: isTestnet,
+      secure: true,
       sameSite: "lax",
       httpOnly: true,
     });
