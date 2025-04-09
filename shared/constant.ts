@@ -63,7 +63,7 @@ export const hashToTopicMap = (() => {
 export const TWITTER_CODE_CHALLENGE = process.env.TWITTER_CODE_CHALLENGE ?? '';
 
 export const HOST = process.env.NEXT_PUBLIC_HOST || "http://127.0.0.1:3000";
-export const API_BASE_URI = process.env.NEXT_PUBLIC_API_BASE_URI || '/';
+export const API_BASE_URI = process.env.NEXT_PUBLIC_API_BASE_URI || '';
 
 export const TOKEN_NAME = "broccoli_token";
 

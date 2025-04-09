@@ -4,23 +4,18 @@ import { FC, useEffect, useState } from "react";
 import DrawerFullpage from "@/components/Drawer/fullpage";
 import styled from "@emotion/styled";
 import { isMobileDevice } from "@/shared/utils";
-import {
-  nftMetaDataToHelpRequest,
-  requestToNFTMetadata,
-} from "@/shared/task";
+import { nftMetaDataToHelpRequest, requestToNFTMetadata } from "@/shared/task";
 import {
   createTask,
   fetchProfile,
   fetchXGenerateLink,
   uploadJson,
 } from "@/shared/api";
-import Image from "next/image";
-import XIcon from "@/components/icons/x";
-import { Tooltip } from "@/components/ui/tooltip";
-import { Switch } from "@chakra-ui/react";
-import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
+import { HelpRequest, NFTMetaData, RescueTask } from "@/shared/types/rescue";
 import { toaster } from "@/components/ui/toaster";
+import RescueForm from "@/components/Rescue/OldForm";
 import TaskCard from "./taskCard";
+import { Profile } from "@/shared/types/profile";
 
 interface Props {
   open: boolean;
@@ -29,166 +24,12 @@ interface Props {
 }
 const FundRequestForm: FC<Props> = ({ open, onClose, onSuccess }) => {
   // const router = useRouter();
-  const [formData, setFormData] = useState<Record<string, any>>({
-    organization: "",
-    email: "",
-    location: "",
-    rescueStoryURL: "",
-    helpPost: "",
-    appliedFundUSD: "",
-    budgetPlan: "",
-    notes: "",
-    canProvideInvoice: true,
-    canProvidePublicThankYouLetter: true,
-  });
-  const [profile, setProfile] = useState<{
-    name: string;
-    avatar: string;
-    handle: string;
-    created_at: string;
-  } | null>(null);
-  const [currentTask, setCurrentTask] = useState<{
-    nftId: number;
-    URI: string;
-    approved: 0 | 1;
-    metadata: HelpRequest;
-    creatEventId: {
-      hash: string;
-    };
-  } | null>(null);
-  const [completedTasks, setCompletedTasks] = useState<
-    {
-      nftId: number;
-      URI: string;
-      approved: 0 | 1;
-      metadata: HelpRequest;
-      creatEventId: {
-        hash: string;
-      };
-    }[]
-  >([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [currentTask, setCurrentTask] = useState<RescueTask | null>(null);
+  const [completedTasks, setCompletedTasks] = useState<RescueTask[]>([]);
   const [xAuthLink, setXAuthLink] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const disabledFields = [
-    "notes",
-    "canProvideInvoice",
-    "canProvidePublicThankYouLetter",
-  ];
-
-  const isDisabled =
-    isSubmitting ||
-    isSubmitted ||
-    Object.keys(formData)
-      .filter((v) => !disabledFields.includes(v))
-      .some((v) => !formData[v]);
 
   const isMobile = isMobileDevice();
-
-  const handleInputChange = (e: any) => {
-    const { name, value, type } = e.target;
-    if (type === "number") {
-      if (value === "") {
-        setFormData({
-          ...formData,
-          [name]: "",
-        });
-        return;
-      }
-
-      // Price format regex: Allow numbers with up to 2 decimal places
-      const priceRegex = /^\d*\.?\d{0,2}$/;
-
-      // Remove any non-numeric characters except decimal
-      const sanitizedValue = value.replace(/[^\d.]/g, "");
-
-      // Check against regex and max value
-      if (!priceRegex.test(sanitizedValue)) {
-        return;
-      }
-
-      setFormData({
-        ...formData,
-        [name]: sanitizedValue,
-      });
-      return;
-    }
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    if (isDisabled) return;
-    setIsSubmitting(true);
-
-    const data: HelpRequest = {
-      v: "0.1",
-      organization: {
-        name: formData.organization,
-        contact: {
-          email: formData.email,
-          twitter: profile?.handle || "",
-          // twitter: "Broccoli_NGO",
-        },
-      },
-      request: {
-        helpPostLink: formData.rescueStoryURL,
-        assistanceRequired: formData.helpPost,
-        location: formData.location,
-        costEstimate: {
-          totalAmount: parseFloat(formData.appliedFundUSD),
-          budgetPlan: formData.budgetPlan,
-          breakdown: [],
-        },
-        canProvideInvoice: formData.canProvideInvoice,
-        canProvidePublicThankYouLetter: formData.canProvidePublicThankYouLetter,
-        impactAfterAssistance: formData.notes,
-      },
-    };
-
-    try {
-      const NFTMetaData: NFTMetaData = requestToNFTMetadata(data);
-      const revertData = nftMetaDataToHelpRequest(NFTMetaData);
-      const ipfsRes = await uploadJson(requestToNFTMetadata(data));
-
-      const ipfsLink = ipfsRes?.data?.url;
-
-      if (!ipfsLink) {
-        toaster.create({
-          title: "Failed to submit request",
-          description: "Please try again later.",
-          type: "error",
-        });
-        return;
-      }
-
-      const createRes = await createTask(ipfsLink);
-
-      if (createRes.code !== 0) {
-        toaster.create({
-          title: "Failed to submit request",
-          description: createRes?.message || "Please try again later.",
-          type: "error",
-        });
-        return;
-      }
-      // toaster.create({
-      //   title: "Success to submit request.",
-      //   description: "Waiting for the callback.",
-      //   type: "success",
-      // });
-      setIsSubmitted(true);
-      onSuccess();
-      await refreshProfile();
-      // router.push(`/task/${createRes.data.nftId}`);
-    } catch (e) {
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const refreshProfile = async () => {
     const res = await fetchProfile();
@@ -218,24 +59,6 @@ const FundRequestForm: FC<Props> = ({ open, onClose, onSuccess }) => {
   useEffect(() => {
     refreshProfile();
   }, []);
-
-  useEffect(() => {
-    if (!currentTask) return;
-    const metadata = currentTask?.metadata;
-    setFormData({
-      organization: metadata?.organization.name || "",
-      email: metadata?.organization.contact.email || "",
-      location: metadata?.request.location || "",
-      rescueStoryURL: metadata?.request.helpPostLink || "",
-      helpPost: metadata?.request.assistanceRequired || "",
-      appliedFundUSD: metadata?.request.costEstimate.totalAmount || "",
-      budgetPlan: metadata?.request.costEstimate.budgetPlan || "",
-      notes: metadata?.request.impactAfterAssistance || "",
-      canProvideInvoice: Boolean(metadata?.request.canProvideInvoice) || false,
-      canProvidePublicThankYouLetter:
-        Boolean(metadata?.request.canProvidePublicThankYouLetter) || false,
-    });
-  }, [currentTask]);
 
   return (
     <DrawerFullpage
@@ -305,249 +128,15 @@ const FundRequestForm: FC<Props> = ({ open, onClose, onSuccess }) => {
             </>
           ) : null}
 
-          <FormSection onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label>
-                <RedAsterisk>*</RedAsterisk> 𝕏 Account:
-              </Label>
-              <XAccountInputContainer>
-                {profile ? (
-                  <ProfileButton
-                    disabled={!!currentTask || isSubmitting || isSubmitted}
-                  >
-                    <a href={`https://x.com/${profile.handle}`} target="_blank">
-                      <img alt="x avatar" src={profile.avatar} />
-                      <span>@{profile.handle}</span>
-                    </a>
-                  </ProfileButton>
-                ) : (
-                  <ConnectXButton
-                    disabled={!!currentTask || isSubmitting || isSubmitted}
-                  >
-                    <a href={xAuthLink}>
-                      <span>Connect</span>
-                      <XIcon />
-                    </a>
-                  </ConnectXButton>
-                )}
-              </XAccountInputContainer>
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Name of the Dog Shelter/Rescue.">
-                <RedAsterisk>*</RedAsterisk> Organization Name:
-              </Label>
-              <Input
-                type="text"
-                name="organization"
-                placeholder="Name of the Dog Shelter/Rescue."
-                value={formData.organization}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Contact Email">
-                <RedAsterisk>*</RedAsterisk> Contact Email :
-              </Label>
-              <Input
-                type="text"
-                name="email"
-                placeholder="yourcontact@mail.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            {/* <FormGroup>
-              <Label>
-                <RedAsterisk>*</RedAsterisk> Telegram Contact:
-              </Label>
-              <Input
-                type="text"
-                name="tgHandle"
-                value={formData.tgHandle}
-                onChange={handleInputChange}
-                yellowBg
-                required
-              />
-            </FormGroup> */}
-
-            <FormGroup>
-              {/* <Tooltip content="This is the tooltip content">
-                
-              </Tooltip> */}
-              <Label title="Location: City, Country">
-                <RedAsterisk>*</RedAsterisk>
-                Location:
-              </Label>
-              <Input
-                type="text"
-                name="location"
-                placeholder="City, Country"
-                value={formData.location}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              {/* <Tooltip content="This is the tooltip content">
-                
-              </Tooltip> */}
-              <Label title="Link to the X post sharing your rescue story.">
-                <RedAsterisk>*</RedAsterisk>
-                Rescue Story Link:
-              </Label>
-              <Input
-                type="text"
-                name="rescueStoryURL"
-                placeholder="Link to the X post sharing your rescue story."
-                value={formData.rescueStoryURL}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              {/* <Tooltip content="This is the tooltip content">
-                
-              </Tooltip> */}
-              <Label title="How can we help you?">
-                <RedAsterisk>*</RedAsterisk>
-                Assistance Needed:
-              </Label>
-              <Input
-                type="text"
-                name="helpPost"
-                placeholder="How can we help you?"
-                value={formData.helpPost}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Funding amount needed for the Rescue Fund.">
-                <RedAsterisk>*</RedAsterisk> Amount Requested (USD):
-              </Label>
-              <Input
-                type="number"
-                name="appliedFundUSD"
-                placeholder="Funding amount needed for the Rescue Fund."
-                value={formData.appliedFundUSD}
-                onChange={handleInputChange}
-                yellowBg
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Detailed breakdown of how the funds will be used.">
-                <RedAsterisk>*</RedAsterisk> Planned Use of Funds:
-              </Label>
-              <TextArea
-                name="budgetPlan"
-                placeholder="Detailed breakdown of how the funds will be used."
-                value={formData.budgetPlan}
-                onChange={handleInputChange}
-                required
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Any other information you'd like to share">
-                Additional Notes:
-              </Label>
-              <TextArea
-                name="notes"
-                placeholder="Any other information you'd like to share."
-                value={formData.notes}
-                onChange={handleInputChange}
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Can Provide Invoice (YES/NO).">
-                {" "}
-                Can Provide Invoice: (
-                {formData.canProvideInvoice ? "YES" : "NO"})
-              </Label>
-              <Switch.Root
-                // defaultChecked={formData.canProvideInvoice}
-                checked={formData.canProvideInvoice}
-                value={formData.canProvideInvoice}
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-                onCheckedChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    canProvideInvoice: e.checked,
-                  });
-                }}
-                colorPalette="green"
-              >
-                <Switch.HiddenInput />
-                <Switch.Control />
-              </Switch.Root>
-              {/* <SwitchTip>YES</SwitchTip> */}
-            </FormGroup>
-
-            <FormGroup>
-              <Label title="Can Provide Public Thank-You Letter (YES/NO).">
-                Can Provide Public Thank-You Letter: (
-                {formData.canProvidePublicThankYouLetter ? "YES" : "NO"})
-              </Label>
-              <Switch.Root
-                // defaultChecked={formData.canProvidePublicThankYouLetter}
-                checked={formData.canProvidePublicThankYouLetter}
-                value={formData.canProvidePublicThankYouLetter}
-                disabled={!!currentTask || isSubmitting || isSubmitted}
-                onCheckedChange={(e) => {
-                  setFormData({
-                    ...formData,
-                    canProvidePublicThankYouLetter: e.checked,
-                  });
-                }}
-                colorPalette="green"
-              >
-                <Switch.HiddenInput />
-                <Switch.Control />
-              </Switch.Root>
-            </FormGroup>
-
-            {!currentTask && !isSubmitted ? (
-              <SubmitButton
-                // loading={isSubmitting}
-                disabled={isSubmitting || isDisabled}
-              >
-                {isSubmitted ? (
-                  "Request Successful!"
-                ) : isSubmitting ? (
-                  <>
-                    <LoadingSpinner />
-                    Submitting...
-                  </>
-                ) : (
-                  "Submit Request"
-                )}
-              </SubmitButton>
-            ) : null}
-          </FormSection>
+          <RescueForm
+            currentTask={currentTask}
+            profile={profile}
+            xAuthLink={xAuthLink}
+            onSubmitted={async () => {
+              await refreshProfile();
+              onSuccess();
+            }}
+          />
         </ContentContainer>
       </FormContainer>
     </DrawerFullpage>
