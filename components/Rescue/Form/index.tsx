@@ -1,6 +1,4 @@
-interface Props {
-
-}
+interface Props {}
 
 const RescueForm: React.FC<Props> = () => {
   return (
@@ -8,5 +6,7 @@ const RescueForm: React.FC<Props> = () => {
       <h1>Rescue Form</h1>
       <p>This is the rescue form component.</p>
     </div>
-  )
-}
+  );
+};
+
+export default RescueForm;
