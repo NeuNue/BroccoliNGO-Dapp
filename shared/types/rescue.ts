@@ -1,3 +1,18 @@
+export type RescueTask = {
+  URI: string;
+  address: string | null;
+  approved: number;
+  creatEventId: {
+    hash: string;
+  };
+  hash: string;
+  id: number;
+  helpPics: string;
+  metadata: HelpRequest;
+  nftId: number;
+  status: number;
+  xHandle: string;
+};
 interface Contact {
   email: string;
   twitter: string;

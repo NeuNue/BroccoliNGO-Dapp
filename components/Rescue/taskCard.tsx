@@ -1,4 +1,4 @@
-import { HelpRequest } from "@/shared/types/rescue";
+import { HelpRequest, RescueTask } from "@/shared/types/rescue";
 import { FC } from "react";
 import ArweaveIcon from "@/components/icons/arweave";
 import BscscanIcon from "@/components/icons/bscscan";
@@ -8,23 +8,16 @@ import styled from "@emotion/styled";
 import { formatDecimalNumber } from "@/shared/utils";
 
 interface Props {
-  task: {
-    nftId: number;
-    URI: string;
-    approved: 0 | 1;
-    metadata: HelpRequest;
-    creatEventId: {
-      hash: string
-    }
-  };
+  task: RescueTask;
 }
 const TaskCard: FC<Props> = ({ task }) => {
   const scanUrl = `https://bscscan.com/tx/${task.creatEventId.hash}`;
-  const nftUrl = `https://bscscan.com/nft/${CONTRACT_ADDRESS}/${task.nftId}`; 
+  const nftUrl = `https://bscscan.com/nft/${CONTRACT_ADDRESS}/${task.nftId}`;
+  const taskUrl = `/task/${task.nftId}`;
   const xUrl = `https://x.com/${task.metadata.organization.contact.twitter}`;
   const emailUrl = `mailto:${task.metadata.organization.contact.email}`;
   return (
-    <a href={nftUrl} target="_blank">
+    <a href={taskUrl} target="_blank">
       <TaskCardContainer>
         <TaskCardLeft>
           <NFTIcon />
