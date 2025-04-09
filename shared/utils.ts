@@ -1,5 +1,3 @@
-import { NFTMetaData2, HelpRequest2 } from "./types/help";
-import { HelpRequest, NFTMetaData } from "./types/rescue";
 
 export const isMobileDevice = () => {
   if (typeof window === "undefined") return false;
