@@ -32,6 +32,17 @@ Provide a one-sentence summary of the feature or improvement you're requesting. 
 
 ---
 
+Additional Assets
+
+Please upload any relevant materials or assets that will help in understanding or building the feature:
+
+- Screenshots
+- Wireframes
+- Design mockups
+- Links to external resources (e.g., Google Drive, Figma, etc.)
+
+---
+
 ### Priority
 
 #### Please indicate the priority of this request:
