@@ -1,6 +1,6 @@
 # 🥦 BroccoliNGO Dapp
 
-![Broccoli Banner](Broccoli_banner.jpeg)
+![Broccoli Banner](Broccoli_banner.jpg)
 
 [![Website](https://img.shields.io/badge/Website-broccoli.ngo-green)](https://www.broccoli.ngo/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
