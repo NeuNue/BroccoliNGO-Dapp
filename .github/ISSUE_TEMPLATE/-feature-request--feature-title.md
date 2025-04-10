@@ -1,4 +1,6 @@
 ---
+name: Feature Request
+about: Submit a request for a new feature or improvement.
 title: '[Feature Request] Feature title'
 labels: enhancement
 assignees: 
