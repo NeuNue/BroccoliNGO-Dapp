@@ -1,11 +1,21 @@
-# BroccoliNGO Dapp
+# 🥦 BroccoliNGO Dapp
+
+![Broccoli Banner](Broccoli_banner.jpeg)
 
 [![Website](https://img.shields.io/badge/Website-broccoli.ngo-green)](https://www.broccoli.ngo/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-BroccoliNGO is an innovative decentralized application that aims to bridge the gap between blockchain technology and non-governmental organizations. The platform provides transparent fundraising, donation tracking, and resource allocation for environmental and social causes.
+BroccoliNGO is an open-source decentralized application (dApp) built on BNB Chain, initiated by the Broccoli CTO Community. Our mission is to revolutionize charity and pet rescue efforts by leveraging blockchain’s transparency, ensuring every donation is verifiable on-chain.
+
+As a community-led project, we invite developers and community members to collaborate in building a future where charity is truly transparent and impactful.
 
 Visit our website: [https://www.broccoli.ngo/](https://www.broccoli.ngo/)
+
+## About Broccoli
+
+Broccoli is a community-driven memecoin on BNB Smart Chain, inspired by CZ’s beloved dog, Broccoli. More than just a token, the Broccoli ecosystem champions real-world utility, with BroccoliNGO being a key initiative to merge blockchain innovation with social good.
+
+CA: 0x6d5AD1592ed9D6D1dF9b93c793AB759573Ed6714
 
 ## Project Structure
 
