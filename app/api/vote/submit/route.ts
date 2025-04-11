@@ -1,4 +1,3 @@
-import { getTaskDate } from "@/shared/server/dune";
 import { getBalanceOfDate } from "@/shared/server/model";
 import { supabaseClient } from "@/shared/supabase";
 import { getVoteSignatureMessage } from "@/shared/vote";
@@ -92,9 +91,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      const date = getTaskDate(task.data.vote_start_date || "0");
-
-      const balance = await getBalanceOfDate(address as string, date);
+      const balance = await getBalanceOfDate(address as string, task.data.vote_start_date as string);
 
       const { error } = await supabaseClient.from("Vote").upsert(
         {

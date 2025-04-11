@@ -7,8 +7,7 @@ import USDTABI from "./abi/USDT";
 import { Address } from "viem";
 
 export const isBeta =
-  process.env.NEXT_PUBLIC_BETA === "true" || process.env.PREVIEW === "true";
-export const isTestnet = process.env.LOCAL === "true" || isBeta;
+  process.env.PREVIEW === "true" || process.env.NEXT_PUBLIC_BETA === "true";
 
 export const mainChain = isBeta ? bscTestnet : bsc;
 export const ABI = B714NGOABI;
@@ -60,10 +59,9 @@ export const hashToTopicMap = (() => {
   return inverted;
 })();
 
-export const TWITTER_CODE_CHALLENGE = process.env.TWITTER_CODE_CHALLENGE ?? '';
+export const TWITTER_CODE_CHALLENGE = process.env.TWITTER_CODE_CHALLENGE ?? "";
 
 export const HOST = process.env.NEXT_PUBLIC_HOST || "http://127.0.0.1:3000";
-export const API_BASE_URI = process.env.NEXT_PUBLIC_API_BASE_URI || '';
 
 export const TOKEN_NAME = "broccoli_token";
 
