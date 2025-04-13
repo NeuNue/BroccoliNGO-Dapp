@@ -15,6 +15,7 @@ import RescueSuccessfulDialog from "./rescue-successful";
 import { useSearchParams, useRouter } from "next/navigation";
 import { isBeta, mainChain } from "@/shared/constant";
 import { BSC_RPC_URL } from "@/shared/constant";
+import { Trading } from "./trading";
 // import { useDisclosure } from "@heroui/react";
 
 const TOTAL_COUNT = 76 + 65 + 500 + 400;
@@ -361,6 +362,7 @@ function HomeMain() {
             })}
           </div>
         </div>
+        <Trading />
         <div className="shim-height"></div>
         <Image
           className="star3"
