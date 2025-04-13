@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { getBalanceOfDate, getConfig, updateConfig } from "@/shared/server/model";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+import { getPrivyUserInfoByAccessToken } from "@/shared/server/privy";
 
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
@@ -67,11 +68,18 @@ async function testVoteList() {
   console.log(JSON.stringify(res))
 }
 
+async function testPrivy() {
+  const accessToken = ''
+  const userInfo = await getPrivyUserInfoByAccessToken(accessToken)
+  console.log(userInfo)
+}
+
 async function main() {
   // await testGetBalance()
   // await testVoteSubmit()
   // await testVoteResult()
   // await testVoteList()
+  await testPrivy()
 }
 
 main();
