@@ -106,3 +106,13 @@ export const formatDate = (
     return "";
   }
 };
+
+export const createBlobUrl = (file: File | Blob): string => {
+  const blobUrl = URL.createObjectURL(file);
+
+  return blobUrl;
+};
+
+export const cleanBlobUrl = (blobUrl: string) => {
+  URL.revokeObjectURL(blobUrl);
+};

@@ -105,3 +105,86 @@ export interface NFTMetaData {
     }
   ];
 }
+
+// v2
+
+export interface ContactForm {
+  organization: string;
+  email: string;
+  country: string;
+  city: string;
+  twitter?: string;
+  address?: string;
+}
+
+export interface BackgroundForm {
+  context: string;
+  attachment: string;
+}
+
+export interface RequestForm {
+  suppliesRequest: string;
+  additionalInfo: string;
+  canProvideInvoices: boolean;
+  canProvidePublicAcknowledgments: boolean;
+}
+
+export interface OrganizationV2 {
+  name: string;
+  contact: ContactForm;
+}
+
+export interface RescueRequest {
+  v: string;
+  contact: ContactForm;
+  background: BackgroundForm;
+  request: RequestForm;
+}
+
+export interface RescueNFTMetaData {
+  name: string;
+  image: string;
+  description: string; // This is the context of the request
+  attributes: [
+    {
+      trait_type: "version";
+      value: string;
+    },
+    {
+      trait_type: "organization";
+      value: string;
+    },
+    {
+      trait_type: "email";
+      value: string;
+    },
+    {
+      trait_type: "twitter";
+      value: string;
+    },
+    {
+      trait_type: "location";
+      value: string;
+    },
+    {
+      trait_type: "attachment"; // All attachments are saved to an IPFS URL
+      value: string;
+    },
+    {
+      trait_type: "suppliesRequest";
+      value: string;
+    },
+    {
+      trait_type: "additionalInfo";
+      value: string;
+    },
+    {
+      trait_type: "canProvideInvoices";
+      value: boolean;
+    },
+    {
+      trait_type: "canProvidePublicAcknowledgments";
+      value: boolean;
+    }
+  ];
+}

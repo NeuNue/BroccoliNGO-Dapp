@@ -20,12 +20,14 @@ import {
 import { usePublicClient } from "wagmi";
 import { ABI, CONTRACT_ADDRESS } from "@/shared/constant";
 import { Task } from "@/shared/types/task";
-import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
+import { HelpRequest, NFTMetaData, RescueNFTMetaData, RescueRequest } from "@/shared/types/rescue";
 import { HelpRequest2, NFTMetaData2 } from "@/shared/types/help";
 import {
   checkIsVoteOnchainMetadata,
+  formatNFTMetadataToTaskRequest,
   nftMetaDataToHelpRequest,
   nftMetaDataToHelpRequest2,
+  NFTMetaDataToRescueRequestForms,
   VoteOnchainMetadata,
 } from "@/shared/task";
 import { VoteResult } from "@/shared/types/vote";
@@ -39,7 +41,7 @@ interface TaskDetailsContextType {
   task: Task | null;
   isApproved: boolean;
   loading: boolean;
-  taskMetaData: HelpRequest | HelpRequest2 | null;
+  taskMetaData: HelpRequest | HelpRequest2 | RescueRequest | null;
   voteResult: VoteResult;
   isVoteEnded: boolean;
   taskStatus: "Pending" | "Approved" | "Rejected" | "";
@@ -69,8 +71,9 @@ export const TaskDetailsProvider = ({
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [taskMetaData, setTaskMetaData] = useState<
-    HelpRequest | HelpRequest2 | null
+    HelpRequest | HelpRequest2 | RescueRequest | null
   >(null);
+  const [taskVersion, setTaskVersion] = useState("");
   const [metadataLoading, setMetadataLoading] = useState(true);
   const [isApproved, setIsApproved] = useState(false);
   const [error, setError] = useState("");
@@ -91,8 +94,11 @@ export const TaskDetailsProvider = ({
 
   const isAuthor = useMemo(() => {
     if (!profile || !taskMetaData) return false;
-    return profile.handle === taskMetaData.organization.contact.twitter;
-  }, [profile, taskMetaData]);
+    if (taskVersion === "1.0") {
+      return profile.handle === (taskMetaData as RescueRequest).contact.twitter
+    }
+    return profile.handle === (taskMetaData as HelpRequest).organization.contact.twitter;
+  }, [profile, taskMetaData, taskVersion]);
 
   const isVoteEnded = useMemo(() => {
     if (!task) return false;
@@ -151,18 +157,44 @@ export const TaskDetailsProvider = ({
 
   async function loadTaskMetaData(tokenUri: string) {
     if (!tokenUri) return null;
-    const data: NFTMetaData | NFTMetaData2 = await fetch(tokenUri).then((res) =>
-      res.json()
-    );
-    if (
-      data.attributes.find((attr) => attr.trait_type === "version")?.value ===
-      "0.2"
-    ) {
-      setMetadataLoading(false);
-      return nftMetaDataToHelpRequest2(data as NFTMetaData2);
+    const parsed = await formatNFTMetadataToTaskRequest(tokenUri);
+    if (!parsed) return null;
+    setTaskVersion(parsed.v);
+    switch (parsed.v) {
+      case "1.0": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return NFTMetaDataToRescueRequestForms(NFTMetaData as RescueNFTMetaData).request;
+      }
+      case "0.2": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2);
+      }
+      case "0.1": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData);
+      }
+      default:
+        setMetadataLoading(false);
+        return null;
     }
-    setMetadataLoading(false);
-    return nftMetaDataToHelpRequest(data as NFTMetaData);
+    // const data: NFTMetaData | NFTMetaData2 = await fetch(tokenUri).then((res) =>
+    //   res.json()
+    // );
+    // if (
+    //   data.attributes.find((attr) => attr.trait_type === "version")?.value ===
+    //   "0.2"
+    // ) {
+    //   setMetadataLoading(false);
+    //   return nftMetaDataToHelpRequest2(data as NFTMetaData2);
+    // }
+    // setMetadataLoading(false);
+    // return nftMetaDataToHelpRequest(data as NFTMetaData);
   }
 
   const getUploadedFundRecords = async (tokenId: string) => {
