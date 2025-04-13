@@ -381,33 +381,46 @@ export const NFTMetaDataToRescueRequestForms = (
   };
 };
 
-export const formatNFTMetadataToTaskRequest = async (tokenUri: string) => {
+export const getVersionOfMetaData = (
+  metadata: NFTMetaData | NFTMetaData2 | RescueNFTMetaData
+) => {
+  return metadata.attributes.find((attr) => attr.trait_type === "version")
+    ?.value;
+};
+
+export const formatNFTMetadataToTaskRequest = async ({
+  tokenUri,
+  metadata,
+}: {
+  tokenUri?: string;
+  metadata?: NFTMetaData | NFTMetaData2 | RescueNFTMetaData;
+}) => {
   const NFTMetaData: NFTMetaData | NFTMetaData2 | RescueNFTMetaData =
-    await fetch(tokenUri).then((res) => res.json());
+    metadata || (await fetch(tokenUri!).then((res) => res.json()));
   console.log("-- NFTMetaData", NFTMetaData);
-  const version = NFTMetaData.attributes.find(
-    (attr) => attr.trait_type === "version"
-  )?.value;
+  const version = getVersionOfMetaData(NFTMetaData);
   switch (version) {
     case "1.0": {
       return {
         v: version,
         NFTMetaData,
-        formatedData: NFTMetaDataToRescueRequestForms(NFTMetaData as RescueNFTMetaData)
+        formatedData: NFTMetaDataToRescueRequestForms(
+          NFTMetaData as RescueNFTMetaData
+        ).request,
       };
     }
     case "0.2": {
       return {
         v: version,
         NFTMetaData,
-        formatedData: nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2)
+        formatedData: nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2),
       };
     }
     case "0.1": {
       return {
         v: version,
         NFTMetaData,
-        formatedData: nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData)
+        formatedData: nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData),
       };
     }
     default: {

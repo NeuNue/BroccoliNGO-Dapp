@@ -2,6 +2,10 @@ import { Profile } from "@/shared/types/profile";
 import styled from "@emotion/styled";
 import { FC } from "react";
 import FormConnect from "@/components/Rescue/Form/Connect";
+import { useRescueRequestCtx } from "@/hooks/useRescue";
+import TaskCard from "../TaskCard";
+import TaskCardV0_1 from "../TaskCard/v0.1";
+import { RescueTask, RescueTaskV1 } from "@/shared/types/rescue";
 
 interface Props {
   profile: Profile | null;
@@ -10,6 +14,7 @@ interface Props {
 }
 
 const FormPreSection: FC<Props> = ({ profile, xAuthLink, onNext }) => {
+  const { currentTask, completedTasks } = useRescueRequestCtx();
   return (
     <Container>
       <HeaderSection>
@@ -61,9 +66,38 @@ const FormPreSection: FC<Props> = ({ profile, xAuthLink, onNext }) => {
         {!profile ? (
           <FormConnect profile={profile} xAuthLink={xAuthLink} />
         ) : (
-          <StartButton onClick={onNext}>Start Application</StartButton>
+          <StartButton onClick={onNext}>
+            {currentTask
+              ? "View Your Application #" + currentTask.task.nftId
+              : "Start Application"}
+          </StartButton>
         )}
       </Footer>
+      {currentTask || !!completedTasks.length ? (
+        <>
+          <TaskCardsBox>
+            {currentTask && (
+              <TaskCardContainer>
+                {currentTask.version === "1.0" ? (
+                  <TaskCard task={currentTask.task as RescueTaskV1} />
+                ) : (
+                  <TaskCardV0_1 task={currentTask.task as RescueTask} />
+                )}
+              </TaskCardContainer>
+            )}
+            {!!completedTasks.length &&
+              completedTasks.map((task, idx) => (
+                <TaskCardContainer key={idx}>
+                  {task.version === "1.0" ? (
+                    <TaskCard task={task.task as RescueTaskV1} />
+                  ) : (
+                    <TaskCardV0_1 task={task.task as RescueTask} />
+                  )}
+                </TaskCardContainer>
+              ))}
+          </TaskCardsBox>
+        </>
+      ) : null}
     </Container>
   );
 };
@@ -222,7 +256,7 @@ const Footer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-`
+`;
 
 const StartButton = styled.button`
   display: flex;
@@ -256,4 +290,22 @@ const StartButton = styled.button`
     border-radius: 50%;
     object-fit: cover;
   }
+`;
+
+const TaskCardsBox = styled.div`
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    gap: 16px;
+  }
+`;
+
+const TaskCardContainer = styled.div`
+  width: 100%;
 `;

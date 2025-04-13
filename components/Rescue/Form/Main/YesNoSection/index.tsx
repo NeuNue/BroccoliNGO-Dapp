@@ -8,7 +8,7 @@ const SelectionContainer = styled.div`
   width: 100%;
 `;
 
-const SelectButton = styled.button<{ isSelected: boolean }>`
+const SelectButton = styled.button<{ isSelected: boolean; disabled?: boolean }>`
   flex: 1;
   display: flex;
   height: 50px;
@@ -17,8 +17,15 @@ const SelectButton = styled.button<{ isSelected: boolean }>`
   justify-content: center;
   gap: 8px;
   border-radius: 8px;
-  border: 1px solid
-    ${(props) => (props.isSelected ? "#322F2C" : "rgba(50, 47, 44, 0.1)")};
+  border: 1px solid;
+  border-color: ${(props) =>
+    props.isSelected
+      ? props.disabled
+        ? "rgba(50, 47, 44, 0.5)"
+        : "#322F2C"
+      : "rgba(50, 47, 44, 0.1)"};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   background: #fff;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -29,6 +36,7 @@ const SelectButton = styled.button<{ isSelected: boolean }>`
   font-style: normal;
   font-weight: 700;
   line-height: 140%;
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 
   svg {
     display: ${(props) => (props.isSelected ? "block" : "none")};
@@ -51,6 +59,7 @@ interface YesNoSelectionProps {
   yesLabel?: string;
   noLabel?: string;
   name?: string;
+  disabled?: boolean;
 }
 
 const YesNoSelection: React.FC<YesNoSelectionProps> = ({
@@ -59,6 +68,7 @@ const YesNoSelection: React.FC<YesNoSelectionProps> = ({
   yesLabel = "Yes",
   noLabel = "No",
   name = "yesno",
+  disabled = false,
 }) => {
   const [selectedValue, setSelectedValue] = useState<boolean | null>(value);
 
@@ -79,6 +89,8 @@ const YesNoSelection: React.FC<YesNoSelectionProps> = ({
         role="radio"
         aria-checked={selectedValue === true}
         name={name}
+        disabled={disabled}
+        aria-disabled={disabled}
       >
         <RightIcon />
         <OptionLabel>{yesLabel}</OptionLabel>
@@ -92,6 +104,8 @@ const YesNoSelection: React.FC<YesNoSelectionProps> = ({
         role="radio"
         aria-checked={selectedValue === false}
         name={name}
+        disabled={disabled}
+        aria-disabled={disabled}
       >
         <RightIcon />
         <OptionLabel>{noLabel}</OptionLabel>

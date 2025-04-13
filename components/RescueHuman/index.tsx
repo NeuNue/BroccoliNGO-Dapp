@@ -24,7 +24,7 @@ import { Switch } from "@chakra-ui/react";
 import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
 import { uploadImage, uploadVideo } from "@/shared/upload";
 import { toaster } from "@/components/ui/toaster";
-import TaskCard from "./taskCard";
+import TaskCardV0_2 from "@/components/Rescue/Form/TaskCard/v0.2";
 import { MAX_IMAGE_SIZE, MAX_VIDEO_SIZE } from "@/shared/constant";
 import { fetchProofs } from "@/shared/api";
 import { useAccount, useDisconnect, useReadContract } from "wagmi";
@@ -1060,13 +1060,13 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
               <TaskCardsBox>
                 {currentTask && (
                   <TaskCardContainer>
-                    <TaskCard task={currentTask} />
+                    <TaskCardV0_2 task={currentTask} />
                   </TaskCardContainer>
                 )}
                 {!!completedTasks.length &&
                   completedTasks.map((task, idx) => (
                     <TaskCardContainer key={idx}>
-                      <TaskCard task={task} />
+                      <TaskCardV0_2 task={task} />
                     </TaskCardContainer>
                   ))}
               </TaskCardsBox>

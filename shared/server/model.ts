@@ -70,7 +70,7 @@ export async function refreshTaskMeta(nftId: number) {
     if (!task) return;
     const { URI } = task;
     if (!URI) return;
-    const parsed = await formatNFTMetadataToTaskRequest(URI);
+    const parsed = await formatNFTMetadataToTaskRequest({ tokenUri: URI });
     console.log("refreshTaskMeta parsed", parsed);
     if (!parsed) return;
     switch (parsed.v) {
@@ -81,7 +81,7 @@ export async function refreshTaskMeta(nftId: number) {
           .from("Task")
           .update({
             metadata: NFTMetaData as never as Json,
-            xHandle: formatedData.contactForm.twitter,
+            xHandle: formatedData.contact.twitter,
           })
           .eq("nftId", nftId);
         break;

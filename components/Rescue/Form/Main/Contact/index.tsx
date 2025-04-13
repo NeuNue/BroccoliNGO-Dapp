@@ -23,7 +23,8 @@ interface Props {
 }
 
 const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { profile, contactForm, setContactForm } = useRescueRequestCtx();
+  const { isPreviewMode, profile, contactForm, setContactForm } =
+    useRescueRequestCtx();
 
   const isFormValid = useMemo(() => {
     return (
@@ -35,8 +36,6 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
   }, [contactForm]);
 
   const isNextDisabled = !isFormValid;
-
-  console.log('- isFormValid', isFormValid)
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,7 +64,8 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
         twitter: profile.handle,
       }));
     }
-  }, [profile])
+  }, [profile]);
+
   return (
     <FormContainer onSubmit={handleSubmit}>
       <Main>
@@ -87,6 +87,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
               onChange={handleInputChange}
               required
               placeholder="-"
+              disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
@@ -100,6 +101,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
               required
               type="email"
               placeholder="-"
+              disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
@@ -127,6 +129,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
                 onChange={handleInputChange}
                 required
                 placeholder="Country"
+                disabled={isPreviewMode}
               />
               <FormInput
                 name="city"
@@ -134,6 +137,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
                 onChange={handleInputChange}
                 required
                 placeholder="City"
+                disabled={isPreviewMode}
               />
             </FormInputGroup>
           </FormGroup>
@@ -141,7 +145,11 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
       </Main>
       <Footer>
         <Button onClick={onPrev}>Prev</Button>
-        <SubmitButton type="submit">Next</SubmitButton>
+        {isPreviewMode ? (
+          <Button onClick={onNext}>Next</Button>
+        ) : (
+          <SubmitButton type="submit">Next</SubmitButton>
+        )}
       </Footer>
     </FormContainer>
   );

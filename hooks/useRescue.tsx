@@ -15,13 +15,19 @@ import {
   ContactForm,
   HelpRequest,
   NFTMetaData,
+  OriginTask,
   RequestForm,
+  RescueNFTMetaData,
   RescueRequest,
   RescueTask,
+  RescueTaskV1,
 } from "@/shared/types/rescue";
 import {
+  formatNFTMetadataToTaskRequest,
   formatToRescueNFTMetadata,
   nftMetaDataToHelpRequest,
+  nftMetaDataToHelpRequest2,
+  NFTMetaDataToRescueRequestForms,
 } from "@/shared/task";
 import {
   createTask,
@@ -33,12 +39,20 @@ import {
 import { toaster } from "@/components/ui/toaster";
 import { Profile } from "@/shared/types/profile";
 import { isMobileDevice } from "@/shared/utils";
+import { NFTMetaData2 } from "@/shared/types/help";
 
 interface RescueRequestContextType {
+  isPreviewMode: boolean;
   profile: Profile | null;
   xAuthLink: string;
-  currentTask: RescueTask | null;
-  completedTasks: RescueTask[];
+  currentTask: {
+    version: string;
+    task: RescueTask | RescueTaskV1;
+  } | null;
+  completedTasks: {
+    version: string;
+    task: RescueTask | RescueTaskV1;
+  }[];
   refreshProfile: () => Promise<void>;
   contactForm: ContactForm;
   setContactForm: Dispatch<SetStateAction<ContactForm>>;
@@ -83,9 +97,19 @@ export const RescueRequestProvider = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [currentTask, setCurrentTask] = useState<RescueTask | null>(null);
-  const [completedTasks, setCompletedTasks] = useState<RescueTask[]>([]);
+  const [currentTask, setCurrentTask] = useState<{
+    version: string;
+    task: RescueTask | RescueTaskV1;
+  } | null>(null);
+  const [completedTasks, setCompletedTasks] = useState<
+    {
+      version: string;
+      task: RescueTask | RescueTaskV1;
+    }[]
+  >([]);
   const [xAuthLink, setXAuthLink] = useState("");
+
+  const isPreviewMode = !!currentTask;
 
   const isMobile = isMobileDevice();
 
@@ -140,23 +164,51 @@ export const RescueRequestProvider = ({
     return false;
   };
 
+  async function loadTaskMetaData(tokenUri: string) {
+    if (!tokenUri) return null;
+    const parsed = await formatNFTMetadataToTaskRequest({
+      tokenUri,
+    });
+    if (!parsed) return null;
+    return parsed;
+  }
+
   const refreshProfile = async () => {
     const res = await fetchProfile();
     if (res.code === 0) {
       setProfile(res.data);
       if (res.data.task) {
+        const formated = await loadTaskMetaData(res.data.task.URI);
+        if (!formated) return;
+        const { v, NFTMetaData, formatedData } = formated;
         setCurrentTask({
-          ...res.data.task,
-          metadata: nftMetaDataToHelpRequest(res.data.task.metadata),
+          version: v,
+          task: {
+            ...res.data.task,
+            metadata: NFTMetaData,
+            _parsedMetadata: formatedData,
+          },
         });
       }
 
-      setCompletedTasks(
-        res.data.completedTasks.map((task: any) => ({
-          ...task,
-          metadata: nftMetaDataToHelpRequest(task.metadata),
-        }))
+      const _completedTasks = await Promise.all(
+        res.data.completedTasks.map((task: OriginTask) => {
+          return loadTaskMetaData(task.URI).then((formated) => {
+            if (!formated) return null;
+            const { v, NFTMetaData, formatedData } = formated;
+            return {
+              version: v,
+              task: {
+                ...task,
+                metadata: NFTMetaData,
+                _parsedMetadata: formatedData,
+              },
+            };
+          });
+        })
       );
+
+      setCompletedTasks(_completedTasks);
       return;
     }
     const oauthRes = await fetchXGenerateLink("/?mode=rescue");
@@ -166,12 +218,33 @@ export const RescueRequestProvider = ({
   };
 
   useEffect(() => {
+    if (currentTask) {
+      const { task, version } = currentTask;
+      const { metadata, _parsedMetadata } = task;
+      if (version === "1.0") {
+        const { contactForm, backgroundForm, requestForm } =
+          NFTMetaDataToRescueRequestForms(metadata as RescueNFTMetaData);
+        setContactForm(contactForm);
+        setBackgroundForm(backgroundForm);
+        setRequestForm(requestForm);
+      } else {
+        // const { contactForm, backgroundForm, requestForm } =
+        //   nftMetaDataToHelpRequest2(metadata as NFTMetaData2);
+        // setContactForm(contactForm);
+        // setBackgroundForm(backgroundForm);
+        // setRequestForm(requestForm);
+      }
+    }
+  }, [currentTask]);
+
+  useEffect(() => {
     refreshProfile();
   }, []);
 
   return (
     <RescueRequestContext.Provider
       value={{
+        isPreviewMode,
         profile,
         xAuthLink,
         currentTask,

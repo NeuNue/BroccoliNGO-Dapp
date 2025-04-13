@@ -20,7 +20,7 @@ import {
   Button,
   SubmitButton,
 } from "@/components/Rescue/Form/Main/Layout";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UploadIcon from "@/components/icons/upload";
 import CloseIcon from "@/components/icons/close";
 import { uploadImage } from "@/shared/upload";
@@ -35,9 +35,10 @@ interface Props {
 }
 
 const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { backgroundForm, setBackgroundForm } = useRescueRequestCtx();
+  const { backgroundForm, setBackgroundForm, isPreviewMode } =
+    useRescueRequestCtx();
   const [uploading, setUploading] = useState(false);
-  const [mediaBlobUrls, setMediaBlobUrls] = useState<string[]>([]);
+  const [mediaPreviewUrls, setMediaPreviewUrls] = useState<string[]>([]);
   const [uploadedMediaUrls, setUploadedMediaUrls] = useState<string[]>([]);
 
   const [attachmentUploading, setAttachmentUploading] = useState(false);
@@ -59,7 +60,7 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
   };
 
   const handleDelMedia = (index: number) => {
-    setMediaBlobUrls((prev) => {
+    setMediaPreviewUrls((prev) => {
       const newUrls = [...prev];
       newUrls.splice(index, 1);
       return newUrls;
@@ -90,7 +91,7 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
       //   continue;
       // }
       if (isImage) {
-        setMediaBlobUrls((prev) => [...prev, createBlobUrl(files[i])]);
+        setMediaPreviewUrls((prev) => [...prev, createBlobUrl(files[i])]);
         const res = await uploadImage({ file: files[i] }, MAX_IMAGE_SIZE);
         if (res) {
           // onProofUploaded?.(res.data.url);
@@ -116,6 +117,15 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
     onNext();
   };
 
+  useEffect(() => {
+    if (!isPreviewMode || !backgroundForm.attachment) return;
+    const fetchMedia = async () => {
+      const res = await fetch(backgroundForm.attachment).then((d) => d.json());
+      setMediaPreviewUrls(res);
+    };
+    fetchMedia();
+  }, [isPreviewMode, backgroundForm.attachment]);
+
   return (
     <FormContainer onSubmit={handleSubmit}>
       <Main>
@@ -139,6 +149,7 @@ What resources are you lacking?
 What kind of assistance do you need?`}
               value={backgroundForm.context}
               name="context"
+              disabled={isPreviewMode}
               onChange={handleInputChange}
             />
           </FormGroup>
@@ -147,43 +158,47 @@ What kind of assistance do you need?`}
               Attachment （Attach media files: e.g. JPEG, PNG, SVG .etc）
             </FormInputLabel>
             <MediaList>
-              {mediaBlobUrls.map((url, index) => {
+              {mediaPreviewUrls.map((url, index) => {
                 return (
                   <MediaItem key={index}>
                     <MediaItemImg src={url} alt={`Media-${index}`} />
-                    <MediaItemDelete
-                      onClick={() => {
-                        handleDelMedia(index);
-                      }}
-                    >
-                      <CloseIcon />
-                    </MediaItemDelete>
+                    {isPreviewMode ? null : (
+                      <MediaItemDelete
+                        onClick={() => {
+                          handleDelMedia(index);
+                        }}
+                      >
+                        <CloseIcon />
+                      </MediaItemDelete>
+                    )}
                   </MediaItem>
                 );
               })}
-              <MediaItem>
-                <UploadBox htmlFor="upload-record">
-                  {uploading ? (
-                    <Spinner />
-                  ) : (
-                    <>
-                      <UploadIcon />
-                      <span>Upload</span>
-                    </>
-                  )}
+              {isPreviewMode ? null : (
+                <MediaItem>
+                  <UploadBox htmlFor="upload-record">
+                    {uploading ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <UploadIcon />
+                        <span>Upload</span>
+                      </>
+                    )}
 
-                  <input
-                    id="upload-record"
-                    type="file"
-                    // accept="image/*,video/mp4"
-                    accept="image/*"
-                    multiple
-                    maxLength={20}
-                    onChange={handleMediaFileSelect}
-                    disabled={uploading}
-                  />
-                </UploadBox>
-              </MediaItem>
+                    <input
+                      id="upload-record"
+                      type="file"
+                      // accept="image/*,video/mp4"
+                      accept="image/*"
+                      multiple
+                      maxLength={20}
+                      onChange={handleMediaFileSelect}
+                      disabled={uploading || isPreviewMode}
+                    />
+                  </UploadBox>
+                </MediaItem>
+              )}
             </MediaList>
           </FormGroup>
         </Content>
@@ -192,22 +207,17 @@ What kind of assistance do you need?`}
         <Button disabled={uploading || attachmentUploading} onClick={onPrev}>
           Prev
         </Button>
-        {/* {isFormValid ? (
-          <Steps.NextTrigger asChild>
-            <SubmitButton disabled={isNextDisabled} type="submit">
-              Next
-            </SubmitButton>
-          </Steps.NextTrigger>
+        {isPreviewMode ? (
+          <Button onClick={onNext}>Next</Button>
         ) : (
-          <SubmitButton type="submit">Next</SubmitButton>
-        )} */}
-        <SubmitButton
-          loading={attachmentUploading}
-          disabled={uploading || attachmentUploading}
-          type="submit"
-        >
-          Next
-        </SubmitButton>
+          <SubmitButton
+            loading={attachmentUploading}
+            disabled={uploading || attachmentUploading}
+            type="submit"
+          >
+            Next
+          </SubmitButton>
+        )}
       </Footer>
     </FormContainer>
   );

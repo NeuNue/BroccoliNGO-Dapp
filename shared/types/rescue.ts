@@ -1,4 +1,9 @@
-export type RescueTask = {
+export type RescueTask = OriginTask & {
+  metadata: NFTMetaData;
+  _parsedMetadata: HelpRequest;
+};
+
+export type OriginTask = {
   URI: string;
   address: string | null;
   approved: number;
@@ -8,11 +13,10 @@ export type RescueTask = {
   hash: string;
   id: number;
   helpPics: string;
-  metadata: HelpRequest;
   nftId: number;
   status: number;
   xHandle: string;
-};
+}
 interface Contact {
   email: string;
   twitter: string;
@@ -187,4 +191,9 @@ export interface RescueNFTMetaData {
       value: boolean;
     }
   ];
+}
+
+export type RescueTaskV1 = OriginTask & {
+  metadata: RescueNFTMetaData;
+  _parsedMetadata: RescueRequest;
 }

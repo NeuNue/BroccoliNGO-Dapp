@@ -6,7 +6,6 @@ import styled from "@emotion/styled";
 import { isMobileDevice } from "@/shared/utils";
 // import RescueForm from "@/components/Rescue/OldForm";
 import RescueForm from "@/components/Rescue/Form";
-import TaskCard from "./taskCard";
 import { RescueRequestProvider } from "@/hooks/useRescue";
 
 interface Props {
@@ -33,25 +32,11 @@ const FundRequestForm: FC<Props> = ({ open, onClose, onSuccess }) => {
 
           {/* Form */}
           <ContentContainer>
-            {/* {currentTask || !!completedTasks.length ? (
-            <>
-              <TaskCardsBox>
-                {currentTask && (
-                  <TaskCardContainer>
-                    <TaskCard task={currentTask} />
-                  </TaskCardContainer>
-                )}
-                {!!completedTasks.length &&
-                  completedTasks.map((task, idx) => (
-                    <TaskCardContainer key={idx}>
-                      <TaskCard task={task} />
-                    </TaskCardContainer>
-                  ))}
-              </TaskCardsBox>
-            </>
-          ) : null} */}
-
-            <RescueForm />
+            {
+              open ? (
+                <RescueForm />
+              ) : null
+            }
           </ContentContainer>
         </FormContainer>
       </DrawerFullpage>

@@ -25,8 +25,13 @@ interface Props {
 }
 
 const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { requestForm, setRequestForm, isSubmitting, handleRescueSubmit } =
-    useRescueRequestCtx();
+  const {
+    requestForm,
+    setRequestForm,
+    isSubmitting,
+    handleRescueSubmit,
+    isPreviewMode,
+  } = useRescueRequestCtx();
 
   const isFormValid = useMemo(() => {
     return requestForm.suppliesRequest.trim() !== "";
@@ -76,6 +81,7 @@ const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
               placeholder={`What supplies are urgently needed?
 Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)")
 `}
+              disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
@@ -85,6 +91,7 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
               onChange={handleInputChange}
               value={requestForm.additionalInfo}
               placeholder={`Please provide any other relevant details (e.g., special requirements, preferred brands, or delivery instructions)`}
+              disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
@@ -93,6 +100,7 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
             </FormInputLabel>
             <YesNoSelection
               value={requestForm.canProvideInvoices}
+              disabled={isPreviewMode}
               onChange={(bool) => {
                 setRequestForm((prev) => ({
                   ...prev,
@@ -108,6 +116,7 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
             </FormInputLabel>
             <YesNoSelection
               value={requestForm.canProvidePublicAcknowledgments}
+              disabled={isPreviewMode}
               onChange={(bool) => {
                 setRequestForm((prev) => ({
                   ...prev,
@@ -122,22 +131,19 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
         <Button disabled={isSubmitting} onClick={onPrev}>
           Prev
         </Button>
-        {/* {isFormValid ? (
-          <Steps.NextTrigger asChild>
-            <SubmitButton disabled={isNextDisabled} type="submit">
-              Submit
-            </SubmitButton>
-          </Steps.NextTrigger>
+        {isPreviewMode ? (
+          <Button disabled={isSubmitting} type="button" onClick={onNext}>
+            Next
+          </Button>
         ) : (
-          <SubmitButton type="submit">Submit</SubmitButton>
-        )} */}
-        <SubmitButton
-          loading={isSubmitting}
-          disabled={isSubmitting}
-          type="submit"
-        >
-          Submit
-        </SubmitButton>
+          <SubmitButton
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            type="submit"
+          >
+            Submit
+          </SubmitButton>
+        )}
       </Footer>
     </FormContainer>
   );

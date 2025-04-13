@@ -3,7 +3,7 @@ import { RescueTask } from "@/shared/types/rescue";
 import FormPreSection from "./PreSection";
 import FormMain from "./Main";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {}
 

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 
-import { Footer, SubmitButton } from "@/components/Rescue/Form/Main/Layout";
+import { Footer } from "@/components/Rescue/Form/Main/Layout";
 import RightIcon from "@/components/icons/right";
 
 interface Props {
@@ -18,25 +18,32 @@ const Completed: React.FC<Props> = ({ tokenId }) => {
         <Content>
           <Title>Request submitted</Title>
           <Description>
-            Thank you for your passion for animal rescue efforts. Broccoli is
-            committed to leveraging blockchain technology and the cultural power
-            of the meme community to bring more care and compassion to the
-            world. Your application has been recorded at{" "}
-            <Link href={`/task/${tokenId}`} target="_blank">
-              broccoli.ngo/task/
-              {tokenId}
-            </Link>{" "}
-            and will be reviewed by the community. You may visit this link at
-            any time to check your progress. Broccoli team will keep you updated
-            via E-mail. Please check your inbox (and spam folder) for our
-            confirmation email.
+            <p>Thank you for your passion for animal rescue efforts.</p>
+            <p>
+              Broccoli is committed to leveraging blockchain technology and the
+              cultural power of the meme community to bring more care and
+              compassion to the world.
+            </p>
+            <p>
+              Your application has been recorded at{" "}
+              <Link href={`/task/${tokenId}`} target="_blank">
+                broccoli.ngo/task/
+                {tokenId}
+              </Link>{" "}
+              and will be reviewed by the community.
+            </p>
+            <p>
+              You may visit this link at any time to check your progress.
+              Broccoli team will keep you updated via E-mail. Please check your
+              inbox (and spam folder) for our confirmation email.
+            </p>
           </Description>
         </Content>
       </Main>
       <Footer>
-        <Link href={`/task/${tokenId}`} target="_blank">
-          <SubmitButton>Check your Application</SubmitButton>
-        </Link>
+        <CheckButtonLink href={`/task/${tokenId}`} target="_blank">
+          <CheckButton>Check your Application</CheckButton>
+        </CheckButtonLink>
       </Footer>
     </Container>
   );
@@ -53,16 +60,16 @@ const Main = styled.div`
   align-items: center;
   gap: 40px;
   align-self: stretch;
-  border-radius: 500px;
-  background: #22b670;
 `;
 
 const SuccessSymbol = styled.div`
   display: flex;
   height: 120px;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
+  border-radius: 500px;
+  background: #22b670;
   > svg {
     width: 60px;
     height: 60px;
@@ -73,8 +80,8 @@ const SuccessSymbol = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 20px;
   align-self: stretch;
 `;
 
@@ -88,14 +95,17 @@ const Title = styled.h3`
   text-transform: capitalize;
 `;
 
-const Description = styled.p`
+const Description = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   color: #322f2c;
   text-align: justify;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 19.6px */
-  > a {
+  a {
     color: #322f2c;
     font-size: 14px;
     font-style: normal;
@@ -108,4 +118,28 @@ const Description = styled.p`
     text-underline-offset: auto;
     text-underline-position: from-font;
   }
+`;
+
+const CheckButtonLink = styled(Link)`
+  display: flex;
+  width: 100%;
+`;
+
+const CheckButton = styled.button`
+  display: flex;
+  width: 100%;
+  height: 50px;
+  padding: 0px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: #fbbc05;
+
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 14px */
+  letter-spacing: 0.14px;
 `;

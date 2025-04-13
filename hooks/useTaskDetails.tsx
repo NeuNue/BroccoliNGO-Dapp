@@ -157,7 +157,9 @@ export const TaskDetailsProvider = ({
 
   async function loadTaskMetaData(tokenUri: string) {
     if (!tokenUri) return null;
-    const parsed = await formatNFTMetadataToTaskRequest(tokenUri);
+    const parsed = await formatNFTMetadataToTaskRequest({
+      tokenUri
+    });
     if (!parsed) return null;
     setTaskVersion(parsed.v);
     switch (parsed.v) {
@@ -183,18 +185,6 @@ export const TaskDetailsProvider = ({
         setMetadataLoading(false);
         return null;
     }
-    // const data: NFTMetaData | NFTMetaData2 = await fetch(tokenUri).then((res) =>
-    //   res.json()
-    // );
-    // if (
-    //   data.attributes.find((attr) => attr.trait_type === "version")?.value ===
-    //   "0.2"
-    // ) {
-    //   setMetadataLoading(false);
-    //   return nftMetaDataToHelpRequest2(data as NFTMetaData2);
-    // }
-    // setMetadataLoading(false);
-    // return nftMetaDataToHelpRequest(data as NFTMetaData);
   }
 
   const getUploadedFundRecords = async (tokenId: string) => {

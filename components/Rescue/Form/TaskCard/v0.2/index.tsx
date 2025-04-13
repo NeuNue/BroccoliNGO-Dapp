@@ -1,4 +1,4 @@
-import { HelpRequest, RescueTask } from "@/shared/types/rescue";
+import { HelpRequest } from "@/shared/types/rescue";
 import { FC } from "react";
 import ArweaveIcon from "@/components/icons/arweave";
 import BscscanIcon from "@/components/icons/bscscan";
@@ -6,76 +6,96 @@ import NFTIcon from "@/components/icons/nft";
 import { CONTRACT_ADDRESS } from "@/shared/constant";
 import styled from "@emotion/styled";
 import { formatDecimalNumber } from "@/shared/utils";
+import Link from "next/link";
 
 interface Props {
-  task: RescueTask;
+  task: {
+    nftId: number;
+    URI: string;
+    approved: 0 | 1;
+    metadata: HelpRequest;
+    creatEventId: {
+      hash: string;
+    };
+  };
 }
 const TaskCard: FC<Props> = ({ task }) => {
   const scanUrl = `https://bscscan.com/tx/${task.creatEventId.hash}`;
   const nftUrl = `https://bscscan.com/nft/${CONTRACT_ADDRESS}/${task.nftId}`;
-  const taskUrl = `/task/${task.nftId}`;
   const xUrl = `https://x.com/${task.metadata.organization.contact.twitter}`;
   const emailUrl = `mailto:${task.metadata.organization.contact.email}`;
+  const taskUrl = `/task/${task.nftId}`;
+
+  const isHuman = task.metadata.v === "0.2";
   return (
-    <a href={taskUrl} target="_blank">
-      <TaskCardContainer>
-        <TaskCardLeft>
-          <NFTIcon />
-        </TaskCardLeft>
-        <TaskCardRight>
-          <TaskCardRightTop>
+    <TaskCardContainer>
+      <TaskCardLeft>
+        <NFTIcon />
+      </TaskCardLeft>
+      <TaskCardRight>
+        <TaskCardRightTop>
+          <Link href={taskUrl} target="_blank">
             <TokenId># {task.nftId}</TokenId>
+          </Link>
+          <Link href={taskUrl} target="_blank">
             <Name>{task.metadata.organization.name}</Name>
-            <Contact>
-              <a href={xUrl} target="_blank">
-                <ContactItem>
-                  @{task.metadata.organization.contact.twitter}
-                </ContactItem>
-              </a>
-              <a href={emailUrl} target="_blank">
-                <ContactItem>
-                  {task.metadata.organization.contact.email}
-                </ContactItem>
-              </a>
-            </Contact>
-          </TaskCardRightTop>
-          <TaskCardRightBottom>
-            <FundAmount>${formatDecimalNumber(task.metadata.request.costEstimate.totalAmount)}</FundAmount>
-          </TaskCardRightBottom>
-          <TaskCardLinks>
-            <a
-              key="arweave link"
-              href={task.URI}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-                // e.preventDefault();
-              }}
-            >
-              <ArweaveIcon />
+          </Link>
+          <Contact>
+            <a href={xUrl} target="_blank">
+              <ContactItem>
+                @{task.metadata.organization.contact.twitter}
+              </ContactItem>
             </a>
-            <a
-              key="bscan link"
-              href={scanUrl}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-                // e.preventDefault();
-              }}
-            >
-              <BscscanIcon />
+            <a href={emailUrl} target="_blank">
+              <ContactItem>
+                {task.metadata.organization.contact.email}
+              </ContactItem>
             </a>
-          </TaskCardLinks>
-          <TaskStatus>
-            {task.approved === 0 ? (
-              <img alt="pending approval" src="/rescue-approval.png" />
-            ) : (
-              <img alt="approved" src="/rescue-approved.png" />
-            )}
-          </TaskStatus>
-        </TaskCardRight>
-      </TaskCardContainer>
-    </a>
+          </Contact>
+        </TaskCardRightTop>
+        <TaskCardRightBottom>
+          {isHuman ? null : (
+            <FundAmount>
+              $
+              {formatDecimalNumber(
+                task.metadata.request.costEstimate.totalAmount
+              )}
+            </FundAmount>
+          )}
+        </TaskCardRightBottom>
+        <TaskCardLinks>
+          <a
+            key="arweave link"
+            href={task.URI}
+            target="_blank"
+            onClick={(e) => {
+              e.stopPropagation();
+              // e.preventDefault();
+            }}
+          >
+            <ArweaveIcon />
+          </a>
+          <a
+            key="bscan link"
+            href={scanUrl}
+            target="_blank"
+            onClick={(e) => {
+              e.stopPropagation();
+              // e.preventDefault();
+            }}
+          >
+            <BscscanIcon />
+          </a>
+        </TaskCardLinks>
+        <TaskStatus>
+          {task.approved === 0 ? (
+            <img alt="pending approval" src="/rescue-approval.png" />
+          ) : (
+            <img alt="approved" src="/rescue-approved.png" />
+          )}
+        </TaskStatus>
+      </TaskCardRight>
+    </TaskCardContainer>
   );
 };
 

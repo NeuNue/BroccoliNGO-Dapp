@@ -155,19 +155,19 @@ const RescueForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (!currentTask) return;
-    const metadata = currentTask?.metadata;
+    const _parsedMetadata = currentTask?._parsedMetadata;
     setFormData({
-      organization: metadata?.organization.name || "",
-      email: metadata?.organization.contact.email || "",
-      location: metadata?.request.location || "",
-      rescueStoryURL: metadata?.request.helpPostLink || "",
-      helpPost: metadata?.request.assistanceRequired || "",
-      appliedFundUSD: metadata?.request.costEstimate.totalAmount || "",
-      budgetPlan: metadata?.request.costEstimate.budgetPlan || "",
-      notes: metadata?.request.impactAfterAssistance || "",
-      canProvideInvoice: Boolean(metadata?.request.canProvideInvoice) || false,
+      organization: _parsedMetadata?.organization.name || "",
+      email: _parsedMetadata?.organization.contact.email || "",
+      location: _parsedMetadata?.request.location || "",
+      rescueStoryURL: _parsedMetadata?.request.helpPostLink || "",
+      helpPost: _parsedMetadata?.request.assistanceRequired || "",
+      appliedFundUSD: _parsedMetadata?.request.costEstimate.totalAmount || "",
+      budgetPlan: _parsedMetadata?.request.costEstimate.budgetPlan || "",
+      notes: _parsedMetadata?.request.impactAfterAssistance || "",
+      canProvideInvoice: Boolean(_parsedMetadata?.request.canProvideInvoice) || false,
       canProvidePublicThankYouLetter:
-        Boolean(metadata?.request.canProvidePublicThankYouLetter) || false,
+        Boolean(_parsedMetadata?.request.canProvidePublicThankYouLetter) || false,
     });
   }, [currentTask]);
 

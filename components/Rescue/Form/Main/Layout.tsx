@@ -89,7 +89,8 @@ export const FormInput = styled.input<{ disabled?: boolean }>`
   border-radius: 8px;
   border: 1px solid rgba(50, 47, 44, 0.1);
   background: ${(props) => (props.disabled ? "rgba(50, 47, 44, 0.1)" : "#fff")};
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  opacity: ${(props) => (props.disabled ? 0.8 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "text")};
 
   &::placeholder {
     color: rgba(50, 47, 44, 0.2);
@@ -101,13 +102,16 @@ export const FormInput = styled.input<{ disabled?: boolean }>`
   }
 `;
 
-export const FormTextarea = styled.textarea`
+export const FormTextarea = styled.textarea<{ disabled?: boolean }>`
   display: flex;
   width: 100%;
   min-height: 132px;
   padding: 16px;
   align-items: center;
   gap: 16px;
+  background: ${(props) => (props.disabled ? "rgba(50, 47, 44, 0.1)" : "#fff")};
+  opacity: ${(props) => (props.disabled ? 0.8 : 1)};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "text")};
 
   color: rgba(50, 47, 44, 1);
   font-size: 14px;
@@ -116,6 +120,7 @@ export const FormTextarea = styled.textarea`
   line-height: 140%; /* 19.6px */
   border-radius: 8px;
   border: 1px solid rgba(50, 47, 44, 0.1);
+  resize: none;
 
   &::placeholder {
     color: rgba(50, 47, 44, 0.2);
