@@ -154,6 +154,39 @@ export type Database = {
           }
         ];
       };
+      PrivyUser: {
+        Row: {
+          address: string | null;
+          created_at: string;
+          email: string | null;
+          firstVerifiedAt: string | null;
+          id: number;
+          latestVerifiedAt: string | null;
+          updated_at: string | null;
+          userId: string;
+        };
+        Insert: {
+          address?: string | null;
+          created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
+          id?: number;
+          latestVerifiedAt?: string | null;
+          updated_at?: string | null;
+          userId: string;
+        };
+        Update: {
+          address?: string | null;
+          created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
+          id?: number;
+          latestVerifiedAt?: string | null;
+          updated_at?: string | null;
+          userId?: string;
+        };
+        Relationships: [];
+      };
       Proof: {
         Row: {
           created_at: string;
@@ -201,6 +234,7 @@ export type Database = {
           created_at: string;
           creatEventId: number | null;
           desc: string | null;
+          email: string | null;
           helpPics: string | null;
           id: number;
           image: string | null;
@@ -222,6 +256,7 @@ export type Database = {
           created_at: string;
           creatEventId?: number | null;
           desc?: string | null;
+          email?: string | null;
           helpPics?: string | null;
           id?: number;
           image?: string | null;
@@ -243,6 +278,7 @@ export type Database = {
           created_at?: string;
           creatEventId?: number | null;
           desc?: string | null;
+          email?: string | null;
           helpPics?: string | null;
           id?: number;
           image?: string | null;
