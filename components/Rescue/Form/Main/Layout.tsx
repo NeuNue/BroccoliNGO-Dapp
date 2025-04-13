@@ -11,6 +11,10 @@ export const Main = styled.div`
   gap: 40px;
   align-self: stretch;
   background: #fff;
+  @media screen and (max-width: 768px) {
+    padding: 20px;
+    gap: 20px;
+  }
 `;
 
 export const Header = styled.div`
@@ -27,6 +31,9 @@ export const Title = styled.h1`
   line-height: normal;
   text-transform: capitalize;
   margin: 0;
+  @media screen and (max-width: 768px) {
+    font-size: 20px;
+  }
 `;
 
 export const Description = styled.p`
@@ -35,6 +42,9 @@ export const Description = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 19.6px */
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 export const Content = styled.div`
@@ -62,6 +72,9 @@ export const FormInputLabel = styled.label`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 export const FormInputGroup = styled.div`
@@ -92,6 +105,12 @@ export const FormInput = styled.input<{ disabled?: boolean }>`
   opacity: ${(props) => (props.disabled ? 0.8 : 1)};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "text")};
 
+  @media screen and (max-width: 768px) {
+    height: 40px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
   &::placeholder {
     color: rgba(50, 47, 44, 0.2);
   }
@@ -121,6 +140,12 @@ export const FormTextarea = styled.textarea<{ disabled?: boolean }>`
   border-radius: 8px;
   border: 1px solid rgba(50, 47, 44, 0.1);
   resize: none;
+
+  @media screen and (max-width: 768px) {
+    min-height: 100px;
+    padding: 12px;
+    font-size: 12px;
+  }
 
   &::placeholder {
     color: rgba(50, 47, 44, 0.2);
@@ -230,6 +255,9 @@ export const Footer = styled.div`
   align-items: center;
   align-self: stretch;
   border-top: 1px solid rgba(50, 47, 44, 0.1);
+  @media screen and (max-width: 768px) {
+    padding: 20px;
+  }
 `;
 
 export const Button = styled(_Button)<{ disabled?: boolean }>`
@@ -252,6 +280,12 @@ export const Button = styled(_Button)<{ disabled?: boolean }>`
   font-weight: 500;
   line-height: 100%; /* 14px */
   letter-spacing: 0.14px;
+  @media screen and (max-width: 768px) {
+    width: 80px;
+    height: 40px;
+    padding: 0px 12px;
+    font-size: 12px;
+  }
 `;
 
 export const SubmitButton = styled(_Button)<{ disabled?: boolean }>`

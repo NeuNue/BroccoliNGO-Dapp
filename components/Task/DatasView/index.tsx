@@ -4,6 +4,7 @@ import { usePublicClient } from "wagmi";
 import { flattenObject } from "@/shared/utils";
 import { CardContainer, CardTitle } from "@/components/Task/Layout";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
+import AttachmentView from "./AttachmentView";
 import styled from "@emotion/styled";
 import PendingIcon from "@/components/icons/pending";
 import ApprovedIcon from "@/components/icons/approved";
@@ -49,7 +50,13 @@ export const DatasView: FC<DatasViewProps> = ({}) => {
         {datalist.map((item) => (
           <StyledDataListItem key={item.key}>
             <StyledDataListItemLabel>{item.label}</StyledDataListItemLabel>
-            <StyledDataListItemValue>{item.value}</StyledDataListItemValue>
+            {item.label === "Attachment" ? (
+              <StyledDataListItemValue>
+                <AttachmentView attachment={item.value} />
+              </StyledDataListItemValue>
+            ) : (
+              <StyledDataListItemValue>{item.value}</StyledDataListItemValue>
+            )}
           </StyledDataListItem>
         ))}
       </StyledDataList>
@@ -114,6 +121,7 @@ const StyledDataListItemLabel = styled.dt`
 const StyledDataListItemValue = styled.dd`
   flex: 1;
   padding: 12px 0;
+  word-break: break-all;
 
   color: #322f2c;
   font-size: 14px;

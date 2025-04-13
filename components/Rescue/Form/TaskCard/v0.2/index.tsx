@@ -168,6 +168,8 @@ const Name = styled.h2`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
   @media screen and (max-width: 768px) {
     font-size: 20px;
   }
@@ -229,6 +231,8 @@ const TaskCardLinks = styled.div`
   z-index: 9;
   @media screen and (max-width: 768px) {
     gap: 10px;
+    top: 10px;
+    right: 10px;
   }
   a {
     display: flex;
@@ -253,7 +257,7 @@ const TaskStatus = styled.div`
   z-index: 2;
   @media screen and (max-width: 768px) {
     bottom: -10px;
-    right: 10px;
+    right: 0;
   }
   img {
     width: auto;

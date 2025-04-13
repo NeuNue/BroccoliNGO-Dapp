@@ -109,6 +109,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 60px;
+  @media screen and (max-width: 768px) {
+    gap: 40px;
+  }
 `;
 
 const HeaderSection = styled.div`
@@ -139,8 +142,7 @@ const HeaderContainer = styled.div`
   padding-top: 150px;
   width: 100%;
   @media screen and (max-width: 768px) {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-top: 100px;
   }
 `;
 

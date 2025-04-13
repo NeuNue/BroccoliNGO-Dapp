@@ -38,11 +38,21 @@ const SelectButton = styled.button<{ isSelected: boolean; disabled?: boolean }>`
   line-height: 140%;
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 
+  @media screen and (max-width: 768px) {
+    height: 40px;
+    padding: 12px;
+    font-size: 12px;
+  }
+
   svg {
     display: ${(props) => (props.isSelected ? "block" : "none")};
     width: 16px;
     height: 16px;
     color: #322f2c;
+    @media screen and (max-width: 768px) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   &:hover {

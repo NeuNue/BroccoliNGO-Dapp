@@ -79,7 +79,7 @@ const CloseButton = styled.button`
   font-size: 18px;
   color: #444;
   cursor: pointer;
-  z-index: 10;
+  z-index: 11;
   > img {
     width: 18px;
     height: 18px;

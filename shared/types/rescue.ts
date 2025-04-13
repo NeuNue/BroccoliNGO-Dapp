@@ -1,9 +1,9 @@
-export type RescueTask = OriginTask & {
+export type RescueTask = OriginRescueTask & {
   metadata: NFTMetaData;
   _parsedMetadata: HelpRequest;
 };
 
-export type OriginTask = {
+export type OriginRescueTask = {
   URI: string;
   address: string | null;
   approved: number;
@@ -193,7 +193,7 @@ export interface RescueNFTMetaData {
   ];
 }
 
-export type RescueTaskV1 = OriginTask & {
+export type RescueTaskV1 = OriginRescueTask & {
   metadata: RescueNFTMetaData;
   _parsedMetadata: RescueRequest;
 }

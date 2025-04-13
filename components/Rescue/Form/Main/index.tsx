@@ -3,32 +3,36 @@ import FormContact from "./Contact";
 import FormBackground from "./Background";
 import FormRequest from "./Request";
 import RescueCompleted from "./Completed";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import styled from "@emotion/styled";
+import { useRescueRequestCtx } from "@/hooks/useRescue";
 
 interface Props {
   onPrev?: () => void;
   onSubmitted?: () => void;
 }
 const FormMain: FC<Props> = ({ onPrev }) => {
+  const { isMobile } = useRescueRequestCtx();
   const [stepIdx, setStepIdx] = useState(0);
-  const steps = [
-    {
-      title: "Contact Info",
-      description: "Step 1 description",
-      Component: FormContact,
-    },
-    {
-      title: "Background Info",
-      description: "Step 2 description",
-      Component: FormBackground,
-    },
-    {
-      title: "Runds Request",
-      description: "Step 3 description",
-      Component: FormRequest,
-    },
-  ];
+  const steps = useMemo(() => {
+    return [
+      {
+        title: isMobile ? "Contact" : "Contact Info",
+        description: "Step 1 description",
+        Component: FormContact,
+      },
+      {
+        title: isMobile ? "Background" : "Background Info",
+        description: "Step 2 description",
+        Component: FormBackground,
+      },
+      {
+        title: isMobile ? "Funds" : "Funds Request",
+        description: "Step 3 description",
+        Component: FormRequest,
+      },
+    ];
+  }, [isMobile]);
 
   const handlePrev = () => {
     if (stepIdx > 0) {
@@ -52,13 +56,18 @@ const FormMain: FC<Props> = ({ onPrev }) => {
         count={steps.length}
         step={stepIdx}
         onStepChange={(e) => {
-          console.log('- onStepChange', e.step)
+          console.log("- onStepChange", e.step);
           setStepIdx(e.step);
         }}
       >
         <StyledStepList>
           {steps.map((step, index) => (
-            <StyledStepItem key={index} index={index} title={step.title}>
+            <StyledStepItem
+              active={(stepIdx === index).toString()}
+              key={index}
+              index={index}
+              title={step.title}
+            >
               <StyledStepTitle
                 active={stepIdx === index}
                 finished={stepIdx > index}
@@ -67,7 +76,9 @@ const FormMain: FC<Props> = ({ onPrev }) => {
                   active={(stepIdx === index).toString()}
                   finished={(stepIdx > index).toString()}
                 />
-                {step.title}
+                <StyledStepItemLabel active={stepIdx === index}>
+                  {step.title}
+                </StyledStepItemLabel>
               </StyledStepTitle>
             </StyledStepItem>
           ))}
@@ -117,7 +128,7 @@ const StyledStepList = styled(Steps.List)`
   gap: 0;
 `;
 
-const StyledStepItem = styled(Steps.Item)`
+const StyledStepItem = styled(Steps.Item)<{ active?: string }>`
   display: flex;
   padding: 16px 24px;
   flex-direction: column;
@@ -132,6 +143,19 @@ const StyledStepItem = styled(Steps.Item)`
       rgba(0, 0, 0, 0.2) 100%
     ),
     #322f2c;
+  @media screen and (max-width: 768px) {
+    padding: 12px;
+  }
+`;
+
+const StyledStepItemLabel = styled.span<{ active?: boolean }>`
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const StyledStepTitle = styled(Steps.Title)<{
@@ -169,9 +193,9 @@ const StyledStepIndicator = styled(Steps.Indicator)<{
   color: #fff;
 
   background-color: ${(props) =>
-    props.finished === 'true'
+    props.finished === "true"
       ? "#22B670"
-      : props.active === 'true'
+      : props.active === "true"
       ? "#feb602"
       : "rgba(255, 255, 255, 0.1)"};
   font-size: 12px;
@@ -179,11 +203,22 @@ const StyledStepIndicator = styled(Steps.Indicator)<{
   font-weight: 700;
   line-height: normal;
 
+  @media screen and (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
   > svg {
     width: 12px;
     height: 12px;
     flex-shrink: 0;
     stroke-width: 4;
+    @media screen and (max-width: 768px) {
+      width: 10px;
+      height: 10px;
+      stroke-width: 3;
+    }
   }
 `;
 

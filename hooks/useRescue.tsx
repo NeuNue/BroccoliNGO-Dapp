@@ -15,7 +15,7 @@ import {
   ContactForm,
   HelpRequest,
   NFTMetaData,
-  OriginTask,
+  OriginRescueTask,
   RequestForm,
   RescueNFTMetaData,
   RescueRequest,
@@ -42,6 +42,7 @@ import { isMobileDevice } from "@/shared/utils";
 import { NFTMetaData2 } from "@/shared/types/help";
 
 interface RescueRequestContextType {
+  isMobile: boolean;
   isPreviewMode: boolean;
   profile: Profile | null;
   xAuthLink: string;
@@ -192,7 +193,7 @@ export const RescueRequestProvider = ({
       }
 
       const _completedTasks = await Promise.all(
-        res.data.completedTasks.map((task: OriginTask) => {
+        res.data.completedTasks.map((task: OriginRescueTask) => {
           return loadTaskMetaData(task.URI).then((formated) => {
             if (!formated) return null;
             const { v, NFTMetaData, formatedData } = formated;
@@ -244,6 +245,7 @@ export const RescueRequestProvider = ({
   return (
     <RescueRequestContext.Provider
       value={{
+        isMobile,
         isPreviewMode,
         profile,
         xAuthLink,
