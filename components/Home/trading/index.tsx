@@ -19,13 +19,13 @@ export const Trading = () => {
     },
     {
       img: "/trading/htx.png",
-      link: "",
+      link: "https://www.htx.com/trade/broccoli_usdt/",
       width: 210,
       height: 117,
     },
     {
       img: "/trading/PancakeSwap.png",
-      link: "",
+      link: "https://pancakeswap.finance/swap?inputCurrency=BNB&outputCurrency=0x6d5AD1592ed9D6D1dF9b93c793AB759573Ed6714&exactAmount=&exactField=INPUT",
       width: 490,
       height: 91,
     },
@@ -49,7 +49,7 @@ export const Trading = () => {
     },
     {
       img: "/trading/bingx.png",
-      link: "",
+      link: "https://bingx.com/en/spot/BROCCOLIUSDT/",
       width: 227,
       height: 90,
     },
