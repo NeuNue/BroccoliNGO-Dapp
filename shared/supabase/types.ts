@@ -154,6 +154,42 @@ export type Database = {
           }
         ];
       };
+      PrivyUser: {
+        Row: {
+          address: string | null;
+          created_at: string;
+          email: string | null;
+          firstVerifiedAt: string | null;
+          id: number;
+          latestVerifiedAt: string | null;
+          updated_at: string | null;
+          userId: string;
+          verifiedAt: string | null;
+        };
+        Insert: {
+          address?: string | null;
+          created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
+          id?: number;
+          latestVerifiedAt?: string | null;
+          updated_at?: string | null;
+          userId: string;
+          verifiedAt?: string | null;
+        };
+        Update: {
+          address?: string | null;
+          created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
+          id?: number;
+          latestVerifiedAt?: string | null;
+          updated_at?: string | null;
+          userId?: string;
+          verifiedAt?: string | null;
+        };
+        Relationships: [];
+      };
       Proof: {
         Row: {
           created_at: string;
@@ -201,6 +237,7 @@ export type Database = {
           created_at: string;
           creatEventId: number | null;
           desc: string | null;
+          email: string | null;
           helpPics: string | null;
           id: number;
           image: string | null;
@@ -222,6 +259,7 @@ export type Database = {
           created_at: string;
           creatEventId?: number | null;
           desc?: string | null;
+          email?: string | null;
           helpPics?: string | null;
           id?: number;
           image?: string | null;
@@ -243,6 +281,7 @@ export type Database = {
           created_at?: string;
           creatEventId?: number | null;
           desc?: string | null;
+          email?: string | null;
           helpPics?: string | null;
           id?: number;
           image?: string | null;
@@ -295,7 +334,12 @@ export type Database = {
       User: {
         Row: {
           created_at: string;
+          email: string | null;
+          firstVerifiedAt: string | null;
           id: number;
+          latestVerifiedAt: string | null;
+          privyId: string | null;
+          verifiedAt: string | null;
           xAccessToken: string | null;
           xAvatar: string | null;
           xName: string | null;
@@ -306,7 +350,12 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
           id?: number;
+          latestVerifiedAt?: string | null;
+          privyId?: string | null;
+          verifiedAt?: string | null;
           xAccessToken?: string | null;
           xAvatar?: string | null;
           xName?: string | null;
@@ -317,7 +366,12 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          email?: string | null;
+          firstVerifiedAt?: string | null;
           id?: number;
+          latestVerifiedAt?: string | null;
+          privyId?: string | null;
+          verifiedAt?: string | null;
           xAccessToken?: string | null;
           xAvatar?: string | null;
           xName?: string | null;

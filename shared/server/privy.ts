@@ -1,7 +1,24 @@
 import { PrivyClient } from '@privy-io/server-auth'
+import { PRIVY_APP_ID } from '../constant';
+
+export const privyClient = new PrivyClient(PRIVY_APP_ID, process.env.PRIVY_SECRET!);
+
+export async function verifyPrivyAccessToken(accessToken: string) {
+  try {
+    const verifiedClaims = await privyClient.verifyAuthToken(accessToken);
+    return verifiedClaims.userId
+  } catch (error) {
+    console.log(`Token verification failed with error ${error}.`);
+  } 
+}
+
+export async function getPrivyUserInfoByUserId(userId: string) {
+  const user = await privyClient.getUserById(userId);
+  return user
+}
 
 export async function getPrivyUserInfoByAccessToken(accessToken: string) {
-  const appId = 'cm98r2y4x0235l40lzrv5ktzm'
+  const appId = PRIVY_APP_ID
   const privy = new PrivyClient(appId, process.env.PRIVY_SECRET!)
   try {
     const verifiedClaims = await privy.verifyAuthToken(accessToken);

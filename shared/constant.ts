@@ -74,3 +74,8 @@ export const BROCCOLI_ADMIN_WHITELIST =
 
 export const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+export const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "";
+export const PRIVY_CLIENT_ID = process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID || "";
+export const PRIVY_SECRET = process.env.PRIVY_SECRET || "";
+export const PRIVY_TOKEN_NAME='privy-token'
