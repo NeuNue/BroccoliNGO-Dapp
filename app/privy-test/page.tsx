@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useLogin, useLogout, usePrivy } from '@privy-io/react-auth';
+import { fetchProfileV2 } from '@/shared/api';
 
 export default function LoginWithEmail() {
   const { ready, authenticated, user, getAccessToken } = usePrivy();
@@ -16,6 +17,12 @@ export default function LoginWithEmail() {
     }
     getToken()
   }, [])
+
+  useEffect(() => {
+    if (ready && authenticated) {
+      fetchProfileV2()
+    }
+  }, [authenticated])
 
   return (
     <div>
