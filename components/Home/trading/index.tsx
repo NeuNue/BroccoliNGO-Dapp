@@ -14,8 +14,8 @@ export const Trading = () => {
     {
       img: "/trading/bitget.png",
       link: "https://www.bitget.com/spot/BROCCOLIUSDT",
-      width: 144,
-      height: 144,
+      width: 90,
+      height: 90,
     },
     {
       img: "/trading/htx.png",
