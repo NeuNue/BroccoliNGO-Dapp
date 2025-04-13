@@ -6,6 +6,24 @@ import Link from "next/link";
 export const Trading = () => {
   const images = [
     {
+      img: "/trading/binance.png",
+      link: "https://www.binance.com/trade/BROCCOLI714_USDT?type=spot",
+      width: 372,
+      height: 90,
+    },
+    {
+      img: "/trading/bybit.png",
+      link: "https://www.bybit.com/trade/usdt/BROCCOLIUSDT",
+      width: 194,
+      height: 90,
+    },
+    {
+      img: "/trading/PancakeSwap.png",
+      link: "https://pancakeswap.finance/swap?inputCurrency=BNB&outputCurrency=0x6d5AD1592ed9D6D1dF9b93c793AB759573Ed6714&exactAmount=&exactField=INPUT",
+      width: 490,
+      height: 91,
+    },
+    {
       img: "/trading/gate.png",
       link: "https://www.gate.io/trade/BROCCOLI_USDT",
       width: 227,
@@ -22,24 +40,6 @@ export const Trading = () => {
       link: "https://www.htx.com/trade/broccoli_usdt/",
       width: 210,
       height: 117,
-    },
-    {
-      img: "/trading/PancakeSwap.png",
-      link: "https://pancakeswap.finance/swap?inputCurrency=BNB&outputCurrency=0x6d5AD1592ed9D6D1dF9b93c793AB759573Ed6714&exactAmount=&exactField=INPUT",
-      width: 490,
-      height: 91,
-    },
-    {
-      img: "/trading/binance.png",
-      link: "https://www.binance.com/trade/BROCCOLI714_USDT?type=spot",
-      width: 372,
-      height: 90,
-    },
-    {
-      img: "/trading/bybit.png",
-      link: "https://www.bybit.com/trade/usdt/BROCCOLIUSDT",
-      width: 194,
-      height: 90,
     },
     {
       img: "/trading/mexc.png",
