@@ -69,7 +69,7 @@ async function testVoteList() {
 }
 
 async function testPrivy() {
-  const accessToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImhacVBfdkdiSUJiYkFUNXB3UVQ2c0N0bmpSTGVrcE9NVlZOeHdKTVBCWTAifQ.eyJzaWQiOiJjbTlmZTAwaHYwMWdhbDgwbWF3a3BtdjVuIiwiaXNzIjoicHJpdnkuaW8iLCJpYXQiOjE3NDQ1MzMxNTksImF1ZCI6ImNtOThyMnk0eDAyMzVsNDBsenJ2NWt0em0iLCJzdWIiOiJkaWQ6cHJpdnk6Y205ZW1mMWUxMDJ1bmw4MG45dnF4dTVvOCIsImV4cCI6MTc0NDUzNjc1OX0.9Pu6L-5tp2M-JTM-lmnC0GeHin-4sarGMsYIGpbqO_0t1HzjhD6IuqrW1QxqhT7amSfGr93JKb6hY4Mw5QkRIQ'
+  const accessToken = ''
   const userInfo = await getPrivyUserInfoByAccessToken(accessToken)
   console.log(userInfo)
 }

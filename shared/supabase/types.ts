@@ -164,7 +164,6 @@ export type Database = {
           latestVerifiedAt: string | null;
           updated_at: string | null;
           userId: string;
-          verifiedAt: string | null;
         };
         Insert: {
           address?: string | null;
@@ -175,7 +174,6 @@ export type Database = {
           latestVerifiedAt?: string | null;
           updated_at?: string | null;
           userId: string;
-          verifiedAt?: string | null;
         };
         Update: {
           address?: string | null;
@@ -186,7 +184,6 @@ export type Database = {
           latestVerifiedAt?: string | null;
           updated_at?: string | null;
           userId?: string;
-          verifiedAt?: string | null;
         };
         Relationships: [];
       };
@@ -334,12 +331,7 @@ export type Database = {
       User: {
         Row: {
           created_at: string;
-          email: string | null;
-          firstVerifiedAt: string | null;
           id: number;
-          latestVerifiedAt: string | null;
-          privyId: string | null;
-          verifiedAt: string | null;
           xAccessToken: string | null;
           xAvatar: string | null;
           xName: string | null;
@@ -350,12 +342,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
-          email?: string | null;
-          firstVerifiedAt?: string | null;
           id?: number;
-          latestVerifiedAt?: string | null;
-          privyId?: string | null;
-          verifiedAt?: string | null;
           xAccessToken?: string | null;
           xAvatar?: string | null;
           xName?: string | null;
@@ -366,12 +353,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
-          email?: string | null;
-          firstVerifiedAt?: string | null;
           id?: number;
-          latestVerifiedAt?: string | null;
-          privyId?: string | null;
-          verifiedAt?: string | null;
           xAccessToken?: string | null;
           xAvatar?: string | null;
           xName?: string | null;
