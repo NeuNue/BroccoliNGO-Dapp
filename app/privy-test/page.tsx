@@ -1,19 +1,28 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLogin, useLogout, usePrivy } from '@privy-io/react-auth';
 
 export default function LoginWithEmail() {
-  const { ready, authenticated, user } = usePrivy();
+  const { ready, authenticated, user, getAccessToken } = usePrivy();
   const { login } = useLogin();
   const { logout } = useLogout()
-  // Disable login when Privy is not ready or the user is already authenticated
-  const disableLogin = !ready || (ready && authenticated);
+
+  const [accessToken, setAccessToken] = useState('')
+
+  useEffect(() => {
+    async function getToken() {
+      const token = await getAccessToken()
+      setAccessToken(token || '')
+    }
+    getToken()
+  }, [])
 
   return (
     <div>
       { user && 
         <div className='whitespace-pre-wrap'>
-          {JSON.stringify(user, null, 2)}
+          <p>Access Token: {accessToken}</p>
+          <p>{JSON.stringify(user, null, 2)}</p>
         </div>
       }
       { authenticated ? 
