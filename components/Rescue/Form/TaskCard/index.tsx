@@ -12,11 +12,9 @@ interface Props {
   task: RescueTaskV1;
 }
 const TaskCard: FC<Props> = ({ task }) => {
-  console.log("---- task", task);
   const scanUrl = `https://bscscan.com/tx/${task.creatEventId.hash}`;
   const nftUrl = `https://bscscan.com/nft/${CONTRACT_ADDRESS}/${task.nftId}`;
   const taskUrl = `/task/${task.nftId}`;
-  const xUrl = `https://x.com/${task._parsedMetadata.contact.twitter}`;
   const emailUrl = `mailto:${task._parsedMetadata.contact.email}`;
   return (
     <TaskCardContainer>
@@ -33,9 +31,6 @@ const TaskCard: FC<Props> = ({ task }) => {
           </Link>
 
           <Contact>
-            <a href={xUrl} target="_blank">
-              <ContactItem>@{task._parsedMetadata.contact.twitter}</ContactItem>
-            </a>
             <a href={emailUrl} target="_blank">
               <ContactItem>{task._parsedMetadata.contact.email}</ContactItem>
             </a>

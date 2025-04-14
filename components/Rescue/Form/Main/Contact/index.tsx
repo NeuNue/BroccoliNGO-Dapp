@@ -16,6 +16,7 @@ import {
 } from "@/components/Rescue/Form/Main/Layout";
 import { useEffect, useMemo, useState } from "react";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 interface Props {
   onNext: () => void;
@@ -23,7 +24,8 @@ interface Props {
 }
 
 const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { isPreviewMode, profile, contactForm, setContactForm } =
+  const { profile } = useGlobalCtx()
+  const { isPreviewMode, contactForm, setContactForm } =
     useRescueRequestCtx();
 
   const isFormValid = useMemo(() => {
@@ -50,18 +52,14 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isNextDisabled) return;
-    setContactForm((prev) => ({
-      ...prev,
-      twitter: profile?.handle || "",
-    }));
     onNext();
   };
 
   useEffect(() => {
-    if (profile?.handle) {
+    if (profile?.email) {
       setContactForm((prev) => ({
         ...prev,
-        twitter: profile.handle,
+        email: profile.email,
       }));
     }
   }, [profile]);
@@ -101,21 +99,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
               required
               type="email"
               placeholder="-"
-              disabled={isPreviewMode}
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>Twitter
-            </FormInputLabel>
-            <FormInput
-              name="twitter"
-              value={`@${contactForm.twitter}`}
-              onChange={handleInputChange}
-              required
               disabled
-              type="text"
-              placeholder="-"
             />
           </FormGroup>
           <FormGroup>

@@ -25,7 +25,7 @@ const AttachmentView: FC<Props> = ({ attachment }) => {
     <Container>
       {previewUrls.length ? (
         previewUrls.map((url, index) => (
-          <PreviewLink href={url} target="_blank">
+          <PreviewLink key={index} href={url} target="_blank">
             <PreviewImage
               key={index}
               src={url}

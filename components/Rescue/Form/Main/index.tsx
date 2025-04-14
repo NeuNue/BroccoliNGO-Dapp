@@ -5,6 +5,7 @@ import FormRequest from "./Request";
 import RescueCompleted from "./Completed";
 import { FC, useMemo, useState } from "react";
 import styled from "@emotion/styled";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
 
 interface Props {
@@ -12,7 +13,8 @@ interface Props {
   onSubmitted?: () => void;
 }
 const FormMain: FC<Props> = ({ onPrev }) => {
-  const { isMobile } = useRescueRequestCtx();
+  const { currentTask } = useRescueRequestCtx();
+  const { isMobile } = useGlobalCtx();
   const [stepIdx, setStepIdx] = useState(0);
   const steps = useMemo(() => {
     return [
@@ -48,7 +50,6 @@ const FormMain: FC<Props> = ({ onPrev }) => {
     }
   };
 
-  console.log("- stepIdx", stepIdx);
   return (
     <Container>
       <StyledStepRoot
@@ -56,7 +57,6 @@ const FormMain: FC<Props> = ({ onPrev }) => {
         count={steps.length}
         step={stepIdx}
         onStepChange={(e) => {
-          console.log("- onStepChange", e.step);
           setStepIdx(e.step);
         }}
       >
@@ -90,7 +90,7 @@ const FormMain: FC<Props> = ({ onPrev }) => {
           </StyledStepContent>
         ))}
         <Steps.CompletedContent>
-          <RescueCompleted tokenId="3" />
+          <RescueCompleted tokenId={currentTask?.task.nftId!} />
         </Steps.CompletedContent>
       </StyledStepRoot>
     </Container>

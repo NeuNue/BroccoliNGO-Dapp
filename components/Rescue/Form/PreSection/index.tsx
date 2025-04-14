@@ -6,14 +6,17 @@ import { useRescueRequestCtx } from "@/hooks/useRescue";
 import TaskCard from "../TaskCard";
 import TaskCardV0_1 from "../TaskCard/v0.1";
 import { RescueTask, RescueTaskV1 } from "@/shared/types/rescue";
+import { usePrivy } from "@privy-io/react-auth";
+import { Spinner } from "@chakra-ui/react";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 interface Props {
-  profile: Profile | null;
-  xAuthLink: string;
   onNext: () => void;
 }
 
-const FormPreSection: FC<Props> = ({ profile, xAuthLink, onNext }) => {
+const FormPreSection: FC<Props> = ({ onNext }) => {
+  const { ready, authenticated } = usePrivy();
+  const { profile } = useGlobalCtx()
   const { currentTask, completedTasks } = useRescueRequestCtx();
   return (
     <Container>
@@ -63,8 +66,10 @@ const FormPreSection: FC<Props> = ({ profile, xAuthLink, onNext }) => {
         </HeaderContainer>
       </HeaderSection>
       <Footer>
-        {!profile ? (
-          <FormConnect profile={profile} xAuthLink={xAuthLink} />
+        {!ready ? (
+          <Spinner />
+        ) : !profile ? (
+          <FormConnect />
         ) : (
           <StartButton onClick={onNext}>
             {currentTask

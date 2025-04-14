@@ -2,29 +2,23 @@ import { Profile } from "@/shared/types/profile";
 import { FC } from "react";
 import XIcon from "@/components/icons/x";
 import styled from "@emotion/styled";
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 
 interface Props {
-  profile: Profile | null;
-  xAuthLink: string;
+  connectLabel?: string;
 }
 
-const FormConnect: FC<Props> = ({ profile, xAuthLink }) => {
+const FormConnect: FC<Props> = ({ connectLabel }) => {
+  const { ready, authenticated, user, getAccessToken } = usePrivy();
+  const { login } = useLogin();
   return (
     <Container>
-      {xAuthLink ? (
-        <ConnectLink href={xAuthLink} target="_blank">
-          <Button>
-            <XIcon />
-            <span>Connect to start application</span>
-          </Button>
-        </ConnectLink>
+      {!authenticated ? (
+        <Button onClick={login}>
+          <span>{connectLabel || "Connect to start application"}</span>
+        </Button>
       ) : (
-        <ConnectLink href={`https://x.com/${profile?.handle}`} target="_blank">
-          <ProfileButton>
-            <img alt="x avatar" src={profile?.avatar} />
-            <span>@{profile?.handle}</span>
-          </ProfileButton>
-        </ConnectLink>
+        <ProfileButton>{user?.email?.address}</ProfileButton>
       )}
     </Container>
   );

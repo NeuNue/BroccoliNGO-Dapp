@@ -37,15 +37,11 @@ import {
   uploadJson,
 } from "@/shared/api";
 import { toaster } from "@/components/ui/toaster";
-import { Profile } from "@/shared/types/profile";
-import { isMobileDevice } from "@/shared/utils";
-import { NFTMetaData2 } from "@/shared/types/help";
+import { usePrivy } from "@privy-io/react-auth";
+import { useGlobalCtx } from "./useGlobal";
 
 interface RescueRequestContextType {
-  isMobile: boolean;
   isPreviewMode: boolean;
-  profile: Profile | null;
-  xAuthLink: string;
   currentTask: {
     version: string;
     task: RescueTask | RescueTaskV1;
@@ -54,7 +50,6 @@ interface RescueRequestContextType {
     version: string;
     task: RescueTask | RescueTaskV1;
   }[];
-  refreshProfile: () => Promise<void>;
   contactForm: ContactForm;
   setContactForm: Dispatch<SetStateAction<ContactForm>>;
   backgroundForm: BackgroundForm;
@@ -74,12 +69,13 @@ export const RescueRequestProvider = ({
 }: {
   children: ReactNode;
 }) => {
+  const { ready, authenticated, user, getAccessToken } = usePrivy();
+  const { profile } = useGlobalCtx();
   const [contactForm, setContactForm] = useState<ContactForm>({
     organization: "",
     email: "",
     country: "",
     city: "",
-    twitter: "",
     address: "",
   });
 
@@ -97,7 +93,6 @@ export const RescueRequestProvider = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [currentTask, setCurrentTask] = useState<{
     version: string;
     task: RescueTask | RescueTaskV1;
@@ -108,11 +103,8 @@ export const RescueRequestProvider = ({
       task: RescueTask | RescueTaskV1;
     }[]
   >([]);
-  const [xAuthLink, setXAuthLink] = useState("");
 
   const isPreviewMode = !!currentTask;
-
-  const isMobile = isMobileDevice();
 
   const handleRescueSubmit = async () => {
     setIsSubmitting(true);
@@ -174,49 +166,6 @@ export const RescueRequestProvider = ({
     return parsed;
   }
 
-  const refreshProfile = async () => {
-    const res = await fetchProfile();
-    if (res.code === 0) {
-      setProfile(res.data);
-      if (res.data.task) {
-        const formated = await loadTaskMetaData(res.data.task.URI);
-        if (!formated) return;
-        const { v, NFTMetaData, formatedData } = formated;
-        setCurrentTask({
-          version: v,
-          task: {
-            ...res.data.task,
-            metadata: NFTMetaData,
-            _parsedMetadata: formatedData,
-          },
-        });
-      }
-
-      const _completedTasks = await Promise.all(
-        res.data.completedTasks.map((task: OriginRescueTask) => {
-          return loadTaskMetaData(task.URI).then((formated) => {
-            if (!formated) return null;
-            const { v, NFTMetaData, formatedData } = formated;
-            return {
-              version: v,
-              task: {
-                ...task,
-                metadata: NFTMetaData,
-                _parsedMetadata: formatedData,
-              },
-            };
-          });
-        })
-      );
-
-      setCompletedTasks(_completedTasks);
-      return;
-    }
-    const oauthRes = await fetchXGenerateLink("/?mode=rescue");
-    if (oauthRes.code === 0) {
-      setXAuthLink(oauthRes.data.url);
-    }
-  };
 
   useEffect(() => {
     if (currentTask) {
@@ -239,19 +188,63 @@ export const RescueRequestProvider = ({
   }, [currentTask]);
 
   useEffect(() => {
-    refreshProfile();
-  }, []);
+    if (!profile || !authenticated) {
+      setCurrentTask(null);
+      setCompletedTasks([]);
+      return;
+    }
+    const formatTasks = async () => {
+      if (profile.task) {
+        const formated = await loadTaskMetaData(profile.task.URI);
+        if (!formated) return;
+        const { v, NFTMetaData, formatedData } = formated;
+        setCurrentTask({
+          version: v,
+          task: {
+            ...profile.task,
+            metadata: NFTMetaData as any,
+            _parsedMetadata: formatedData as any,
+          },
+        });
+      }
+
+      if (!profile.completedTasks?.length) {
+        setCompletedTasks([]);
+        return;
+      }
+
+      const _completedTasks: any = await Promise.all(
+        profile.completedTasks.map((task) => {
+          return loadTaskMetaData(task.URI).then((formated) => {
+            if (!formated) return null;
+            const { v, NFTMetaData, formatedData } = formated;
+            return {
+              version: v,
+              task: {
+                ...task,
+                metadata: NFTMetaData,
+                _parsedMetadata: formatedData,
+              },
+            };
+          });
+        })
+      );
+
+      setCompletedTasks(_completedTasks);
+    }
+    formatTasks()
+    return () => {
+      setCurrentTask(null);
+      setCompletedTasks([]);
+    }
+  }, [profile, authenticated])
 
   return (
     <RescueRequestContext.Provider
       value={{
-        isMobile,
         isPreviewMode,
-        profile,
-        xAuthLink,
         currentTask,
         completedTasks,
-        refreshProfile,
         contactForm,
         setContactForm,
         backgroundForm,

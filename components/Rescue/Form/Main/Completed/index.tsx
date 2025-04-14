@@ -5,7 +5,7 @@ import { Footer } from "@/components/Rescue/Form/Main/Layout";
 import RightIcon from "@/components/icons/right";
 
 interface Props {
-  tokenId: string;
+  tokenId: string | number;
 }
 
 const Completed: React.FC<Props> = ({ tokenId }) => {

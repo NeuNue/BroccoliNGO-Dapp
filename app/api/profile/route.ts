@@ -2,78 +2,107 @@ import { NextResponse } from "next/server";
 import { headers, cookies } from "next/headers";
 import { supabaseClient } from "@/shared/supabase";
 import { verify } from "@/shared/server/jwt";
-import { BROCCOLI_ADMIN_WHITELIST, isBeta, TOKEN_NAME } from "@/shared/constant";
+import {
+  BROCCOLI_ADMIN_WHITELIST,
+  isBeta,
+  PRIVY_TOKEN_NAME,
+} from "@/shared/constant";
+import {
+  getPrivyUserInfoByUserId,
+  verifyPrivyAccessToken,
+} from "@/shared/server/privy";
+import { userAuth } from "@/shared/server/auth";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export const revalidate = 0;
 
 export async function GET(req: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_NAME)?.value;
-  const payload = verify(token!);
+  try {
+    let { user, privyUserId } = await userAuth();
 
-  if (!payload) {
+    if (!user) {
+      const privyUser = await getPrivyUserInfoByUserId(privyUserId);
+      if (!privyUser) {
+        throw new Error("Unauthenticated", {
+          cause: { code: 401 },
+        });
+      }
+
+      user = (
+        await supabaseClient
+          .from("PrivyUser")
+          .upsert(
+            {
+              userId: privyUserId,
+              email: privyUser.email?.address,
+              firstVerifiedAt: privyUser.email?.firstVerifiedAt?.toISOString(),
+              latestVerifiedAt:
+                privyUser.email?.latestVerifiedAt?.toISOString(),
+            },
+            {
+              onConflict: "userId",
+            }
+          )
+          .select("*")
+          .single()
+      ).data;
+    }
+
+    console.log(
+      "--- user",
+      user,
+      "privyUserId",
+      privyUserId,
+      "privy user",
+      await getPrivyUserInfoByUserId(privyUserId!)
+    );
+
+    if (!user) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
+    }
+
+    const { data: task } = await supabaseClient
+      .from("Task")
+      .select(
+        "URI,nftId,approved,status,metadata,email,creatEventId(id,hash),address,helpPics"
+      )
+      .eq("email", user.email!)
+      .limit(1)
+      .neq("status", 2)
+      .order("created_at", { ascending: false })
+      .maybeSingle();
+
+    const { data: completedTasks = [] } = await supabaseClient
+      .from("Task")
+      .select(
+        "URI,nftId,approved,status,metadata,email,creatEventId(id,hash),address,helpPics"
+      )
+      .eq("email", user.email!)
+      .eq("status", 2) // Add status check (= 2)
+      .order("created_at", { ascending: false });
+
     return NextResponse.json(
       {
-        code: 401,
-        message: "Unaothorized",
+        code: 0,
+        data: {
+          email: user.email,
+          created_at: user.created_at,
+          task,
+          completedTasks,
+          admin: BROCCOLI_ADMIN_WHITELIST.includes(user.email!),
+        },
       },
-      {
-        status: 401,
-      }
+      { status: 200 }
     );
-  }
-
-  const { id } = payload;
-  const { data: user } = await supabaseClient
-    .from("User")
-    .select("*")
-    .eq("xUid", id)
-    .single();
-
-  console.log("--- user", user, 'id', id);
-
-  if (!user) {
+  } catch (err: any) {
     return NextResponse.json(
       {
-        code: 401,
-        message: "Unaothorized",
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
       },
-      {
-        status: 401,
-      }
+      { status: err?.cause?.code || 500 }
     );
   }
-
-  const { data: task } = await supabaseClient
-    .from("Task")
-    .select("URI,nftId,approved,status,metadata,xHandle,creatEventId(id,hash),address,helpPics")
-    .eq("xHandle", user.xUserName!)
-    .limit(1)
-    .neq("status", 2)
-    .order("created_at", { ascending: false })
-    .maybeSingle();
-
-  const { data: completedTasks = [] } = await supabaseClient
-    .from("Task")
-    .select("URI,nftId,approved,status,metadata,xHandle,creatEventId(id,hash),address,helpPics")
-    .eq("xHandle", user.xUserName!)
-    .eq("status", 2) // Add status check (= 2)
-    .order("created_at", { ascending: false })
-
-  return NextResponse.json(
-    {
-      code: 0,
-      data: {
-        name: user.xName,
-        avatar: user.xAvatar,
-        handle: user.xUserName,
-        created_at: user.created_at,
-        task,
-        completedTasks,
-        admin: BROCCOLI_ADMIN_WHITELIST.includes(user.xUserName!)
-      },
-    },
-    { status: 200 }
-  );
 }

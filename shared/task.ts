@@ -291,10 +291,6 @@ export const formatToRescueNFTMetadata = (
         value: request.contact.email,
       },
       {
-        trait_type: "twitter",
-        value: request.contact.twitter,
-      },
-      {
         trait_type: "location",
         value: `${request.contact.country}, ${request.contact.city}`,
       },
@@ -330,8 +326,6 @@ export const NFTMetaDataToRescueRequestForms = (
       (attr) => attr.trait_type === "organization"
     )?.value,
     email: metadata.attributes.find((attr) => attr.trait_type === "email")
-      ?.value,
-    twitter: metadata.attributes.find((attr) => attr.trait_type === "twitter")
       ?.value,
     country: metadata.attributes
       .find((attr) => attr.trait_type === "location")

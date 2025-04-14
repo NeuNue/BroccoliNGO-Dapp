@@ -117,7 +117,6 @@ export interface ContactForm {
   email: string;
   country: string;
   city: string;
-  twitter?: string;
   address?: string;
 }
 
@@ -160,10 +159,6 @@ export interface RescueNFTMetaData {
     },
     {
       trait_type: "email";
-      value: string;
-    },
-    {
-      trait_type: "twitter";
       value: string;
     },
     {

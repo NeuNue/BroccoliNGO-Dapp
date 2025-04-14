@@ -32,10 +32,9 @@ import {
 } from "@/shared/task";
 import { VoteResult } from "@/shared/types/vote";
 import { Profile } from "@/shared/types/profile";
+import { useGlobalCtx } from "./useGlobal";
 
 interface TaskDetailsContextType {
-  profile: Profile | null;
-  xAuthLink: string;
   isAuthor: boolean;
   tokenId: string;
   task: Task | null;
@@ -66,6 +65,7 @@ export const TaskDetailsProvider = ({
   tokenId: string;
   children: ReactNode;
 }) => {
+  const { profile } = useGlobalCtx();
   const publicClient = usePublicClient();
 
   const [task, setTask] = useState<Task | null>(null);
@@ -81,7 +81,6 @@ export const TaskDetailsProvider = ({
     0: 0,
     1: 0,
   });
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [xAuthLink, setXAuthLink] = useState("");
 
   const [fetchingFundRecords, setFetchingFundRecords] = useState(false);
@@ -95,9 +94,9 @@ export const TaskDetailsProvider = ({
   const isAuthor = useMemo(() => {
     if (!profile || !taskMetaData) return false;
     if (taskVersion === "1.0") {
-      return profile.handle === (taskMetaData as RescueRequest).contact.twitter
+      return profile.email === (taskMetaData as RescueRequest).contact.email
     }
-    return profile.handle === (taskMetaData as HelpRequest).organization.contact.twitter;
+    return profile.email === (taskMetaData as HelpRequest).organization.contact.email;
   }, [profile, taskMetaData, taskVersion]);
 
   const isVoteEnded = useMemo(() => {
@@ -227,24 +226,6 @@ export const TaskDetailsProvider = ({
   }, [tokenId]);
 
   useEffect(() => {
-    fetchProfile().then((res) => {
-      if (res.code === 0) {
-        setProfile(res.data);
-        return;
-      }
-      fetchXGenerateLink(`/task/${tokenId}`).then((res) => {
-        if (res.code === 0) {
-          setXAuthLink(res.data.url);
-        }
-      });
-    });
-    return () => {
-      setProfile(null);
-      setXAuthLink("");
-    };
-  }, [tokenId]);
-
-  useEffect(() => {
     if (!uploadedFundRecords.length) return;
     async function loadFundRecords() {
       setParsingFundRecords(true);
@@ -275,8 +256,6 @@ export const TaskDetailsProvider = ({
   return (
     <TaskDetailsContext.Provider
       value={{
-        profile,
-        xAuthLink,
         isAuthor,
         tokenId,
         task,

@@ -6,58 +6,25 @@ import { verify } from "@/shared/server/jwt";
 import { TOKEN_NAME, BROCCOLI_ADMIN_WHITELIST } from "@/shared/constant";
 import { formatToVoteOnchainMetadata } from "@/shared/task";
 import { uploadToArweave } from "@/shared/server/ipfs";
+import { userAuth } from "@/shared/server/auth";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
-  const { tokenId } = await req.json();
-
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(TOKEN_NAME)?.value;
-    const payload = verify(token!);
+    const { tokenId } = await req.json();
+    const { user } = await userAuth();
 
-    if (!payload) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
+    if (!user || !user.email) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
     }
 
-    const { data: user } = await supabaseClient
-      .from("User")
-      .select("*")
-      .eq("xUid", payload.id)
-      .single();
-
-    if (!user || !user.xUserName) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (!BROCCOLI_ADMIN_WHITELIST.includes(user.xUserName)) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
+    if (!BROCCOLI_ADMIN_WHITELIST.includes(user.email)) {
+      throw new Error("Forbidden", {
+        cause: { code: 403 },
+      });
     }
 
     // check if vote is finished
@@ -73,14 +40,15 @@ export async function POST(req: NextRequest) {
 
     if (taskError) {
       console.error("Error fetching task:", taskError);
-      return NextResponse.json(
-        { error: "Failed to fetch task" },
-        { status: 500 }
-      );
+      throw new Error("Failed to fetch task", {
+        cause: { code: 500 },
+      });
     }
 
     if (!task) {
-      return NextResponse.json({ error: "Task not found" }, { status: 404 });
+      throw new Error("Task not found", {
+        cause: { code: 404 },
+      });
     }
 
     const isVoteEnded =
@@ -89,13 +57,8 @@ export async function POST(req: NextRequest) {
     // check if vote is ended
     if (!isVoteEnded) {
       return NextResponse.json(
-        {
-          code: 401,
-          message: "Voting not ended",
-        },
-        {
-          status: 401,
-        }
+        { code: -1, error: "Vote is not ended yet." },
+        { status: 403 }
       );
     }
 
@@ -145,10 +108,9 @@ export async function POST(req: NextRequest) {
     );
 
     if (response.status !== 200) {
-      return NextResponse.json(
-        { code: -1, error: "Failed to upload vote result on chain." },
-        { status: 500 }
-      );
+      throw new Error("Failed to upload vote result", {
+        cause: { code: 500 },
+      });
     }
 
     const url = `https://arweave.net/${transaction.id}`;
@@ -160,9 +122,13 @@ export async function POST(req: NextRequest) {
       code: 0,
     });
   } catch (err: any) {
-    return NextResponse.json({
-      code: 500,
-      message: err.message,
-    });
+    console.error(err);
+    return NextResponse.json(
+      {
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
+      },
+      { status: err?.cause?.code || 500 }
+    );
   }
 }

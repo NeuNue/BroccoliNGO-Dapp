@@ -81,7 +81,7 @@ export async function refreshTaskMeta(nftId: number) {
           .from("Task")
           .update({
             metadata: NFTMetaData as never as Json,
-            xHandle: formatedData.contact.twitter,
+            email: formatedData.contact.email,
           })
           .eq("nftId", nftId);
         break;
@@ -93,8 +93,8 @@ export async function refreshTaskMeta(nftId: number) {
           .from("Task")
           .update({
             metadata: NFTMetaData as never as Json,
-            xHandle: formatedData.organization.contact.twitter,
             address: formatedData.request.address,
+            email: formatedData.organization.contact.email,
           })
           .eq("nftId", nftId);
         break;
@@ -106,7 +106,7 @@ export async function refreshTaskMeta(nftId: number) {
           .from("Task")
           .update({
             metadata: NFTMetaData as never as Json,
-            xHandle: formatedData.organization.contact.twitter,
+            email: formatedData.organization.contact.email,
           })
           .eq("nftId", nftId);
         break;
