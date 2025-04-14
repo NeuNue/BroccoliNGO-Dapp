@@ -11,6 +11,7 @@ import styled from "@emotion/styled";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { toaster } from "@/components/ui/toaster";
 import { formatDate, getISODateTimestamp } from "@/shared/utils";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 const padToTwoDigits = (num: string | number): string => {
   return String(num).padStart(2, "0");
@@ -20,6 +21,7 @@ interface Props {
   tokenId: string;
 }
 export const ApprovalView: FC<Props> = ({ tokenId }) => {
+  const { profile } = useGlobalCtx();
   const {
     task,
     loading,
@@ -286,7 +288,7 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
                 </StyledApprovalDateValue>
               </StyledApprovalDateItem>
             </StyledApprovalDate>
-            {!task?.isVoteEnabled ? (
+            {!task?.isVoteEnabled && profile?.admin ? (
               <SubmitButton
                 loading={isApprovedLoading}
                 disabled={isApprovedLoading}
