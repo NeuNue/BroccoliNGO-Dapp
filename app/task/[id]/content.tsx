@@ -34,7 +34,7 @@ export default function TaskDetailPageContent({ id }: { id: string }) {
     <Container>
       <TaskNavbar />
 
-      <DatasView />
+      <DatasView email={task?.email} />
 
       {task?.isVoteEnabled && <VotesView tokenId={id} />}
 
