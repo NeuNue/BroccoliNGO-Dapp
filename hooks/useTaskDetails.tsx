@@ -81,7 +81,6 @@ export const TaskDetailsProvider = ({
     0: 0,
     1: 0,
   });
-  const [xAuthLink, setXAuthLink] = useState("");
 
   const [fetchingFundRecords, setFetchingFundRecords] = useState(false);
   const [parsingFundRecords, setParsingFundRecords] = useState(false);
@@ -90,14 +89,6 @@ export const TaskDetailsProvider = ({
   const [onchainVoteResultURL, setOnchainVoteResultURL] = useState("");
   const [onchainVoteMetadata, setOnchainVoteMetadata] =
     useState<VoteOnchainMetadata | null>(null);
-
-  const isAuthor = useMemo(() => {
-    if (!profile || !taskMetaData) return false;
-    if (taskVersion === "1.0") {
-      return profile.email === (taskMetaData as RescueRequest).contact.email
-    }
-    return profile.email === (taskMetaData as HelpRequest).organization.contact.email;
-  }, [profile, taskMetaData, taskVersion]);
 
   const isVoteEnded = useMemo(() => {
     if (!task) return false;
@@ -256,7 +247,7 @@ export const TaskDetailsProvider = ({
   return (
     <TaskDetailsContext.Provider
       value={{
-        isAuthor,
+        isAuthor: task?.isAuthor || false,
         tokenId,
         task,
         isApproved,

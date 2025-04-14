@@ -18,4 +18,6 @@ export interface Task {
   voteLeftTime: number;
   vote_start_date: number;
   vote_end_date: number;
+  isAuthor: boolean;
+  email: string;
 }
