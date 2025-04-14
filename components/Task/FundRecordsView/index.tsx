@@ -14,14 +14,15 @@ import CopyIcon from "@/components/icons/copy";
 import { toaster } from "@/components/ui/toaster";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { checkIsVoteOnchainMetadata, VoteOnchainMetadata } from "@/shared/task";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 interface Props {
   tokenId: string;
   admin?: boolean;
 }
 export const FundRecordsView: FC<Props> = ({ tokenId, admin }) => {
-  const { profile, uploadedFundRecords, parsedFundRecords } =
-    useTaskDetailsCtx();
+  const { profile } = useGlobalCtx();
+  const { uploadedFundRecords, parsedFundRecords } = useTaskDetailsCtx();
   const publicClient = usePublicClient();
 
   const [isFundRecordsUploading, setIsFundRecordsUploading] = useState(false);

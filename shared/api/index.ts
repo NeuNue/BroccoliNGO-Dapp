@@ -1,5 +1,5 @@
 import { HelpRequest2, NFTMetaData2 } from "../types/help";
-import { HelpRequest, NFTMetaData } from "../types/rescue";
+import { HelpRequest, NFTMetaData, RescueNFTMetaData, RescueRequest } from "../types/rescue";
 
 const BaseURI = '';
 
@@ -19,13 +19,8 @@ export const fetchProfile = async () => {
   return res.json();
 };
 
-export const fetchProfileV2 = async () => {
-  const res = await fetch(`${BaseURI}/api/profile/v2`);
-  return res.json();
-};
-
 export const uploadJson = async (
-  data: HelpRequest | NFTMetaData | HelpRequest2 | NFTMetaData2 | string[]
+  data: HelpRequest | NFTMetaData | HelpRequest2 | NFTMetaData2 | RescueRequest | RescueNFTMetaData | string[]
 ) => {
   const res = await fetch(`${BaseURI}/api/ipfs/json`, {
     method: "POST",
@@ -40,6 +35,17 @@ export const uploadJson = async (
 
 export const createTask = async (tokenURI: string) => {
   const res = await fetch(`${BaseURI}/api/createTask`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tokenURI }),
+  });
+  return res.json();
+};
+
+export const createTaskV1 = async (tokenURI: string) => {
+  const res = await fetch(`${BaseURI}/api/createTask/v1`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

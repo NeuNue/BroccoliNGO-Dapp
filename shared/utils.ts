@@ -106,3 +106,59 @@ export const formatDate = (
     return "";
   }
 };
+
+export const createBlobUrl = (file: File | Blob): string => {
+  const blobUrl = URL.createObjectURL(file);
+
+  return blobUrl;
+};
+
+export const cleanBlobUrl = (blobUrl: string) => {
+  URL.revokeObjectURL(blobUrl);
+};
+
+export function obfuscateEmail(email: string): string {
+  if (!email) return "";
+  
+  // split email into username and domain
+  const [username, domain] = email.split('@');
+  
+  if (!username || !domain) return email; // if email is invalid, return as is
+  
+  // obfuscate username - keep first 2 and last 1 characters, replace the rest with stars
+  let obfuscatedUsername = username;
+  if (username.length > 3) {
+    const firstChars = username.substring(0, 2);
+    const lastChar = username.substring(username.length - 1);
+    const middleStars = '*'.repeat(username.length - 3);
+    obfuscatedUsername = `${firstChars}${middleStars}${lastChar}`;
+  }
+  
+  // obfuscate domain - keep first 1 and last 1 characters of the second-level domain, replace the rest with stars
+  const domainParts = domain.split('.');
+  let obfuscatedDomain = domain;
+  
+  if (domainParts.length > 1) {
+    const commonDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'];
+    
+    // if the domain is a common one, keep it as is
+    if (commonDomains.includes(domain)) {
+      obfuscatedDomain = domain;
+    } else {
+      // if the domain is not common, obfuscate it
+      const tld = domainParts[domainParts.length - 1]; // top-level domain
+      const sld = domainParts[domainParts.length - 2]; // second-level domain
+      
+      if (sld.length > 2) {
+        const firstChar = sld.substring(0, 1);
+        const middleStars = '*'.repeat(sld.length - 2);
+        const lastChar = sld.substring(sld.length - 1);
+        const obfuscatedSld = `${firstChar}${middleStars}${lastChar}`;
+        
+        obfuscatedDomain = `${obfuscatedSld}.${tld}`;
+      }
+    }
+  }
+  
+  return `${obfuscatedUsername}@${obfuscatedDomain}`;
+}

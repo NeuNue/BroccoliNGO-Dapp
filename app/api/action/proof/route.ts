@@ -4,62 +4,33 @@ import { supabaseClient } from "@/shared/supabase";
 import { addProof, createTask, fundTask } from "@/shared/server/chain";
 import { TOKEN_NAME } from "@/shared/constant";
 import { verify } from "@/shared/server/jwt";
+import { userAuth } from "@/shared/server/auth";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
-  const { tokenId, url } = await req.json();
-
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_NAME)?.value;
-  const payload = verify(token!);
-
-  if (!payload) {
-    return NextResponse.json(
-      {
-        code: 401,
-        message: "Unaothorized",
-      },
-      {
-        status: 401,
-      }
-    );
-  }
-
-  const { id } = payload;
-  const { data: user } = await supabaseClient
-    .from("User")
-    .select("*")
-    .eq("xUid", id)
-    .single();
-
-  if (!user) {
-    return NextResponse.json(
-      {
-        code: 401,
-        message: "Unaothorized",
-      },
-      {
-        status: 401,
-      }
-    );
-  }
-
-  const { data: task } = await supabaseClient.from("Task").select("*").eq("id", tokenId).single();
-  if (task?.xHandle !== user.xUserName) {
-    return NextResponse.json(
-      {
-        code: 403,
-        message: "Forbidden",
-      },
-      {
-        status: 403,
-      }
-    );
-  }
-
   try {
+    const { tokenId, url } = await req.json();
+    const { user } = await userAuth();
+
+    if (!user) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
+    }
+
+    const { data: task } = await supabaseClient
+      .from("Task")
+      .select("*")
+      .eq("nftId", tokenId)
+      .single();
+    
+    if (task?.email !== user.email) {
+      throw new Error("Forbidden", {
+        cause: { code: 403 },
+      });
+    }
+
     await addProof(tokenId, url);
     // await syncData()
 
@@ -67,9 +38,13 @@ export async function POST(req: NextRequest) {
       code: 0,
     });
   } catch (err: any) {
-    return NextResponse.json({
-      code: 500,
-      message: err.message,
-    });
+    console.error(err);
+    return NextResponse.json(
+      {
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
+      },
+      { status: err?.cause?.code || 500 }
+    );
   }
 }

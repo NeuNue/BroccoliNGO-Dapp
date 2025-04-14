@@ -1,5 +1,7 @@
 // app/api/tasks/[id]/route.ts
+import { userAuth } from "@/shared/server/auth";
 import { supabaseClient } from "@/shared/supabase";
+import { obfuscateEmail } from "@/shared/utils";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,6 +11,9 @@ export async function GET(
 ) {
   try {
     const id = (await params).id;
+
+    const { user } = await userAuth(false);
+
     // Get task with creator info
     const { data: task, error } = await supabaseClient
       .from("Task")
@@ -32,7 +37,9 @@ export async function GET(
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
 
-    const isVoteEnabled = !!task.vote_start_date && Date.now() >= new Date(task.vote_start_date).getTime();
+    const isVoteEnabled =
+      !!task.vote_start_date &&
+      Date.now() >= new Date(task.vote_start_date).getTime();
 
     const isVoteEnded =
       new Date(task.vote_end_date || "0").getTime() <= Date.now();
@@ -42,10 +49,16 @@ export async function GET(
       new Date(task.vote_end_date || "0").getTime() - Date.now()
     );
 
+    const obfuscatedEmail = task.email ? obfuscateEmail(task.email) : '';
+
+    const isAuthor = !!user && user.email === task.email;
+
     return NextResponse.json({
       code: 0,
       data: {
         ...task,
+        email: isAuthor ? task.email : obfuscatedEmail,
+        isAuthor,
         isVoteEnabled,
         isVoteEnded,
         voteLeftTime,

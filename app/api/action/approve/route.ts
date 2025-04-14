@@ -4,57 +4,26 @@ import { BROCCOLI_ADMIN_WHITELIST, TOKEN_NAME } from "@/shared/constant";
 import { supabaseClient } from "@/shared/supabase";
 import { cookies } from "next/headers";
 import { verify } from "@/shared/server/jwt";
+import { userAuth } from "@/shared/server/auth";
 
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
   try {
     const { tokenId, start_date, end_date } = await req.json();
+    const { user } = await userAuth();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get(TOKEN_NAME)?.value;
-    const payload = verify(token!);
 
-    if (!payload) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
+    if (!user || !user.email) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
     }
 
-    const { data: user } = await supabaseClient
-      .from("User")
-      .select("*")
-      .eq("xUid", payload.id)
-      .single();
-
-    if (!user || !user.xUserName) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (!BROCCOLI_ADMIN_WHITELIST.includes(user.xUserName)) {
-      return NextResponse.json(
-        {
-          code: 401,
-          message: "Unaothorized",
-        },
-        {
-          status: 401,
-        }
-      );
+    if (!BROCCOLI_ADMIN_WHITELIST.includes(user.email)) {
+      throw new Error("Forbidden", {
+        cause: { code: 403 },
+      });
     }
 
     await approveTask(tokenId);
@@ -75,27 +44,23 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Error updating task:", error);
-      return NextResponse.json(
-        {
-          code: 500,
-          message: "Failed to update task",
-        },
-        { status: 500 }
-      );
+      throw new Error("Failed to update task", {
+        cause: { code: 500 },
+      });
     }
 
     return NextResponse.json({
       code: 0,
       message: "Task approved successfully",
     });
-  } catch (error) {
-    console.error("Error in approve endpoint:", error);
+  } catch (err: any) {
+    console.error(err);
     return NextResponse.json(
       {
-        code: 500,
-        message: "Internal server error",
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
       },
-      { status: 500 }
+      { status: err?.cause?.code || 500 }
     );
   }
 }

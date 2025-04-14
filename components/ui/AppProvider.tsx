@@ -7,11 +7,12 @@ import { wagmiConfig } from "@/shared/wagmi";
 import { Provider as ChakraProvider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
 import PrivyProviders from "./PrivyProvider";
+import { GlobalContextProvider } from "@/hooks/useGlobal";
 
 const client = new QueryClient();
 
 const rainbowKitTheme = {
-  accentColor: "#6A3CD6",
+  accentColor: "#FEC535",
 };
 
 function AppProvider({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -22,7 +23,7 @@ function AppProvider({ children }: Readonly<{ children: React.ReactNode }>) {
           <RainbowKitProvider locale="en-US" theme={darkTheme(rainbowKitTheme)}>
             <ChakraProvider>
               <Toaster />
-              {children}
+              <GlobalContextProvider>{children}</GlobalContextProvider>
             </ChakraProvider>
           </RainbowKitProvider>
         </QueryClientProvider>

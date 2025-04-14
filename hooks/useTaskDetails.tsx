@@ -20,26 +20,27 @@ import {
 import { usePublicClient } from "wagmi";
 import { ABI, CONTRACT_ADDRESS } from "@/shared/constant";
 import { Task } from "@/shared/types/task";
-import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
+import { HelpRequest, NFTMetaData, RescueNFTMetaData, RescueRequest } from "@/shared/types/rescue";
 import { HelpRequest2, NFTMetaData2 } from "@/shared/types/help";
 import {
   checkIsVoteOnchainMetadata,
+  formatNFTMetadataToTaskRequest,
   nftMetaDataToHelpRequest,
   nftMetaDataToHelpRequest2,
+  NFTMetaDataToRescueRequestForms,
   VoteOnchainMetadata,
 } from "@/shared/task";
 import { VoteResult } from "@/shared/types/vote";
 import { Profile } from "@/shared/types/profile";
+import { useGlobalCtx } from "./useGlobal";
 
 interface TaskDetailsContextType {
-  profile: Profile | null;
-  xAuthLink: string;
   isAuthor: boolean;
   tokenId: string;
   task: Task | null;
   isApproved: boolean;
   loading: boolean;
-  taskMetaData: HelpRequest | HelpRequest2 | null;
+  taskMetaData: HelpRequest | HelpRequest2 | RescueRequest | null;
   voteResult: VoteResult;
   isVoteEnded: boolean;
   taskStatus: "Pending" | "Approved" | "Rejected" | "";
@@ -64,13 +65,15 @@ export const TaskDetailsProvider = ({
   tokenId: string;
   children: ReactNode;
 }) => {
+  const { profile } = useGlobalCtx();
   const publicClient = usePublicClient();
 
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [taskMetaData, setTaskMetaData] = useState<
-    HelpRequest | HelpRequest2 | null
+    HelpRequest | HelpRequest2 | RescueRequest | null
   >(null);
+  const [taskVersion, setTaskVersion] = useState("");
   const [metadataLoading, setMetadataLoading] = useState(true);
   const [isApproved, setIsApproved] = useState(false);
   const [error, setError] = useState("");
@@ -78,8 +81,6 @@ export const TaskDetailsProvider = ({
     0: 0,
     1: 0,
   });
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [xAuthLink, setXAuthLink] = useState("");
 
   const [fetchingFundRecords, setFetchingFundRecords] = useState(false);
   const [parsingFundRecords, setParsingFundRecords] = useState(false);
@@ -88,11 +89,6 @@ export const TaskDetailsProvider = ({
   const [onchainVoteResultURL, setOnchainVoteResultURL] = useState("");
   const [onchainVoteMetadata, setOnchainVoteMetadata] =
     useState<VoteOnchainMetadata | null>(null);
-
-  const isAuthor = useMemo(() => {
-    if (!profile || !taskMetaData) return false;
-    return profile.handle === taskMetaData.organization.contact.twitter;
-  }, [profile, taskMetaData]);
 
   const isVoteEnded = useMemo(() => {
     if (!task) return false;
@@ -151,18 +147,34 @@ export const TaskDetailsProvider = ({
 
   async function loadTaskMetaData(tokenUri: string) {
     if (!tokenUri) return null;
-    const data: NFTMetaData | NFTMetaData2 = await fetch(tokenUri).then((res) =>
-      res.json()
-    );
-    if (
-      data.attributes.find((attr) => attr.trait_type === "version")?.value ===
-      "0.2"
-    ) {
-      setMetadataLoading(false);
-      return nftMetaDataToHelpRequest2(data as NFTMetaData2);
+    const parsed = await formatNFTMetadataToTaskRequest({
+      tokenUri
+    });
+    if (!parsed) return null;
+    setTaskVersion(parsed.v);
+    switch (parsed.v) {
+      case "1.0": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return NFTMetaDataToRescueRequestForms(NFTMetaData as RescueNFTMetaData).request;
+      }
+      case "0.2": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2);
+      }
+      case "0.1": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return null;
+        setMetadataLoading(false);
+        return nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData);
+      }
+      default:
+        setMetadataLoading(false);
+        return null;
     }
-    setMetadataLoading(false);
-    return nftMetaDataToHelpRequest(data as NFTMetaData);
   }
 
   const getUploadedFundRecords = async (tokenId: string) => {
@@ -205,24 +217,6 @@ export const TaskDetailsProvider = ({
   }, [tokenId]);
 
   useEffect(() => {
-    fetchProfile().then((res) => {
-      if (res.code === 0) {
-        setProfile(res.data);
-        return;
-      }
-      fetchXGenerateLink(`/task/${tokenId}`).then((res) => {
-        if (res.code === 0) {
-          setXAuthLink(res.data.url);
-        }
-      });
-    });
-    return () => {
-      setProfile(null);
-      setXAuthLink("");
-    };
-  }, [tokenId]);
-
-  useEffect(() => {
     if (!uploadedFundRecords.length) return;
     async function loadFundRecords() {
       setParsingFundRecords(true);
@@ -253,9 +247,7 @@ export const TaskDetailsProvider = ({
   return (
     <TaskDetailsContext.Provider
       value={{
-        profile,
-        xAuthLink,
-        isAuthor,
+        isAuthor: task?.isAuthor || false,
         tokenId,
         task,
         isApproved,

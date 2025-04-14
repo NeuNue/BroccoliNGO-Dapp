@@ -31,6 +31,7 @@ import clsx from "clsx";
 import { ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 interface VotesViewProps {
   tokenId: string;
@@ -38,10 +39,9 @@ interface VotesViewProps {
 }
 
 export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
+  const { profile } = useGlobalCtx();
   const {
     task,
-    profile,
-    xAuthLink,
     isAuthor,
     isVoteEnded,
     voteResult,

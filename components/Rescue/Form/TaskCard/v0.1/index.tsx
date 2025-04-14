@@ -6,6 +6,7 @@ import NFTIcon from "@/components/icons/nft";
 import { CONTRACT_ADDRESS } from "@/shared/constant";
 import styled from "@emotion/styled";
 import { formatDecimalNumber } from "@/shared/utils";
+import Link from "next/link";
 
 interface Props {
   task: RescueTask;
@@ -14,68 +15,76 @@ const TaskCard: FC<Props> = ({ task }) => {
   const scanUrl = `https://bscscan.com/tx/${task.creatEventId.hash}`;
   const nftUrl = `https://bscscan.com/nft/${CONTRACT_ADDRESS}/${task.nftId}`;
   const taskUrl = `/task/${task.nftId}`;
-  const xUrl = `https://x.com/${task.metadata.organization.contact.twitter}`;
-  const emailUrl = `mailto:${task.metadata.organization.contact.email}`;
+  const xUrl = `https://x.com/${task._parsedMetadata.organization.contact.twitter}`;
+  const emailUrl = `mailto:${task._parsedMetadata.organization.contact.email}`;
   return (
-    <a href={taskUrl} target="_blank">
-      <TaskCardContainer>
-        <TaskCardLeft>
-          <NFTIcon />
-        </TaskCardLeft>
-        <TaskCardRight>
-          <TaskCardRightTop>
+    <TaskCardContainer>
+      <TaskCardLeft>
+        <NFTIcon />
+      </TaskCardLeft>
+      <TaskCardRight>
+        <TaskCardRightTop>
+          <Link href={taskUrl} target="_blank">
             <TokenId># {task.nftId}</TokenId>
-            <Name>{task.metadata.organization.name}</Name>
-            <Contact>
-              <a href={xUrl} target="_blank">
-                <ContactItem>
-                  @{task.metadata.organization.contact.twitter}
-                </ContactItem>
-              </a>
-              <a href={emailUrl} target="_blank">
-                <ContactItem>
-                  {task.metadata.organization.contact.email}
-                </ContactItem>
-              </a>
-            </Contact>
-          </TaskCardRightTop>
-          <TaskCardRightBottom>
-            <FundAmount>${formatDecimalNumber(task.metadata.request.costEstimate.totalAmount)}</FundAmount>
-          </TaskCardRightBottom>
-          <TaskCardLinks>
-            <a
-              key="arweave link"
-              href={task.URI}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-                // e.preventDefault();
-              }}
-            >
-              <ArweaveIcon />
+          </Link>
+          <Link href={taskUrl} target="_blank">
+            <Name>{task._parsedMetadata.organization.name}</Name>
+          </Link>
+
+          <Contact>
+            <a href={xUrl} target="_blank">
+              <ContactItem>
+                @{task._parsedMetadata.organization.contact.twitter}
+              </ContactItem>
             </a>
-            <a
-              key="bscan link"
-              href={scanUrl}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-                // e.preventDefault();
-              }}
-            >
-              <BscscanIcon />
+            <a href={emailUrl} target="_blank">
+              <ContactItem>
+                {task._parsedMetadata.organization.contact.email}
+              </ContactItem>
             </a>
-          </TaskCardLinks>
-          <TaskStatus>
-            {task.approved === 0 ? (
-              <img alt="pending approval" src="/rescue-approval.png" />
-            ) : (
-              <img alt="approved" src="/rescue-approved.png" />
+          </Contact>
+        </TaskCardRightTop>
+        <TaskCardRightBottom>
+          <FundAmount>
+            $
+            {formatDecimalNumber(
+              task._parsedMetadata.request.costEstimate.totalAmount
             )}
-          </TaskStatus>
-        </TaskCardRight>
-      </TaskCardContainer>
-    </a>
+          </FundAmount>
+        </TaskCardRightBottom>
+        <TaskCardLinks>
+          <a
+            key="arweave link"
+            href={task.URI}
+            target="_blank"
+            onClick={(e) => {
+              e.stopPropagation();
+              // e.preventDefault();
+            }}
+          >
+            <ArweaveIcon />
+          </a>
+          <a
+            key="bscan link"
+            href={scanUrl}
+            target="_blank"
+            onClick={(e) => {
+              e.stopPropagation();
+              // e.preventDefault();
+            }}
+          >
+            <BscscanIcon />
+          </a>
+        </TaskCardLinks>
+        <TaskStatus>
+          {task.approved === 0 ? (
+            <img alt="pending approval" src="/rescue-approval.png" />
+          ) : (
+            <img alt="approved" src="/rescue-approved.png" />
+          )}
+        </TaskStatus>
+      </TaskCardRight>
+    </TaskCardContainer>
   );
 };
 
@@ -84,9 +93,10 @@ export default TaskCard;
 const TaskCardContainer = styled.div`
   height: 228px;
   border-radius: 20px;
-  border: 4px solid #feb602;
+  border: 4px solid #fff;
   display: flex;
   overflow: hidden;
+  background: #fff;
   @media screen and (max-width: 768px) {
     height: 148px;
   }
@@ -113,6 +123,7 @@ const TaskCardLeft = styled.div`
 `;
 
 const TaskCardRight = styled.div`
+  min-width: 0;
   flex: 1;
   position: relative;
   padding: 26px 24px;
@@ -148,6 +159,8 @@ const Name = styled.h2`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
   @media screen and (max-width: 768px) {
     font-size: 20px;
   }
@@ -209,6 +222,8 @@ const TaskCardLinks = styled.div`
   z-index: 9;
   @media screen and (max-width: 768px) {
     gap: 10px;
+    top: 10px;
+    right: 10px;
   }
   a {
     display: flex;
@@ -233,7 +248,7 @@ const TaskStatus = styled.div`
   z-index: 2;
   @media screen and (max-width: 768px) {
     bottom: -10px;
-    right: 10px;
+    right: 0;
   }
   img {
     width: auto;
