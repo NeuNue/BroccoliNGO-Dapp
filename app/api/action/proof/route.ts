@@ -25,6 +25,9 @@ export async function POST(req: NextRequest) {
       .select("*")
       .eq("id", tokenId)
       .single();
+    
+    console.log('--- task', task, 'email', task?.email);
+    console.log('--- user', user, 'email', user.email);
     if (task?.email !== user.email) {
       throw new Error("Forbidden", {
         cause: { code: 403 },
