@@ -4,10 +4,10 @@ const Icon = () => {
       <path
         fill="none"
         stroke="#fff"
-        stroke-linejoin="miter"
-        stroke-linecap="butt"
-        stroke-miterlimit="4"
-        stroke-width="1.2030"
+        strokeLinejoin="miter"
+        strokeLinecap="butt"
+        strokeMiterlimit="4"
+        strokeWidth="1.2030"
         d="M17.564 1.597l10.127 5.847c0.968 0.559 1.564 1.591 1.564 2.709v11.694c0 1.117-0.596 2.15-1.564 2.709l-10.127 5.847c-0.968 0.559-2.16 0.559-3.128 0l-10.127-5.847c-0.968-0.559-1.564-1.591-1.564-2.709v-11.694c0-1.117 0.596-2.15 1.564-2.709l10.127-5.847c0.968-0.559 2.16-0.559 3.128 0z"
       ></path>
       <path

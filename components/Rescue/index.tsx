@@ -4,18 +4,9 @@ import { FC, useEffect, useState } from "react";
 import DrawerFullpage from "@/components/Drawer/fullpage";
 import styled from "@emotion/styled";
 import { isMobileDevice } from "@/shared/utils";
-import { nftMetaDataToHelpRequest, requestToNFTMetadata } from "@/shared/task";
-import {
-  createTask,
-  fetchProfile,
-  fetchXGenerateLink,
-  uploadJson,
-} from "@/shared/api";
-import { HelpRequest, NFTMetaData, RescueTask } from "@/shared/types/rescue";
-import { toaster } from "@/components/ui/toaster";
-import RescueForm from "@/components/Rescue/OldForm";
-import TaskCard from "./taskCard";
-import { Profile } from "@/shared/types/profile";
+// import RescueForm from "@/components/Rescue/OldForm";
+import RescueForm from "@/components/Rescue/Form";
+import { RescueRequestProvider } from "@/hooks/useRescue";
 
 interface Props {
   open: boolean;
@@ -24,122 +15,32 @@ interface Props {
 }
 const FundRequestForm: FC<Props> = ({ open, onClose, onSuccess }) => {
   // const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [currentTask, setCurrentTask] = useState<RescueTask | null>(null);
-  const [completedTasks, setCompletedTasks] = useState<RescueTask[]>([]);
-  const [xAuthLink, setXAuthLink] = useState("");
-
   const isMobile = isMobileDevice();
 
-  const refreshProfile = async () => {
-    const res = await fetchProfile();
-    if (res.code === 0) {
-      setProfile(res.data);
-      if (res.data.task) {
-        setCurrentTask({
-          ...res.data.task,
-          metadata: nftMetaDataToHelpRequest(res.data.task.metadata),
-        });
-      }
-
-      setCompletedTasks(
-        res.data.completedTasks.map((task: any) => ({
-          ...task,
-          metadata: nftMetaDataToHelpRequest(task.metadata),
-        }))
-      );
-      return;
-    }
-    const oauthRes = await fetchXGenerateLink("/?mode=rescue");
-    if (oauthRes.code === 0) {
-      setXAuthLink(oauthRes.data.url);
-    }
-  };
-
-  useEffect(() => {
-    refreshProfile();
-  }, []);
-
   return (
-    <DrawerFullpage
-      isOpen={open}
-      position={`${isMobile ? "bottom" : "right"}`}
-      onOpenChange={onClose}
-    >
-      <FormContainer>
-        {/* Close button */}
-        <CloseButton onClick={onClose}>
-          <img alt="close" src="/icons/close.svg" />
-        </CloseButton>
+    <RescueRequestProvider>
+      <DrawerFullpage
+        isOpen={open}
+        position={`${isMobile ? "bottom" : "right"}`}
+        onOpenChange={onClose}
+      >
+        <FormContainer>
+          {/* Close button */}
+          <CloseButton onClick={onClose}>
+            <img alt="close" src="/icons/close.svg" />
+          </CloseButton>
 
-        {/* Logo and title */}
-        <HeaderSection>
-          <HeaderContainer>
-            <LogoContainer>
-              <img alt="logo" src="/rescue-logo.png" />
-            </LogoContainer>
-
-            <Title>
-              <span>Fund Request Form</span>
-              <TitleStar alt="star" src="/decration/star-1.svg" />
-            </Title>
-
-            <Description>
-              <p>
-                Broccoli&apos;s vision is to harness the power of blockchain to
-                illuminate the path of charity and pet rescue with transparency,
-                fostering trust and weaving more love and beauty into the fabric
-                of our world.
-              </p>
-              <p>
-                If you are engaged in pet rescue efforts, we warmly welcome you
-                to apply for the Rescue Fund.{" "}
-              </p>
-              <b>
-                Please share your rescue story on 𝕏 , explaining the reasons you
-                need financial assistance, and include the hashtag
-                #BroccoliInAction.{" "}
-              </b>
-              <p>
-                After submitting this form, our community volunteers will reach
-                out to you.
-              </p>
-            </Description>
-          </HeaderContainer>
-        </HeaderSection>
-
-        {/* Form */}
-        <ContentContainer>
-          {currentTask || !!completedTasks.length ? (
-            <>
-              <TaskCardsBox>
-                {currentTask && (
-                  <TaskCardContainer>
-                    <TaskCard task={currentTask} />
-                  </TaskCardContainer>
-                )}
-                {!!completedTasks.length &&
-                  completedTasks.map((task, idx) => (
-                    <TaskCardContainer key={idx}>
-                      <TaskCard task={task} />
-                    </TaskCardContainer>
-                  ))}
-              </TaskCardsBox>
-            </>
-          ) : null}
-
-          <RescueForm
-            currentTask={currentTask}
-            profile={profile}
-            xAuthLink={xAuthLink}
-            onSubmitted={async () => {
-              await refreshProfile();
-              onSuccess();
-            }}
-          />
-        </ContentContainer>
-      </FormContainer>
-    </DrawerFullpage>
+          {/* Form */}
+          <ContentContainer>
+            {
+              open ? (
+                <RescueForm />
+              ) : null
+            }
+          </ContentContainer>
+        </FormContainer>
+      </DrawerFullpage>
+    </RescueRequestProvider>
   );
 };
 
@@ -148,14 +49,18 @@ export default FundRequestForm;
 // Styled components
 
 const FormContainer = styled.div`
-  background-color: #f9f5f0;
-  min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
+  background-color: #feb602;
+  min-height: 100vh;
+  background-image: url(/rescue-bg.png);
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const CloseButton = styled.button`
@@ -174,7 +79,7 @@ const CloseButton = styled.button`
   font-size: 18px;
   color: #444;
   cursor: pointer;
-  z-index: 10;
+  z-index: 11;
   > img {
     width: 18px;
     height: 18px;
@@ -183,7 +88,7 @@ const CloseButton = styled.button`
 
 const ContentContainer = styled.div`
   width: 100%;
-  max-width: 680px;
+  max-width: 800px;
   z-index: 10;
   @media screen and (max-width: 768px) {
     padding: 0 20px;
@@ -208,152 +113,148 @@ const TaskCardContainer = styled.div`
   width: 100%;
 `;
 
-const HeaderSection = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url(/rescue-bg.png);
-  background-size: cover;
-  background-position: bottom;
-  background-repeat: no-repeat;
+// const HeaderSection = styled.div`
+//   position: relative;
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
 
-  &::before {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background-image: url(/rescue-bg-bottom.png);
-    background-size: cover;
-    background-position: bottom;
-    background-repeat: no-repeat;
-  }
-`;
+//   // &::before {
+//   //   content: "";
+//   //   position: absolute;
+//   //   bottom: -1px;
+//   //   left: 0;
+//   //   width: 100%;
+//   //   height: 20px;
+//   //   background-image: url(/rescue-bg-bottom.png);
+//   //   background-size: cover;
+//   //   background-position: bottom;
+//   //   background-repeat: no-repeat;
+//   // }
+// `;
 
-const HeaderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 70px;
-  padding-bottom: 50px;
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: 680px;
-  @media screen and (max-width: 768px) {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-`;
+// const HeaderContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   padding-top: 70px;
+//   padding-bottom: 50px;
+//   margin-bottom: 24px;
+//   width: 100%;
+//   max-width: 680px;
+//   @media screen and (max-width: 768px) {
+//     padding-left: 20px;
+//     padding-right: 20px;
+//   }
+// `;
 
-const LogoContainer = styled.div`
-  position: relative;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  @media screen and (max-width: 768px) {
-    width: 140px;
-    height: 140px;
-  }
-  > img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  &::before {
-    content: "";
-    position: absolute;
-    right: -20px;
-    top: -40px;
-    width: 70px;
-    height: 70px;
-    background-image: url(/icons/crown.svg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    pointer-events: none;
-    @media screen and (max-width: 768px) {
-      width: 50px;
-      height: 50px;
-      right: -18px;
-      top: -28px;
-    }
-  }
-`;
+// const LogoContainer = styled.div`
+//   position: relative;
+//   width: 180px;
+//   height: 180px;
+//   border-radius: 50%;
+//   @media screen and (max-width: 768px) {
+//     width: 140px;
+//     height: 140px;
+//   }
+//   > img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: contain;
+//   }
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     right: -20px;
+//     top: -40px;
+//     width: 70px;
+//     height: 70px;
+//     background-image: url(/icons/crown.svg);
+//     background-size: cover;
+//     background-position: center;
+//     background-repeat: no-repeat;
+//     pointer-events: none;
+//     @media screen and (max-width: 768px) {
+//       width: 50px;
+//       height: 50px;
+//       right: -18px;
+//       top: -28px;
+//     }
+//   }
+// `;
 
-const Title = styled.h1`
-  position: relative;
-  margin: 0;
-  margin-top: 10px;
-  color: #fff;
-  text-align: center;
-  font-family: var(--font-darumadrop-one);
-  font-size: 56px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 130%;
-  letter-spacing: -1.12px;
-  text-transform: capitalize;
-  > span {
-    position: relative;
-    z-index: 1;
-  }
-  @media screen and (max-width: 768px) {
-    margin-top: 16px;
-    font-size: 32px;
-    line-height: 100%; /* 32px */
-    letter-spacing: -0.64px;
-  }
-`;
+// const Title = styled.h1`
+//   position: relative;
+//   margin: 0;
+//   margin-top: 10px;
+//   color: #fff;
+//   text-align: center;
+//   font-family: var(--font-darumadrop-one);
+//   font-size: 56px;
+//   font-style: normal;
+//   font-weight: 400;
+//   line-height: 130%;
+//   letter-spacing: -1.12px;
+//   text-transform: capitalize;
+//   > span {
+//     position: relative;
+//     z-index: 1;
+//   }
+//   @media screen and (max-width: 768px) {
+//     margin-top: 16px;
+//     font-size: 32px;
+//     line-height: 100%; /* 32px */
+//     letter-spacing: -0.64px;
+//   }
+// `;
 
-const TitleStar = styled.img`
-  width: 95px;
-  height: 95px;
-  position: absolute;
-  left: -40px;
-  bottom: -5px;
-  z-index: 0;
-  pointer-events: none;
-  @media screen and (max-width: 768px) {
-    width: 60px;
-    height: 60px;
-    left: -30px;
-    bottom: -5px;
-  }
-`;
+// const TitleStar = styled.img`
+//   width: 95px;
+//   height: 95px;
+//   position: absolute;
+//   left: -40px;
+//   bottom: -5px;
+//   z-index: 0;
+//   pointer-events: none;
+//   @media screen and (max-width: 768px) {
+//     width: 60px;
+//     height: 60px;
+//     left: -30px;
+//     bottom: -5px;
+//   }
+// `;
 
-const Description = styled.div`
-  margin-top: 12px;
-  color: #fff;
-  text-align: justify;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 140%; /* 21px */
-  letter-spacing: 0.15px;
+// const Description = styled.div`
+//   margin-top: 12px;
+//   color: #fff;
+//   text-align: justify;
+//   font-size: 15px;
+//   font-style: normal;
+//   font-weight: 400;
+//   line-height: 140%; /* 21px */
+//   letter-spacing: 0.15px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
 
-  @media screen and (max-width: 768px) {
-    font-size: 13px;
-    line-height: 140%; /* 18.2px */
-    letter-spacing: 0.13px;
-  }
+//   @media screen and (max-width: 768px) {
+//     font-size: 13px;
+//     line-height: 140%; /* 18.2px */
+//     letter-spacing: 0.13px;
+//   }
 
-  > b {
-    font-weight: 700;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-skip-ink: auto;
-    text-decoration-thickness: auto;
-    text-underline-offset: auto;
-    text-underline-position: from-font;
-  }
-`;
+//   > b {
+//     font-weight: 700;
+//     text-decoration-line: underline;
+//     text-decoration-style: solid;
+//     text-decoration-skip-ink: auto;
+//     text-decoration-thickness: auto;
+//     text-underline-offset: auto;
+//     text-underline-position: from-font;
+//   }
+// `;
 
 const FormSection = styled.form`
   margin-top: 50px;

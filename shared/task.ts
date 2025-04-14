@@ -1,5 +1,10 @@
 import { HelpRequest2, NFTMetaData2 } from "./types/help";
-import { HelpRequest, NFTMetaData } from "./types/rescue";
+import {
+  HelpRequest,
+  NFTMetaData,
+  RescueRequest,
+  RescueNFTMetaData,
+} from "./types/rescue";
 
 export const requestToNFTMetadata = (request: HelpRequest) => {
   return {
@@ -263,4 +268,157 @@ export const formatToVoteOnchainMetadata = (
       list: votes,
     },
   } as VoteOnchainMetadata;
+};
+
+export const formatToRescueNFTMetadata = (
+  request: RescueRequest
+): RescueNFTMetaData => {
+  return {
+    name: `Broccoli Act for ${request.contact.organization}`,
+    description: request.background.context,
+    image: "https://arweave.net/YFTeWRwYu0Ax1Fm354VJIjBU2heP0l5cEXTf7zyoGyA",
+    attributes: [
+      {
+        trait_type: "version",
+        value: request.v,
+      },
+      {
+        trait_type: "organization",
+        value: request.contact.organization,
+      },
+      {
+        trait_type: "email",
+        value: request.contact.email,
+      },
+      {
+        trait_type: "location",
+        value: `${request.contact.country}, ${request.contact.city}`,
+      },
+      {
+        trait_type: "attachment",
+        value: request.background.attachment,
+      },
+      {
+        trait_type: "suppliesRequest",
+        value: request.request.suppliesRequest,
+      },
+      {
+        trait_type: "additionalInfo",
+        value: request.request.additionalInfo,
+      },
+      {
+        trait_type: "canProvideInvoices",
+        value: request.request.canProvideInvoices,
+      },
+      {
+        trait_type: "canProvidePublicAcknowledgments",
+        value: request.request.canProvidePublicAcknowledgments,
+      },
+    ],
+  } as RescueNFTMetaData;
+};
+
+export const NFTMetaDataToRescueRequestForms = (
+  metadata: RescueNFTMetaData
+) => {
+  const contactForm = {
+    organization: metadata.attributes.find(
+      (attr) => attr.trait_type === "organization"
+    )?.value,
+    email: metadata.attributes.find((attr) => attr.trait_type === "email")
+      ?.value,
+    country: metadata.attributes
+      .find((attr) => attr.trait_type === "location")
+      ?.value.split(",")[0],
+    city: metadata.attributes
+      .find((attr) => attr.trait_type === "location")
+      ?.value.split(",")[1],
+  } as RescueRequest["contact"];
+  const backgroundForm = {
+    context: metadata.description,
+    attachment: metadata.attributes.find(
+      (attr) => attr.trait_type === "attachment"
+    )?.value,
+  } as RescueRequest["background"];
+  const requestForm = {
+    suppliesRequest:
+      metadata.attributes.find((attr) => attr.trait_type === "suppliesRequest")
+        ?.value || "",
+    additionalInfo:
+      metadata.attributes.find((attr) => attr.trait_type === "additionalInfo")
+        ?.value || "",
+    canProvideInvoices:
+      metadata.attributes.find(
+        (attr) => attr.trait_type === "canProvideInvoices"
+      )?.value || false,
+    canProvidePublicAcknowledgments:
+      metadata.attributes.find(
+        (attr) => attr.trait_type === "canProvidePublicAcknowledgments"
+      )?.value || false,
+  } as RescueRequest["request"];
+  const request = {
+    v: metadata.attributes.find((attr) => attr.trait_type === "version")?.value,
+    contact: contactForm,
+    background: backgroundForm,
+    request: requestForm,
+  } as RescueRequest;
+  return {
+    contactForm,
+    backgroundForm,
+    requestForm,
+    request,
+  } as {
+    contactForm: RescueRequest["contact"];
+    backgroundForm: RescueRequest["background"];
+    requestForm: RescueRequest["request"];
+    request: RescueRequest;
+  };
+};
+
+export const getVersionOfMetaData = (
+  metadata: NFTMetaData | NFTMetaData2 | RescueNFTMetaData
+) => {
+  return metadata.attributes.find((attr) => attr.trait_type === "version")
+    ?.value;
+};
+
+export const formatNFTMetadataToTaskRequest = async ({
+  tokenUri,
+  metadata,
+}: {
+  tokenUri?: string;
+  metadata?: NFTMetaData | NFTMetaData2 | RescueNFTMetaData;
+}) => {
+  const NFTMetaData: NFTMetaData | NFTMetaData2 | RescueNFTMetaData =
+    metadata || (await fetch(tokenUri!).then((res) => res.json()));
+  console.log("-- NFTMetaData", NFTMetaData);
+  const version = getVersionOfMetaData(NFTMetaData);
+  switch (version) {
+    case "1.0": {
+      return {
+        v: version,
+        NFTMetaData,
+        formatedData: NFTMetaDataToRescueRequestForms(
+          NFTMetaData as RescueNFTMetaData
+        ).request,
+      };
+    }
+    case "0.2": {
+      return {
+        v: version,
+        NFTMetaData,
+        formatedData: nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2),
+      };
+    }
+    case "0.1": {
+      return {
+        v: version,
+        NFTMetaData,
+        formatedData: nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData),
+      };
+    }
+    default: {
+      return null;
+    }
+  }
 };

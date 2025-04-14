@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import Arweave from "arweave";
 import { uploadToArweave } from "@/shared/server/ipfs";
+import { userAuth } from "@/shared/server/auth";
 
 // Define MIME type to extension mapping
 const MIME_TO_EXTENSION: Record<string, string> = {
@@ -15,28 +16,25 @@ const MIME_TO_EXTENSION: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  // // Get and verify authentication
-  // const user = req.headers.get("user");
-
-  // if (!user) {
-  //   return NextResponse.json(
-  //     { code: -1, data: "Unauthorized" },
-  //     { status: 401 }
-  //   );
-  // }
-
-  // Parse request body
-  const body = await req.json();
-  const { url: fileUrl } = body;
-
-  if (!fileUrl) {
-    return NextResponse.json(
-      { code: -1, error: "URL is required" },
-      { status: 400 }
-    );
-  }
-
   try {
+    // Parse request body
+    const body = await req.json();
+    const { url: fileUrl } = body;
+
+    if (!fileUrl) {
+      throw new Error("URL is required", {
+        cause: { code: 400 },
+      });
+    }
+
+    const { user } = await userAuth();
+
+    if (!user) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
+    }
+
     // Fetch file from URL with timeout and error handling
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
@@ -51,7 +49,10 @@ export async function POST(req: NextRequest) {
 
     if (!fileRes.ok) {
       throw new Error(
-        `Failed to fetch file: ${fileRes.status} ${fileRes.statusText}`
+        `Failed to fetch file: ${fileRes.status} ${fileRes.statusText}`,
+        {
+          cause: { code: fileRes.status },
+        }
       );
     }
 
@@ -72,16 +73,18 @@ export async function POST(req: NextRequest) {
         data: { url: `https://arweave.net/${transaction.id}` },
       });
     } else {
-      return NextResponse.json(
-        { code: -1, error: "Failed to post transaction" },
-        { status: 500 }
-      );
+      throw new Error("Failed to post transaction", {
+        cause: { code: 500 },
+      });
     }
-  } catch (error: any) {
-    console.error("Error fetching file:", error);
+  } catch (err: any) {
+    console.error(err);
     return NextResponse.json(
-      { code: 500, error: error.message || "Failed to process file" },
-      { status: 500 }
+      {
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
+      },
+      { status: err?.cause?.code || 500 }
     );
   }
 }

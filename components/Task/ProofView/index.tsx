@@ -13,6 +13,8 @@ import {
 import styled from "@emotion/styled";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { toaster } from "@/components/ui/toaster";
+import { useLogin } from "@privy-io/react-auth";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 const createBlobUrl = (file: File | Blob): string => {
   const blobUrl = URL.createObjectURL(file);
@@ -25,14 +27,13 @@ const cleanBlobUrl = (blobUrl: string) => {
 };
 
 interface Props {
+  admin?: boolean;
   tokenId: string;
 }
-export const ProofView: FC<Props> = ({ tokenId }) => {
-  const {
-    profile,
-    xAuthLink,
-    isAuthor,
-  } = useTaskDetailsCtx();
+export const ProofView: FC<Props> = ({ admin, tokenId }) => {
+  const { profile } = useGlobalCtx();
+  const { isAuthor } = useTaskDetailsCtx();
+  const { login } = useLogin();
 
   const [uploadedProofs, setUploadedProofs] = useState<string[]>([]);
   const [parsedProofs, setParsedProofs] = useState<string[]>([]);
@@ -95,7 +96,7 @@ export const ProofView: FC<Props> = ({ tokenId }) => {
         description: "Your proof has been uploaded successfully.",
         type: "success",
       });
-      getUploadedProofs(tokenId);
+      location.reload();
     } catch (e) {
     } finally {
       setIsProofSubmitting(false);
@@ -204,31 +205,36 @@ export const ProofView: FC<Props> = ({ tokenId }) => {
               </ProofItem>
             );
           })}
-          <ProofItem key="upload" disabled={!!profile && !isAuthor}>
-            <ProofItemLink
-              disabled={!!profile}
-              href={xAuthLink}
-              target="_blank"
-            >
-              <UploadBox disabled={!profile} htmlFor="upload-record">
-                {proofImagesLoading ? (
-                  <Spinner />
-                ) : (
-                  <Icon as={FiPlus} fontSize="3xl" />
-                )}
+          <ProofItem
+            key="upload"
+            disabled={admin || (!!profile && !isAuthor)}
+            onClick={(e) => {
+              if (!profile) {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log("login");
+                login();
+              }
+            }}
+          >
+            <UploadBox disabled={!profile} htmlFor="upload-record">
+              {proofImagesLoading ? (
+                <Spinner />
+              ) : (
+                <Icon as={FiPlus} fontSize="3xl" />
+              )}
 
-                <input
-                  id="upload-record"
-                  type="file"
-                  // accept="image/*,video/mp4"
-                  accept="image/*"
-                  multiple
-                  maxLength={20}
-                  onChange={handleProofFileSelect}
-                  disabled={proofImagesLoading}
-                />
-              </UploadBox>
-            </ProofItemLink>
+              <input
+                id="upload-record"
+                type="file"
+                // accept="image/*,video/mp4"
+                accept="image/*"
+                multiple
+                maxLength={20}
+                onChange={handleProofFileSelect}
+                disabled={proofImagesLoading}
+              />
+            </UploadBox>
           </ProofItem>
         </ProofList>
       )}

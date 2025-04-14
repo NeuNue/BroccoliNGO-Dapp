@@ -1,12 +1,25 @@
 import { decodeEventLog, formatUnits, TransactionReceipt } from "viem";
 import { supabaseClient } from "@/shared/supabase";
 import { Json } from "@/shared/supabase/types";
-import { HelpRequest, NFTMetaData } from "@/shared/types/rescue";
-import { handleEvents } from "@/shared/server/sync";
-import { ABI, DONATE_TYPE, hashToTopicMap, TOKEN_ABIs, TOKEN_ADDRESSES, topics } from "@/shared/constant";
 import {
+  HelpRequest,
+  NFTMetaData,
+  RescueNFTMetaData,
+} from "@/shared/types/rescue";
+import { handleEvents } from "@/shared/server/sync";
+import {
+  ABI,
+  DONATE_TYPE,
+  hashToTopicMap,
+  TOKEN_ABIs,
+  TOKEN_ADDRESSES,
+  topics,
+} from "@/shared/constant";
+import {
+  formatNFTMetadataToTaskRequest,
   nftMetaDataToHelpRequest,
   nftMetaDataToHelpRequest2,
+  NFTMetaDataToRescueRequestForms,
 } from "@/shared/task";
 import { NFTMetaData2 } from "@/shared/types/help";
 import { redis } from "@/shared/server/redis";
@@ -57,36 +70,48 @@ export async function refreshTaskMeta(nftId: number) {
     if (!task) return;
     const { URI } = task;
     if (!URI) return;
-    const NFTMetaData: NFTMetaData | NFTMetaData2 = await fetch(URI).then(
-      (res) => res.json()
-    );
-    console.log("-- NFTMetaData", NFTMetaData);
-    if (
-      NFTMetaData.attributes.find((attr) => attr.trait_type === "version")
-        ?.value === "0.2"
-    ) {
-      const data = nftMetaDataToHelpRequest2(NFTMetaData as NFTMetaData2);
-      console.log("---- data", data);
-      if (!data) return;
-      await supabaseClient
-        .from("Task")
-        .update({
-          metadata: NFTMetaData as never as Json,
-          xHandle: data.organization.contact.twitter,
-          address: data.request.address,
-        })
-        .eq("nftId", nftId);
-      return;
+    const parsed = await formatNFTMetadataToTaskRequest({ tokenUri: URI });
+    console.log("refreshTaskMeta parsed", parsed);
+    if (!parsed) return;
+    switch (parsed.v) {
+      case "1.0": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return;
+        await supabaseClient
+          .from("Task")
+          .update({
+            metadata: NFTMetaData as never as Json,
+            email: formatedData.contact.email,
+          })
+          .eq("nftId", nftId);
+        break;
+      }
+      case "0.2": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return;
+        await supabaseClient
+          .from("Task")
+          .update({
+            metadata: NFTMetaData as never as Json,
+            address: formatedData.request.address,
+            email: formatedData.organization.contact.email,
+          })
+          .eq("nftId", nftId);
+        break;
+      }
+      case "0.1": {
+        const { NFTMetaData, formatedData } = parsed;
+        if (!formatedData) return;
+        await supabaseClient
+          .from("Task")
+          .update({
+            metadata: NFTMetaData as never as Json,
+            email: formatedData.organization.contact.email,
+          })
+          .eq("nftId", nftId);
+        break;
+      }
     }
-    const data = nftMetaDataToHelpRequest(NFTMetaData as NFTMetaData);
-    if (!data) return;
-    await supabaseClient
-      .from("Task")
-      .update({
-        metadata: NFTMetaData as never as Json,
-        xHandle: data.organization.contact.twitter,
-      })
-      .eq("nftId", nftId);
   } catch (err) {
     console.error("refreshTaskMeta error:", err);
   }
@@ -129,7 +154,9 @@ export async function getBalanceOfBlock(address: string, blockNumber: number) {
   const abi = TOKEN_ABIs[DONATE_TYPE.BROCCOLI];
   const contract = new ethers.Contract(tokenAddress, abi, provider);
 
-  const balance = await contract.balanceOf(address, { blockTag: `0x${blockNumber.toString(16)}` });
+  const balance = await contract.balanceOf(address, {
+    blockTag: `0x${blockNumber.toString(16)}`,
+  });
 
   return Math.floor(Number(formatUnits(balance, 18)));
 }
@@ -156,7 +183,7 @@ export async function getBalanceOfDate(address: string, date: string) {
     }
   }
 
-  const _balance = Math.floor(balance)
+  const _balance = Math.floor(balance);
 
   await redis.set(`vote:${date}:${address}`, _balance, {
     ex: 60 * 60 * 24 * 3, // 7 days

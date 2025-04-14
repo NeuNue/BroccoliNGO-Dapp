@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadToArweave } from "@/shared/server/ipfs";
+import { userAuth } from "@/shared/server/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
+    const { user } = await userAuth();
+    if (!user) {
+      throw new Error("Unauthenticated", {
+        cause: { code: 401 },
+      });
+    }
     const arrayBuffer = await request.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
@@ -19,15 +26,18 @@ export async function POST(request: NextRequest) {
         data: { url: `https://arweave.net/${transaction.id}` },
       });
     } else {
-      return NextResponse.json(
-        { code: -1, error: "Failed to post transaction" },
-        { status: 500 }
-      );
+      throw new Error("Failed to post transaction", {
+        cause: { code: 500 },
+      });
     }
-  } catch (err) {
+  } catch (err: any) {
+    console.error(err);
     return NextResponse.json(
-      { code: 500, error: "Internal Server Error" },
-      { status: 500 }
+      {
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
+      },
+      { status: err?.cause?.code || 500 }
     );
   }
 }

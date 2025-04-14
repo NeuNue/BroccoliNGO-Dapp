@@ -1,7 +1,10 @@
+import { OriginRescueTask } from "./rescue";
+import { Task } from "./task";
+
 export type Profile = {
-  name: string;
-  avatar: string;
-  handle: string;
+  email: string;
   created_at: string;
   admin: boolean;
+  task?: OriginRescueTask | null;
+  completedTasks?: OriginRescueTask[];
 }

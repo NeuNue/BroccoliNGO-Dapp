@@ -11,10 +11,10 @@ import XIcon from "@/components/icons/x";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { VotesView } from "@/components/Task/VotesView";
 import { Spinner } from "@chakra-ui/react";
+import Connect from "@/components/Rescue/Form/Connect";
 
 export default function TaskDetailPage({ id }: { id: string }) {
-  const { task, profile, xAuthLink, taskStatus, loading, error, isApproved } =
-    useTaskDetailsCtx();
+  const { task, taskStatus, loading, error, isApproved } = useTaskDetailsCtx();
   const router = useRouter();
 
   if (loading) {
@@ -42,22 +42,7 @@ export default function TaskDetailPage({ id }: { id: string }) {
     <Container>
       <DatasView />
 
-      <XAccountInputContainer>
-        {profile ? (
-          <ProfileButton>
-            <a href={`https://x.com/${profile.handle}`} target="_blank">
-              <XIcon />
-              <span>@{profile.handle}</span>
-            </a>
-          </ProfileButton>
-        ) : (
-          <ConnectXButton>
-            <a href={xAuthLink}>
-              <span>login: 𝕏</span>
-            </a>
-          </ConnectXButton>
-        )}
-      </XAccountInputContainer>
+      <Connect connectLabel="Connect admin verification" />
 
       <ApprovalView tokenId={id} />
 
@@ -65,7 +50,7 @@ export default function TaskDetailPage({ id }: { id: string }) {
 
       {taskStatus === "Approved" && <FundRecordsView admin tokenId={id} />}
 
-      {taskStatus === "Approved" && <ProofView tokenId={id} />}
+      {taskStatus === "Approved" && <ProofView admin tokenId={id} />}
     </Container>
   );
 }
