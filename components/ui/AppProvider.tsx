@@ -12,7 +12,7 @@ import { GlobalContextProvider } from "@/hooks/useGlobal";
 const client = new QueryClient();
 
 const rainbowKitTheme = {
-  accentColor: "#6A3CD6",
+  accentColor: "#FEC535",
 };
 
 function AppProvider({ children }: Readonly<{ children: React.ReactNode }>) {
