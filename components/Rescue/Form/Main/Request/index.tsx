@@ -18,6 +18,7 @@ import {
 import YesNoSelection from "../YesNoSection";
 import { useMemo, useState } from "react";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
+import { useGlobalCtx } from "@/hooks/useGlobal";
 
 interface Props {
   onNext: () => void;
@@ -25,6 +26,7 @@ interface Props {
 }
 
 const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
+  const { refreshProfile } = useGlobalCtx();
   const {
     requestForm,
     setRequestForm,
@@ -54,6 +56,7 @@ const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
     if (isNextDisabled) return;
     const isSuccess = await handleRescueSubmit();
     if (!isSuccess) return;
+    await refreshProfile();
     onNext();
   };
 
