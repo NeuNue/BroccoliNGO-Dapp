@@ -19,11 +19,6 @@ export const fetchProfile = async () => {
   return res.json();
 };
 
-export const fetchProfileV2 = async () => {
-  const res = await fetch(`${BaseURI}/api/profile/v2`);
-  return res.json();
-};
-
 export const uploadJson = async (
   data: HelpRequest | NFTMetaData | HelpRequest2 | NFTMetaData2 | RescueRequest | RescueNFTMetaData | string[]
 ) => {
