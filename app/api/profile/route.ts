@@ -21,6 +21,11 @@ export async function GET(req: Request) {
     let { user, privyUserId } = await userAuth();
 
     if (!user) {
+      if (!privyUserId) {
+        throw new Error("Unauthenticated", {
+          cause: { code: 401 },
+        });
+      }
       const privyUser = await getPrivyUserInfoByUserId(privyUserId);
       if (!privyUser) {
         throw new Error("Unauthenticated", {
