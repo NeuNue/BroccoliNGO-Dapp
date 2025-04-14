@@ -99,7 +99,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
               required
               type="email"
               placeholder="-"
-              disabled
+              disabled={isPreviewMode || profile?.email === contactForm.email}
             />
           </FormGroup>
           <FormGroup>
