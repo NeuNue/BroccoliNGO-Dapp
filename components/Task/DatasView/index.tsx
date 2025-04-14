@@ -1,7 +1,7 @@
 import { Container, DataList, Spinner } from "@chakra-ui/react";
 import { FC, useEffect, useMemo, useState } from "react";
 import { usePublicClient } from "wagmi";
-import { flattenObject } from "@/shared/utils";
+import { flattenObject, obfuscateEmail } from "@/shared/utils";
 import { CardContainer, CardTitle } from "@/components/Task/Layout";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import AttachmentView from "./AttachmentView";
@@ -10,9 +10,11 @@ import PendingIcon from "@/components/icons/pending";
 import ApprovedIcon from "@/components/icons/approved";
 import RejectedIcon from "@/components/icons/rejected";
 
-interface DatasViewProps {}
+interface DatasViewProps {
+  email?: string;
+}
 
-export const DatasView: FC<DatasViewProps> = ({}) => {
+export const DatasView: FC<DatasViewProps> = ({ email }) => {
   const {
     task,
     loading,
@@ -55,7 +57,7 @@ export const DatasView: FC<DatasViewProps> = ({}) => {
                 <AttachmentView attachment={item.value} />
               </StyledDataListItemValue>
             ) : (
-              <StyledDataListItemValue>{item.value}</StyledDataListItemValue>
+              <StyledDataListItemValue>{item.label === "Email" ? email : item.value}</StyledDataListItemValue>
             )}
           </StyledDataListItem>
         ))}

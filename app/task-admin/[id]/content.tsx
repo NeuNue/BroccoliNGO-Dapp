@@ -40,7 +40,7 @@ export default function TaskDetailPage({ id }: { id: string }) {
 
   return (
     <Container>
-      <DatasView />
+      <DatasView email={task?.email} />
 
       <Connect connectLabel="Connect admin verification" />
 
