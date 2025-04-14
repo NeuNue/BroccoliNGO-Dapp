@@ -25,8 +25,6 @@ export async function POST(req: NextRequest) {
       .eq("nftId", tokenId)
       .single();
     
-    console.log('--- task', task, 'email', task?.email);
-    console.log('--- user', user, 'email', user.email);
     if (task?.email !== user.email) {
       throw new Error("Forbidden", {
         cause: { code: 403 },
