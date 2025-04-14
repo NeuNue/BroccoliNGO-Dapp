@@ -6,7 +6,6 @@ import { TOKEN_NAME } from "@/shared/constant";
 import { verify } from "@/shared/server/jwt";
 import { userAuth } from "@/shared/server/auth";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
