@@ -94,7 +94,7 @@ const RescueForm: React.FC<Props> = ({
         name: formData.organization,
         contact: {
           email: formData.email,
-          twitter: profile?.handle || "",
+          twitter: "",
           // twitter: "Broccoli_NGO",
         },
       },
@@ -178,7 +178,7 @@ const RescueForm: React.FC<Props> = ({
           <RedAsterisk>*</RedAsterisk> 𝕏 Account:
         </Label>
         <XAccountInputContainer>
-          {profile ? (
+          {/* {profile ? (
             <ProfileButton
               disabled={!!currentTask || isSubmitting || isSubmitted}
             >
@@ -196,7 +196,7 @@ const RescueForm: React.FC<Props> = ({
                 <XIcon />
               </a>
             </ConnectXButton>
-          )}
+          )} */}
         </XAccountInputContainer>
       </FormGroup>
 

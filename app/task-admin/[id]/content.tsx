@@ -14,8 +14,7 @@ import { Spinner } from "@chakra-ui/react";
 import Connect from "@/components/Rescue/Form/Connect";
 
 export default function TaskDetailPage({ id }: { id: string }) {
-  const { task, profile, xAuthLink, taskStatus, loading, error, isApproved } =
-    useTaskDetailsCtx();
+  const { task, taskStatus, loading, error, isApproved } = useTaskDetailsCtx();
   const router = useRouter();
 
   if (loading) {
