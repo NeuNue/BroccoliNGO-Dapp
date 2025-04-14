@@ -28,6 +28,8 @@ export const userAuth = async (strict = true) => {
       .single()
   ).data;
 
+  console.log('--- user', user)
+
   return {
     user,
     privyUserId,
