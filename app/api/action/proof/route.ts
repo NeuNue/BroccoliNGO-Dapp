@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const { data: task } = await supabaseClient
       .from("Task")
       .select("*")
-      .eq("id", tokenId)
+      .eq("nftId", tokenId)
       .single();
     
     console.log('--- task', task, 'email', task?.email);
