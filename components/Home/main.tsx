@@ -13,7 +13,7 @@ import DinateDialog from "./donate";
 import RescueDialog from "@/components/Rescue";
 import RescueSuccessfulDialog from "./rescue-successful";
 import { useSearchParams, useRouter } from "next/navigation";
-import { isBeta, mainChain, STRING } from "@/shared/constant";
+import { isBeta, mainChain } from "@/shared/constant";
 import { BSC_RPC_URL } from "@/shared/constant";
 import { Trading } from "./trading";
 import { useI18n } from "../ui/I18nProvider";
