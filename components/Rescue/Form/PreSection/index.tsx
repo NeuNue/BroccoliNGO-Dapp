@@ -9,12 +9,14 @@ import { RescueTask, RescueTaskV1 } from "@/shared/types/rescue";
 import { usePrivy } from "@privy-io/react-auth";
 import { Spinner } from "@chakra-ui/react";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   onNext: () => void;
 }
 
 const FormPreSection: FC<Props> = ({ onNext }) => {
+  const { trans } = useI18n()
   const { ready, authenticated } = usePrivy();
   const { profile } = useGlobalCtx()
   const { currentTask, completedTasks } = useRescueRequestCtx();
@@ -27,7 +29,7 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
           </LogoContainer>
 
           <Title>
-            <span>Fund Request Form</span>
+            <span>{trans(_TL_('Fund Request Form'))}</span>
             <TitleStar alt="star" src="/decration/star-1.svg" />
           </Title>
 
@@ -52,15 +54,11 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
               out to you.
             </p> */}
             <p>
-              Broccoli&apos;s vision is to harness the power of blockchain to
-              illuminate the path of charity and pet rescue with transparency,
-              fostering trust and weaving more love and beauty into the fabric
-              of our world.
+             {trans(_TL_("Broccoli's vision is to harness the power of blockchain to illuminate the path of charity and pet rescue with transparency, fostering trust and weaving more love and beauty into the fabric of our world."))}
             </p>
 
             <p>
-              If you&apos;re involved in pet rescue work, we warmly invite you
-              to complete this form to apply for financial support.
+              {trans(_TL_("If you're involved in pet rescue work, we warmly invite you to complete this form to apply for financial support."))}
             </p>
           </Description>
         </HeaderContainer>
@@ -73,8 +71,8 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
         ) : (
           <StartButton onClick={onNext}>
             {currentTask
-              ? "View Your Application #" + currentTask.task.nftId
-              : "Start Application"}
+              ? trans(_TL_("View Your Application #{{id}}"), { id: currentTask.task.nftId })
+              : trans(_TL_("Start Application"))}
           </StartButton>
         )}
       </Footer>

@@ -28,6 +28,8 @@ import { createBlobUrl } from "@/shared/utils";
 import { MAX_IMAGE_SIZE } from "@/shared/constant";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
 import { uploadJson } from "@/shared/api";
+import { useI18n } from "@/components/ui/I18nProvider";
+import { i18n } from "@/i18n-config";
 
 interface Props {
   onNext: () => void;
@@ -35,8 +37,8 @@ interface Props {
 }
 
 const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { backgroundForm, setBackgroundForm, isPreviewMode } =
-    useRescueRequestCtx();
+  const { trans } = useI18n()
+  const { backgroundForm, setBackgroundForm, isPreviewMode } = useRescueRequestCtx();
   const [uploading, setUploading] = useState(false);
   const [mediaPreviewUrls, setMediaPreviewUrls] = useState<string[]>([]);
   const [uploadedMediaUrls, setUploadedMediaUrls] = useState<string[]>([]);
@@ -130,23 +132,19 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
     <FormContainer onSubmit={handleSubmit}>
       <Main>
         <Header>
-          <Title>Background Info</Title>
+          <Title>{trans(_TL_('Background Info'))}</Title>
           <Description>
-            Please describe your situation and the rescue animal&apos;s
-            condition in detail. Photos/videos will help us process your request
-            faster.
+            {trans(_TL_("Please describe your situation and the rescue animal's condition in detail. Photos/videos will help us process your request faster."))}
           </Description>
         </Header>
         <Content>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>Context
+              <RedAsterisk>*</RedAsterisk>{trans(_TL_('Context'))}
             </FormInputLabel>
             <FormTextarea
               required
-              placeholder={`What supplies are urgently needed?
-What resources are you lacking?
-What kind of assistance do you need?`}
+              placeholder={trans(_TL_('What supplies are urgently needed? What resources are you lacking? What kind of assistance do you need?')) as string}
               value={backgroundForm.context}
               name="context"
               disabled={isPreviewMode}
@@ -155,7 +153,7 @@ What kind of assistance do you need?`}
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              Attachment （Attach media files: e.g. JPEG, PNG, SVG .etc）
+              {trans(_TL_('Attachment (Attach media files: e.g. JPEG, PNG, SVG .etc)'))}
             </FormInputLabel>
             <MediaList>
               {mediaPreviewUrls.map((url, index) => {
@@ -182,7 +180,7 @@ What kind of assistance do you need?`}
                     ) : (
                       <>
                         <UploadIcon />
-                        <span>Upload</span>
+                        <span>{trans(_TL_('Upload'))}</span>
                       </>
                     )}
 
@@ -205,17 +203,17 @@ What kind of assistance do you need?`}
       </Main>
       <Footer>
         <Button disabled={uploading || attachmentUploading} onClick={onPrev}>
-          Prev
+          {trans(_TL_('Prev'))}
         </Button>
         {isPreviewMode ? (
-          <Button onClick={onNext}>Next</Button>
+          <Button onClick={onNext}>{trans(_TL_('Next'))}</Button>
         ) : (
           <SubmitButton
             loading={attachmentUploading}
             disabled={uploading || attachmentUploading}
             type="submit"
           >
-            Next
+            {trans(_TL_('Next'))}
           </SubmitButton>
         )}
       </Footer>
