@@ -61,59 +61,55 @@ export async function setEventHandled(id: number) {
 }
 
 export async function refreshTaskMeta(nftId: number) {
-  try {
-    const { data: task } = await supabaseClient
-      .from("Task")
-      .select("URI")
-      .eq("nftId", nftId)
-      .single();
-    if (!task) return;
-    const { URI } = task;
-    if (!URI) return;
-    const parsed = await formatNFTMetadataToTaskRequest({ tokenUri: URI });
-    console.log("refreshTaskMeta parsed", parsed);
-    if (!parsed) return;
-    switch (parsed.v) {
-      case "1.0": {
-        const { NFTMetaData, formatedData } = parsed;
-        if (!formatedData) return;
-        await supabaseClient
-          .from("Task")
-          .update({
-            metadata: NFTMetaData as never as Json,
-            email: formatedData.contact.email,
-          })
-          .eq("nftId", nftId);
-        break;
-      }
-      case "0.2": {
-        const { NFTMetaData, formatedData } = parsed;
-        if (!formatedData) return;
-        await supabaseClient
-          .from("Task")
-          .update({
-            metadata: NFTMetaData as never as Json,
-            address: formatedData.request.address,
-            email: formatedData.organization.contact.email,
-          })
-          .eq("nftId", nftId);
-        break;
-      }
-      case "0.1": {
-        const { NFTMetaData, formatedData } = parsed;
-        if (!formatedData) return;
-        await supabaseClient
-          .from("Task")
-          .update({
-            metadata: NFTMetaData as never as Json,
-            email: formatedData.organization.contact.email,
-          })
-          .eq("nftId", nftId);
-        break;
-      }
+  const { data: task } = await supabaseClient
+    .from("Task")
+    .select("URI")
+    .eq("nftId", nftId)
+    .single();
+  if (!task) return;
+  const { URI } = task;
+  if (!URI) return;
+  const parsed = await formatNFTMetadataToTaskRequest({ tokenUri: URI });
+  console.log("refreshTaskMeta parsed", parsed);
+  if (!parsed) return;
+  switch (parsed.v) {
+    case "1.0": {
+      const { NFTMetaData, formatedData } = parsed;
+      if (!formatedData) return;
+      await supabaseClient
+        .from("Task")
+        .update({
+          metadata: NFTMetaData as never as Json,
+          email: formatedData.contact.email,
+        })
+        .eq("nftId", nftId);
+      break;
     }
-  } catch (err) {
-    console.error("refreshTaskMeta error:", err);
+    case "0.2": {
+      const { NFTMetaData, formatedData } = parsed;
+      if (!formatedData) return;
+      await supabaseClient
+        .from("Task")
+        .update({
+          metadata: NFTMetaData as never as Json,
+          address: formatedData.request.address,
+          email: formatedData.organization.contact.email,
+        })
+        .eq("nftId", nftId);
+      break;
+    }
+    case "0.1": {
+      const { NFTMetaData, formatedData } = parsed;
+      if (!formatedData) return;
+      await supabaseClient
+        .from("Task")
+        .update({
+          metadata: NFTMetaData as never as Json,
+          email: formatedData.organization.contact.email,
+        })
+        .eq("nftId", nftId);
+      break;
+    }
   }
 }
 
@@ -131,6 +127,12 @@ export async function createAndHandleEvents(receipt: TransactionReceipt) {
       data: log.data,
       topics: log.topics,
     });
+    console.log(
+      "--- parsedLog tx",
+      log.transactionHash,
+      "args",
+      parsedLog.args
+    );
     await supabaseClient.from("Event").upsert(
       {
         block: Number(log.blockNumber),

@@ -69,6 +69,8 @@ export const BSC_RPC_URL = isBeta
   ? "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
   : "https://broccoli.rpc.48.club";
 
+export const BSC_OFFICIAL_RPC_URL = "https://bsc-dataseed.bnbchain.org";
+
 export const BROCCOLI_ADMIN_WHITELIST =
   process.env.BROCCOLI_ADMIN_WHITELIST?.split(",") || [];
 
@@ -78,4 +80,4 @@ export const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 export const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "";
 export const PRIVY_CLIENT_ID = process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID || "";
 export const PRIVY_SECRET = process.env.PRIVY_SECRET || "";
-export const PRIVY_TOKEN_NAME='privy-token'
+export const PRIVY_TOKEN_NAME = "privy-token";

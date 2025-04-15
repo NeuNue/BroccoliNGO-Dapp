@@ -1,12 +1,12 @@
 import { createPublicClient, decodeEventLog, http, zeroAddress } from "viem";
-import { ABI, BSC_RPC_URL, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
+import { ABI, BSC_OFFICIAL_RPC_URL, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
 import { supabaseClient } from "@/shared/supabase";
 import { getConfig, refreshTaskMeta, setEventHandled, updateConfig } from "@/shared/server/model";
 import { Database } from "@/shared/supabase/types";
 
 const publicClient = createPublicClient({
   chain: mainChain,
-  transport: http(BSC_RPC_URL),
+  transport: http(BSC_OFFICIAL_RPC_URL),
 });
 
 type ContractEvent<T> = {
@@ -240,6 +240,7 @@ export async function syncData(from?: string | number, to?: string | number) {
   const step = parseInt(config.indexer_step)
   const totalBlock = Number(await publicClient.getBlockNumber()) - 30
   const endBlock = (!isNaN(numTo) && numTo > 0) ? numTo : Math.min(start + step, totalBlock)
+  console.log(`Syncing from ${start} to ${endBlock} (${totalBlock})`)
   const events = await syncEvents(start, endBlock)
   const handled = await handleEvents()
   if (!from && !to) {
