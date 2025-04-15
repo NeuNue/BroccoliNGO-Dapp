@@ -106,14 +106,16 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isNextDisabled) return;
-    setAttachmentUploading(true);
-    const attachmentIPFSRes = await uploadJson(uploadedMediaUrls);
-    const attachmentIPFSLink = attachmentIPFSRes?.data?.url;
-    setBackgroundForm((prev) => ({
-      ...prev,
-      attachment: attachmentIPFSLink,
-    }));
-    setAttachmentUploading(false);
+    if (uploadedMediaUrls.length) {
+      setAttachmentUploading(true);
+      const attachmentIPFSRes = await uploadJson(uploadedMediaUrls);
+      const attachmentIPFSLink = attachmentIPFSRes?.data?.url;
+      setBackgroundForm((prev) => ({
+        ...prev,
+        attachment: attachmentIPFSLink,
+      }));
+      setAttachmentUploading(false);
+    }
     onNext();
   };
 

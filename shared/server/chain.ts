@@ -6,7 +6,7 @@ import {
   TransactionReceipt,
   decodeEventLog,
 } from "viem";
-import { ABI, BSC_RPC_URL, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
+import { ABI, BSC_OFFICIAL_RPC_URL, CONTRACT_ADDRESS, mainChain, topics } from "@/shared/constant";
 import { privateKeyToAccount } from "viem/accounts";
 import { createAndHandleEvents } from "@/shared/server/model";
 
@@ -21,7 +21,7 @@ const account = privateKeyToAccount(formattedKey as `0x${string}`);
 
 const walletClient = createWalletClient({
   chain: mainChain,
-  transport: http(BSC_RPC_URL),
+  transport: http(BSC_OFFICIAL_RPC_URL),
   account,
 }).extend(publicActions);
 
@@ -32,7 +32,9 @@ export const createTask = async (url: string) => {
     functionName: "mintItem",
     args: [account.address, url],
   });
+  console.log('-- hash', hash)
   const receipt: TransactionReceipt = await walletClient.waitForTransactionReceipt({ hash });
+  console.log('- create task receipt:', receipt);
   await createAndHandleEvents(receipt);
   return hash;
 };
