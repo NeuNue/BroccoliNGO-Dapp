@@ -37,7 +37,7 @@ interface Props {
 }
 
 const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { getString } = useI18n()
+  const { trans } = useI18n()
   const { backgroundForm, setBackgroundForm, isPreviewMode } = useRescueRequestCtx();
   const [uploading, setUploading] = useState(false);
   const [mediaPreviewUrls, setMediaPreviewUrls] = useState<string[]>([]);
@@ -132,19 +132,19 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
     <FormContainer onSubmit={handleSubmit}>
       <Main>
         <Header>
-          <Title>{getString(_TL_('Background Info'))}</Title>
+          <Title>{trans(_TL_('Background Info'))}</Title>
           <Description>
-            {getString(_TL_("Please describe your situation and the rescue animal's condition in detail. Photos/videos will help us process your request faster."))}
+            {trans(_TL_("Please describe your situation and the rescue animal's condition in detail. Photos/videos will help us process your request faster."))}
           </Description>
         </Header>
         <Content>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Context'))}
+              <RedAsterisk>*</RedAsterisk>{trans(_TL_('Context'))}
             </FormInputLabel>
             <FormTextarea
               required
-              placeholder={getString(_TL_('What supplies are urgently needed? What resources are you lacking? What kind of assistance do you need?')) as string}
+              placeholder={trans(_TL_('What supplies are urgently needed? What resources are you lacking? What kind of assistance do you need?')) as string}
               value={backgroundForm.context}
               name="context"
               disabled={isPreviewMode}
@@ -153,7 +153,7 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              {getString(_TL_('Attachment (Attach media files: e.g. JPEG, PNG, SVG .etc)'))}
+              {trans(_TL_('Attachment (Attach media files: e.g. JPEG, PNG, SVG .etc)'))}
             </FormInputLabel>
             <MediaList>
               {mediaPreviewUrls.map((url, index) => {
@@ -180,7 +180,7 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
                     ) : (
                       <>
                         <UploadIcon />
-                        <span>{getString(_TL_('Upload'))}</span>
+                        <span>{trans(_TL_('Upload'))}</span>
                       </>
                     )}
 
@@ -203,17 +203,17 @@ const FormBackground: React.FC<Props> = ({ onNext, onPrev }) => {
       </Main>
       <Footer>
         <Button disabled={uploading || attachmentUploading} onClick={onPrev}>
-          {getString(_TL_('Prev'))}
+          {trans(_TL_('Prev'))}
         </Button>
         {isPreviewMode ? (
-          <Button onClick={onNext}>{getString(_TL_('Next'))}</Button>
+          <Button onClick={onNext}>{trans(_TL_('Next'))}</Button>
         ) : (
           <SubmitButton
             loading={attachmentUploading}
             disabled={uploading || attachmentUploading}
             type="submit"
           >
-            {getString(_TL_('Next'))}
+            {trans(_TL_('Next'))}
           </SubmitButton>
         )}
       </Footer>

@@ -6,7 +6,7 @@ import { useI18n } from "@/components/ui/I18nProvider";
 
 export const Trading = () => {
   
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   
   const images = [
     {
@@ -62,7 +62,7 @@ export const Trading = () => {
   return (
     <Container>
       <Title>
-        {getString(_TL_('BROCCOLI {{br}} trading live on:'), {
+        {trans(_TL_('BROCCOLI {{br}} trading live on:'), {
           br: <br />,
         })}
       </Title>
@@ -80,7 +80,7 @@ export const Trading = () => {
 
         <ViewText>
           <Dashes />
-          <div>{getString(_TL_('View over 50 trading pairs on'))}</div>
+          <div>{trans(_TL_('View over 50 trading pairs on'))}</div>
           <Dashes />
         </ViewText>
 

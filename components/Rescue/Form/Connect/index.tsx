@@ -10,14 +10,14 @@ interface Props {
 }
 
 const FormConnect: FC<Props> = ({ connectLabel }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   const { ready, authenticated, user, getAccessToken } = usePrivy();
   const { login } = useLogin();
   return (
     <Container>
       {!authenticated ? (
         <Button onClick={login}>
-          <span>{connectLabel || getString(_TL_("Connect to start application"))}</span>
+          <span>{connectLabel || trans(_TL_("Connect to start application"))}</span>
         </Button>
       ) : (
         <ProfileButton>{user?.email?.address}</ProfileButton>

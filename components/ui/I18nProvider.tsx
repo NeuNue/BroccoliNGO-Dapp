@@ -23,7 +23,7 @@ export function useI18n() {
   const context = React.useContext(i18nContext);
   
   return {
-    getString(key: string, replace: Record<string, any> = {}) {
+    trans(key: string, replace: Record<string, any> = {}) {
       const str = context[key] || key;
       const parts = Object.keys(replace).reduce((acc: (string | React.ReactNode)[], replaceKey) => {
         const newParts: (string | React.ReactNode)[] = [];

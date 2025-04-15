@@ -32,7 +32,7 @@ interface Props {
   tokenId: string;
 }
 export const ProofView: FC<Props> = ({ admin, tokenId }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   const { profile } = useGlobalCtx();
   const { isAuthor } = useTaskDetailsCtx();
   const { login } = useLogin();
@@ -56,13 +56,13 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
     if (isProofDisabled) return;
     if (!proofImages.length) {
       toaster.create({
-        title: getString(_TL_("Please upload at least one proof")),
+        title: trans(_TL_("Please upload at least one proof")),
       });
       return;
     }
     if (!profile) {
       toaster.create({
-        title: getString(_TL_("Please connect your X account")),
+        title: trans(_TL_("Please connect your X account")),
       });
       return;
     }
@@ -77,8 +77,8 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
 
       if (!ipfsLink) {
         toaster.create({
-          title: getString(_TL_("Failed to upload Proof")),
-          description: getString(_TL_("Please try again later.")),
+          title: trans(_TL_("Failed to upload Proof")),
+          description: trans(_TL_("Please try again later.")),
           type: "error",
         });
         return;
@@ -94,8 +94,8 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
         return;
       }
       toaster.create({
-        title: getString(_TL_("Proof uploaded successfully")),
-        description: getString(_TL_("Your proof has been uploaded successfully.")),
+        title: trans(_TL_("Proof uploaded successfully")),
+        description: trans(_TL_("Your proof has been uploaded successfully.")),
         type: "success",
       });
       location.reload();

@@ -97,8 +97,8 @@
   "Vote result has been uploaded successfully.": "投票结果已成功上传。",
   "Vote result uploaded": "投票结果已上传",
   "Vote success": "投票成功",
-  "What supplies are urgently needed? Specify exact quantities and specifications (e.g. \"200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)\")": "急需哪些物资？请具体说明数量和规格（例如\"200公斤成犬狗粮（鸡肉口味），10个无菌兽医级绷带（5厘米宽），阿莫西林250毫克×30片，20公斤幼犬奶粉（山羊奶基）\"）",
-  "What supplies are urgently needed? What resources are you lacking? What kind of assistance do you need?": "急需哪些物资？您缺少哪些资源？您需要什么样的帮助？",
+  "What supplies are urgently needed? Specify exact quantities and specifications (e.g. \"200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)\")": "急需哪些物资？\n请具体说明数量和规格（例如\"200公斤成犬狗粮（鸡肉口味），10个无菌兽医级绷带（5厘米宽），阿莫西林250毫克×30片，20公斤幼犬奶粉（山羊奶基）\"）",
+  "What supplies are urgently needed? What resources are you lacking? What kind of assistance do you need?": "急需哪些物资？\n您缺少哪些资源？\n您需要什么样的帮助？",
   "YES": "是",
   "Yes": "是",
   "You can also check our fund transfers on {{link}}. — everything is open and transparent.": "您也可以在 {{link}} 查看我们的资金转账。— 一切都是公开透明的。",
@@ -109,7 +109,6 @@
   "Your application will be reviewed and voted on by the community. Our dedicated team will keep you updated on the progress via X/Telegram. Please ensure your contact information is accessible.": "您的申请将由社区审核和投票。我们的专门团队将通过X/Telegram保持进度更新。请确保您的联系信息可访问。",
   "Your proof has been uploaded successfully.": "您的证明已成功上传。",
   "Connect to start application": "连接并启动应用",
-  "What supplies are urgently needed? Specify exact quantities and specifications (e.g. \"200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)\"": "急需哪些物资？请具体说明数量和规格（例如\"200公斤成犬狗粮（鸡肉口味），10个无菌兽医级绷带（5厘米宽），阿莫西林250毫克×30片，20公斤幼犬奶粉（山羊奶基）\"）",
   "Rescue Request": "申请救助",
   "Location": "位置"
 }

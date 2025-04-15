@@ -25,7 +25,7 @@ interface Props {
 }
 
 const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
-  const { getString } = useI18n()
+  const { trans } = useI18n()
   const { profile } = useGlobalCtx()
   const { isPreviewMode, contactForm, setContactForm } =
     useRescueRequestCtx();
@@ -70,15 +70,15 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
     <FormContainer onSubmit={handleSubmit}>
       <Main>
         <Header>
-          <Title>{getString(_TL_('Contact Info'))}</Title>
+          <Title>{trans(_TL_('Contact Info'))}</Title>
           <Description>
-            {getString(_TL_('Kindly provide your contact details to facilitate application follow-up.'))}
+            {trans(_TL_('Kindly provide your contact details to facilitate application follow-up.'))}
           </Description>
         </Header>
         <Content>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Full Name / Organization'))}
+              <RedAsterisk>*</RedAsterisk>{trans(_TL_('Full Name / Organization'))}
             </FormInputLabel>
             <FormInput
               name="organization"
@@ -91,7 +91,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Contact Email'))}
+              <RedAsterisk>*</RedAsterisk>{trans(_TL_('Contact Email'))}
             </FormInputLabel>
             <FormInput
               name="email"
@@ -105,7 +105,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Location'))}
+              <RedAsterisk>*</RedAsterisk>{trans(_TL_('Location'))}
             </FormInputLabel>
             <FormInputGroup>
               <FormInput
@@ -113,7 +113,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
                 value={contactForm.country}
                 onChange={handleInputChange}
                 required
-                placeholder={getString(_TL_('Country')) as string}
+                placeholder={trans(_TL_('Country')) as string}
                 disabled={isPreviewMode}
               />
               <FormInput
@@ -121,7 +121,7 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
                 value={contactForm.city}
                 onChange={handleInputChange}
                 required
-                placeholder={getString(_TL_("City")) as string}
+                placeholder={trans(_TL_("City")) as string}
                 disabled={isPreviewMode}
               />
             </FormInputGroup>
@@ -129,11 +129,11 @@ const FormContact: React.FC<Props> = ({ onNext, onPrev }) => {
         </Content>
       </Main>
       <Footer>
-        <Button onClick={onPrev}>{getString(_TL_('Prev'))}</Button>
+        <Button onClick={onPrev}>{trans(_TL_('Prev'))}</Button>
         {isPreviewMode ? (
-          <Button onClick={onNext}>{getString(_TL_('Next'))}</Button>
+          <Button onClick={onNext}>{trans(_TL_('Next'))}</Button>
         ) : (
-          <SubmitButton type="submit">{getString(_TL_('Next'))}</SubmitButton>
+          <SubmitButton type="submit">{trans(_TL_('Next'))}</SubmitButton>
         )}
       </Footer>
     </FormContainer>

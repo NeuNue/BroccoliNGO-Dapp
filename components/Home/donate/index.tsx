@@ -9,7 +9,7 @@ interface Props {
   onClose: () => void;
 }
 const DonateDialog: FC<Props> = ({ onClose }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   const { donate } = useDonate();
   const [donateType, setDonateType] = useState<DONATE_TYPE | DONATE_BNB_TYPE>(
     DONATE_TYPE.BROCCOLI
@@ -117,11 +117,11 @@ const DonateDialog: FC<Props> = ({ onClose }) => {
               donate(donateAmount, donateType);
             }}
           >
-            <span>{getString(_TL_('Confirm Donation'))}</span>
+            <span>{trans(_TL_('Confirm Donation'))}</span>
           </button>
           <div className="text">
             <p>
-              {getString(_TL_('You can follow us on {{link}} to see how we help stray animals.'), {
+              {trans(_TL_('You can follow us on {{link}} to see how we help stray animals.'), {
                 link: <a
                   className="text-link"
                   href="https://x.com/Broccoli_NGO"
@@ -132,7 +132,7 @@ const DonateDialog: FC<Props> = ({ onClose }) => {
               })}
             </p>
             <p>
-              {getString(_TL_('You can also check our fund transfers on {{link}}. — everything is open and transparent.'), {
+              {trans(_TL_('You can also check our fund transfers on {{link}}. — everything is open and transparent.'), {
                 link: <a
                   className="text-link"
                   href="https://bscscan.com/address/0x0022dc116bed13ddb7635298723b45a582d50c2e"

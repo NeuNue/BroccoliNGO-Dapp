@@ -16,7 +16,7 @@ interface Props {
 }
 
 const FormPreSection: FC<Props> = ({ onNext }) => {
-  const { getString } = useI18n()
+  const { trans } = useI18n()
   const { ready, authenticated } = usePrivy();
   const { profile } = useGlobalCtx()
   const { currentTask, completedTasks } = useRescueRequestCtx();
@@ -29,7 +29,7 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
           </LogoContainer>
 
           <Title>
-            <span>{getString(_TL_('Fund Request Form'))}</span>
+            <span>{trans(_TL_('Fund Request Form'))}</span>
             <TitleStar alt="star" src="/decration/star-1.svg" />
           </Title>
 
@@ -54,11 +54,11 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
               out to you.
             </p> */}
             <p>
-             {getString(_TL_("Broccoli's vision is to harness the power of blockchain to illuminate the path of charity and pet rescue with transparency, fostering trust and weaving more love and beauty into the fabric of our world."))}
+             {trans(_TL_("Broccoli's vision is to harness the power of blockchain to illuminate the path of charity and pet rescue with transparency, fostering trust and weaving more love and beauty into the fabric of our world."))}
             </p>
 
             <p>
-              {getString(_TL_("If you're involved in pet rescue work, we warmly invite you to complete this form to apply for financial support."))}
+              {trans(_TL_("If you're involved in pet rescue work, we warmly invite you to complete this form to apply for financial support."))}
             </p>
           </Description>
         </HeaderContainer>
@@ -71,8 +71,8 @@ const FormPreSection: FC<Props> = ({ onNext }) => {
         ) : (
           <StartButton onClick={onNext}>
             {currentTask
-              ? getString(_TL_("View Your Application #{{id}}"), { id: currentTask.task.nftId })
-              : getString(_TL_("Start Application"))}
+              ? trans(_TL_("View Your Application #{{id}}"), { id: currentTask.task.nftId })
+              : trans(_TL_("Start Application"))}
           </StartButton>
         )}
       </Footer>

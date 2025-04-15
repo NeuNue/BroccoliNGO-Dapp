@@ -14,25 +14,25 @@ interface Props {
   onSubmitted?: () => void;
 }
 const FormMain: FC<Props> = ({ onPrev }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   const { currentTask } = useRescueRequestCtx();
   const { isMobile } = useGlobalCtx();
   const [stepIdx, setStepIdx] = useState(0);
   const steps = useMemo(() => {
     return [
       {
-        title: getString(isMobile ? _TL_('Contact') : _TL_("Contact Info")),
-        description: getString(_TL_("Step 1 description")),
+        title: trans(isMobile ? _TL_('Contact') : _TL_("Contact Info")),
+        description: trans(_TL_("Step 1 description")),
         Component: FormContact,
       },
       {
-        title: getString(isMobile ? _TL_('Background') : _TL_("Background Info")),
-        description: getString(_TL_("Step 2 description")),
+        title: trans(isMobile ? _TL_('Background') : _TL_("Background Info")),
+        description: trans(_TL_("Step 2 description")),
         Component: FormBackground,
       },
       {
-        title: getString(isMobile ? _TL_('Funds') : _TL_("Funds Request")),
-        description: getString(_TL_("Step 3 description")),
+        title: trans(isMobile ? _TL_('Funds') : _TL_("Funds Request")),
+        description: trans(_TL_("Step 3 description")),
         Component: FormRequest,
       },
     ];

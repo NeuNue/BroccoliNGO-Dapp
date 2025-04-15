@@ -22,7 +22,7 @@ interface Props {
   tokenId: string;
 }
 export const ApprovalView: FC<Props> = ({ tokenId }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   const { profile } = useGlobalCtx();
   const {
     task,
@@ -116,8 +116,8 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
 
     if (endDateObj <= startDateObj) {
       toaster.create({
-        title: getString(_TL_("Invalid date range")),
-        description: getString(_TL_("End date must be after start date")),
+        title: trans(_TL_("Invalid date range")),
+        description: trans(_TL_("End date must be after start date")),
         type: "error",
       });
       return;
@@ -135,14 +135,14 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
     );
     if (res.code === 0) {
       toaster.create({
-        title: getString(_TL_("Task approved")),
-        description: getString(_TL_("Task has been approved successfully.")),
+        title: trans(_TL_("Task approved")),
+        description: trans(_TL_("Task has been approved successfully.")),
         type: "success",
       });
     } else {
       toaster.create({
-        title: getString(_TL_("Failed to approve task")),
-        description: getString(_TL_("Please try again later.")),
+        title: trans(_TL_("Failed to approve task")),
+        description: trans(_TL_("Please try again later.")),
         type: "error",
       });
     }
@@ -152,7 +152,7 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
 
   return (
     <CardContainer>
-      <CardTitle>{getString(_TL_("Approval"))}</CardTitle>
+      <CardTitle>{trans(_TL_("Approval"))}</CardTitle>
       <StyledApprovalBox>
         {taskStatus === "Pending" ? (
           <>
@@ -296,7 +296,7 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
                 disabled={isApprovedLoading}
                 onClick={handleApproveTask}
               >
-                {getString(_TL_("Start Vote"))}
+                {trans(_TL_("Start Vote"))}
               </SubmitButton>
             ) : null}
           </>

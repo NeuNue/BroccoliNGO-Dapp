@@ -9,7 +9,7 @@ interface Props {
 }
 const RescueSuccessfulDialog: FC<Props> = ({ onClose }) => {
 
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   return (
     <div className="dialog" onClick={onClose}>
       <div
@@ -19,7 +19,7 @@ const RescueSuccessfulDialog: FC<Props> = ({ onClose }) => {
         }}
       >
         <div className="panel-inner rescue">
-          <h2>{getString(_TL_('Request Submitted'))}</h2>
+          <h2>{trans(_TL_('Request Submitted'))}</h2>
           <Image
             className="foot-1"
             src="/foot-1.svg"
@@ -49,12 +49,12 @@ const RescueSuccessfulDialog: FC<Props> = ({ onClose }) => {
             alt="foot"
           ></Image>
           <div className="text rescue-successful">
-            <p>{getString(_TL_('Thank you for your passion for animal rescue efforts.'))}</p>
+            <p>{trans(_TL_('Thank you for your passion for animal rescue efforts.'))}</p>
             <p>
-              {getString(_TL_('Broccoli is committed to leveraging blockchain technology and the cultural power of the meme community to bring more care and compassion to the world.'))}
+              {trans(_TL_('Broccoli is committed to leveraging blockchain technology and the cultural power of the meme community to bring more care and compassion to the world.'))}
             </p>
             <p>
-              {getString(_TL_('Your application will be reviewed and voted on by the community. Our dedicated team will keep you updated on the progress via X/Telegram. Please ensure your contact information is accessible.'))}
+              {trans(_TL_('Your application will be reviewed and voted on by the community. Our dedicated team will keep you updated on the progress via X/Telegram. Please ensure your contact information is accessible.'))}
             </p>
           </div>
           <button
@@ -62,7 +62,7 @@ const RescueSuccessfulDialog: FC<Props> = ({ onClose }) => {
             className="confirm-btn confirm-donate"
             onClick={onClose}
           >
-            <span>{getString(_TL_('Done'))}</span>
+            <span>{trans(_TL_('Done'))}</span>
           </button>
         </div>
       </div>

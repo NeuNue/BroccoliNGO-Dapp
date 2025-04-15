@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Completed: React.FC<Props> = ({ tokenId }) => {
-  const { getString } = useI18n();
+  const { trans } = useI18n();
   return (
     <Container>
       <Main>
@@ -18,14 +18,14 @@ const Completed: React.FC<Props> = ({ tokenId }) => {
           <RightIcon />
         </SuccessSymbol>
         <Content>
-          <Title>{getString(_TL_('Request submitted'))}</Title>
+          <Title>{trans(_TL_('Request submitted'))}</Title>
           <Description>
-            <p>{getString(_TL_('Thank you for your passion for animal rescue efforts.'))}</p>
+            <p>{trans(_TL_('Thank you for your passion for animal rescue efforts.'))}</p>
             <p>
-              {getString(_TL_('Broccoli is committed to leveraging blockchain technology and the cultural power of the meme community to bring more care and compassion to the world.'))}
+              {trans(_TL_('Broccoli is committed to leveraging blockchain technology and the cultural power of the meme community to bring more care and compassion to the world.'))}
             </p>
             <p>
-              {getString(_TL_('Your application has been recorded at {{link}} and will be reviewed by the community.'), {
+              {trans(_TL_('Your application has been recorded at {{link}} and will be reviewed by the community.'), {
                 link: (
                   <Link href={`/task/${tokenId}`} target="_blank">
                     broccoli.ngo/task/
@@ -35,14 +35,14 @@ const Completed: React.FC<Props> = ({ tokenId }) => {
               })}
             </p>
             <p>
-              {getString(_TL_('You may visit this link at any time to check your progress. Broccoli team will keep you updated via E-mail. Please check your inbox (and spam folder) for our confirmation email.'))}
+              {trans(_TL_('You may visit this link at any time to check your progress. Broccoli team will keep you updated via E-mail. Please check your inbox (and spam folder) for our confirmation email.'))}
             </p>
           </Description>
         </Content>
       </Main>
       <Footer>
         <CheckButtonLink href={`/task/${tokenId}`} target="_blank">
-          <CheckButton>{getString(_TL_('Check your Application'))}</CheckButton>
+          <CheckButton>{trans(_TL_('Check your Application'))}</CheckButton>
         </CheckButtonLink>
       </Footer>
     </Container>
