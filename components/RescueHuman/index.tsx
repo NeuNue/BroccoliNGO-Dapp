@@ -30,6 +30,7 @@ import { fetchProofs } from "@/shared/api";
 import { useAccount, useDisconnect, useReadContract } from "wagmi";
 import SBTABI from "@/shared/abi/SBT";
 import { HelpRequest2, NFTMetaData2 } from "@/shared/types/help";
+import { useI18n } from "../ui/I18nProvider";
 
 interface RescueDialogProps {
   open: boolean;
@@ -731,6 +732,7 @@ interface Props {
   onSuccess: () => void;
 }
 const FundRequestForm: FC<Props> = ({ onSuccess }) => {
+  const { getString } = useI18n();
   const { address, isConnected, connector } = useAccount();
   const { disconnect } = useDisconnect();
   const [proofImagesLoading, setProofImagesLoading] = useState(false);
@@ -908,9 +910,9 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
 
       if (!ipfsLink) {
         toaster.create({
-          title: "Failed to submit request",
-          description: "Please try again later.",
-          type: "error",
+          title: getString(_TL_("Failed to submit request")),
+          description: getString(_TL_("Please try again later.")),
+          type: 'error',
         });
         return;
       }
@@ -919,9 +921,9 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
 
       if (createRes.code !== 0) {
         toaster.create({
-          title: "Failed to submit request",
-          description: createRes?.message || "Please try again later.",
-          type: "error",
+          title: getString(_TL_("Failed to submit request")),
+          description: createRes?.message || getString(_TL_("Please try again later.")),
+          type: 'error',
         });
         return;
       }
@@ -1033,21 +1035,16 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
             </LogoContainer>
 
             <Title>
-              <span>Fund Request Form</span>
+              <span>{getString(_TL_('Fund Request Form'))}</span>
               <TitleStar alt="star" src="/decration/star-1.svg" />
             </Title>
 
             <Description>
               <p>
-                Broccoli&apos;s vision is to harness the power of blockchain to
-                illuminate the path of charity with transparency, fostering
-                trust and weaving more love and beauty into the fabric of our
-                world.
+                {getString(_TL_("Broccoli's vision is to harness the power of blockchain to illuminate the path of charity with transparency, fostering trust and weaving more love and beauty into the fabric of our world."))}
               </p>
               <p>
-                This is a support channel set up for the March 28, 2025
-                earthquake in Myanmar. At this time, we can only support local
-                people affected by this event. Thank you for your understanding.
+                {getString(_TL_("This is a support channel set up for the March 28, 2025 earthquake in Myanmar. At this time, we can only support local people affected by this event. Thank you for your understanding."))}
               </p>
             </Description>
           </HeaderContainer>
@@ -1117,8 +1114,8 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                           if (!connected) {
                             return (
                               <ConnectWalletButton onClick={openConnectModal}>
-                                <b>Connect your wallet holding BABT</b>
-                                <p>(Binance Account Bound Token)</p>
+                                <b>{getString(_TL_('Connect your wallet holding BABT'))}</b>
+                                <p>{getString(_TL_('(Binance Account Bound Token)'))}</p>
                               </ConnectWalletButton>
                             );
                           }
@@ -1130,7 +1127,7 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                                 type="button"
                                 className="donate-btn"
                               >
-                                <span>Wrong network</span>
+                                <span>{getString(_TL_('Wrong network'))}</span>
                               </button>
                             );
                           }
@@ -1143,8 +1140,7 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                                 className="donate-btn"
                               >
                                 <span>
-                                  Connect your wallet holding BABT(Binance
-                                  Account Bound Token)
+                                  {getString(_TL_('Connect your wallet holding BABT(Binance Account Bound Token)'))}
                                 </span>
                               </button>
                             </div>
@@ -1161,7 +1157,7 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
               <>
                 <FormGroup>
                   <Label>
-                    <RedAsterisk>*</RedAsterisk> 𝕏 Account:
+                    <RedAsterisk>*</RedAsterisk> 𝕏 {getString(_TL_('Account'))}:
                   </Label>
                   <XAccountInputContainer>
                     {profile ? (
@@ -1181,7 +1177,7 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                         disabled={!!currentTask || isSubmitting || isSubmitted}
                       >
                         <a href={xAuthLink}>
-                          <span>Connect</span>
+                          <span>{getString(_TL_('Connect'))}</span>
                           <XIcon />
                         </a>
                       </ConnectXButton>
@@ -1190,8 +1186,8 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Contact Email">
-                    <RedAsterisk>*</RedAsterisk> Contact Email:
+                  <Label title={getString(_TL_('Contact Email:')) as string}>
+                    <RedAsterisk>*</RedAsterisk> {getString(_TL_('Contact Email:'))}
                   </Label>
                   <Input
                     type="text"
@@ -1206,8 +1202,8 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Location: City, Country">
-                    <RedAsterisk>*</RedAsterisk> Location:
+                  <Label title={getString(_TL_("Location: City, Country")) as string}>
+                    <RedAsterisk>*</RedAsterisk> {getString(_TL_('Location:'))}
                   </Label>
                   <Input
                     type="text"
@@ -1222,12 +1218,12 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Detailed breakdown of how the funds will be used.">
-                    <RedAsterisk>*</RedAsterisk> Planned Use of Funds:
+                  <Label title={getString(_TL_("Detailed breakdown of how the funds will be used.")) as string}>
+                    <RedAsterisk>*</RedAsterisk> {getString(_TL_('Planned Use of Funds:'))}
                   </Label>
                   <TextArea
                     name="budgetPlan"
-                    placeholder="Detailed breakdown of how the funds will be used."
+                    placeholder={getString(_TL_("Detailed breakdown of how the funds will be used.")) as string}
                     value={formData.budgetPlan}
                     onChange={handleInputChange}
                     required
@@ -1236,8 +1232,8 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Any other information you'd like to share">
-                    <RedAsterisk>*</RedAsterisk> Passport/ID Card:
+                  <Label title={getString(_TL_("Any other information you'd like to share")) as string}>
+                    <RedAsterisk>*</RedAsterisk> {getString(_TL_('Passport/ID Card:'))}
                   </Label>
                   <Stack direction="row" flexWrap="wrap" gap="4">
                     {parsedProofs.map((img, idx) => {
@@ -1297,10 +1293,10 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Can Provide Invoice (YES/NO).">
+                  <Label title={getString(_TL_("Can Provide Invoice (YES/NO).")) as string}>
                     {" "}
                     Can Provide Invoice: (
-                    {formData.canProvideInvoice ? "YES" : "NO"})
+                    {formData.canProvideInvoice ? getString(_TL_("YES")) : getString(_TL_("NO"))})
                   </Label>
                   <Switch.Root
                     // defaultChecked={formData.canProvideInvoice}
@@ -1322,9 +1318,9 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label title="Can Provide Public Thank-You Letter (YES/NO).">
+                  <Label title={getString(_TL_("Can Provide Public Thank-You Letter (YES/NO).")) as string}>
                     Can Provide Public Thank-You Letter: (
-                    {formData.canProvidePublicThankYouLetter ? "YES" : "NO"})
+                    {formData.canProvidePublicThankYouLetter ? getString(_TL_("YES")) : getString(_TL_("NO"))})
                   </Label>
                   <Switch.Root
                     // defaultChecked={formData.canProvidePublicThankYouLetter}
@@ -1350,14 +1346,14 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                     disabled={isSubmitting || isDisabled}
                   >
                     {isSubmitted ? (
-                      "Request Successful!"
+                      getString(_TL_("Request Successful!"))
                     ) : isSubmitting ? (
                       <>
                         <LoadingSpinner />
-                        Submitting...
+                        {getString(_TL_('Submitting...'))}
                       </>
                     ) : (
-                      "Submit Request"
+                      getString(_TL_("Submit Request"))
                     )}
                   </SubmitButton>
                 ) : null}
@@ -1368,32 +1364,25 @@ const FundRequestForm: FC<Props> = ({ onSuccess }) => {
                   <>
                     <WalletProfileDisconnect>
                       <p>
-                        The current address does not hold BABT, please mint BABT
-                        or change the wallet holding BABT.
+                        {getString(_TL_('The current address does not hold BABT, please mint BABT or change the wallet holding BABT.'))}
                       </p>
-                      <b onClick={() => disconnect()}>Disconnect Wallet</b>
+                      <b onClick={() => disconnect()}>{getString(_TL_('Disconnect Wallet'))}</b>
                     </WalletProfileDisconnect>
                   </>
                 )}
                 <BABTInfo>
                   <BABTGifImg src="/bab-token.gif" />
-                  <h2>About BABT</h2>
+                  <h2>{getString(_TL_('About BABT'))}</h2>
                   <div>
                     <p>
-                      Binance Account Bound Token is an official token from
-                      Binance that proves a user has completed KYC verification.
-                      Each user can only have one BABT, and it is
-                      non-transferable. It helps verify if a wallet is
-                      controlled by a real user, preventing bots or malicious
-                      activity.
+                      {getString(_TL_('Binance Account Bound Token is an official token from Binance that proves a user has completed KYC verification. Each user can only have one BABT, and it is non-transferable. It helps verify if a wallet is controlled by a real user, preventing bots or malicious activity.'))}
                     </p>
                     <p>
-                      You can search for &quot;BABT&quot; in your BINANCE wallet
-                      to quickly register an on-chain KYC credential.
+                      {getString(_TL_('You can search for "BABT" in your BINANCE wallet to quickly register an on-chain KYC credential.'))}
                     </p>
                   </div>
                   <a href="https://www.binance.com/en/BABT" target="_blank">
-                    <BABTMintBtn>Mint BABT</BABTMintBtn>
+                    <BABTMintBtn>{getString(_TL_('Mint BABT'))}</BABTMintBtn>
                   </a>
                 </BABTInfo>
               </>

@@ -15,6 +15,7 @@ import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { toaster } from "@/components/ui/toaster";
 import { useLogin } from "@privy-io/react-auth";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 const createBlobUrl = (file: File | Blob): string => {
   const blobUrl = URL.createObjectURL(file);
@@ -31,6 +32,7 @@ interface Props {
   tokenId: string;
 }
 export const ProofView: FC<Props> = ({ admin, tokenId }) => {
+  const { getString } = useI18n();
   const { profile } = useGlobalCtx();
   const { isAuthor } = useTaskDetailsCtx();
   const { login } = useLogin();
@@ -54,13 +56,13 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
     if (isProofDisabled) return;
     if (!proofImages.length) {
       toaster.create({
-        title: "Please upload at least one proof",
+        title: getString(_TL_("Please upload at least one proof")),
       });
       return;
     }
     if (!profile) {
       toaster.create({
-        title: "Please connect your X account",
+        title: getString(_TL_("Please connect your X account")),
       });
       return;
     }
@@ -75,8 +77,8 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
 
       if (!ipfsLink) {
         toaster.create({
-          title: "Failed to upload Proof",
-          description: "Please try again later.",
+          title: getString(_TL_("Failed to upload Proof")),
+          description: getString(_TL_("Please try again later.")),
           type: "error",
         });
         return;
@@ -92,8 +94,8 @@ export const ProofView: FC<Props> = ({ admin, tokenId }) => {
         return;
       }
       toaster.create({
-        title: "Proof uploaded successfully",
-        description: "Your proof has been uploaded successfully.",
+        title: getString(_TL_("Proof uploaded successfully")),
+        description: getString(_TL_("Your proof has been uploaded successfully.")),
         type: "success",
       });
       location.reload();

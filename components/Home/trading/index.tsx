@@ -2,8 +2,12 @@ import Image from "next/image";
 import React from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 export const Trading = () => {
+  
+  const { getString } = useI18n();
+  
   const images = [
     {
       img: "/trading/binance.png",
@@ -58,9 +62,9 @@ export const Trading = () => {
   return (
     <Container>
       <Title>
-        BROCCOLI
-        <br />
-        trading live on:
+        {getString(_TL_('BROCCOLI {{br}} trading live on:'), {
+          br: <br />,
+        })}
       </Title>
 
       <Border>
@@ -76,7 +80,7 @@ export const Trading = () => {
 
         <ViewText>
           <Dashes />
-          <div>View over 50 trading pairs on</div>
+          <div>{getString(_TL_('View over 50 trading pairs on'))}</div>
           <Dashes />
         </ViewText>
 

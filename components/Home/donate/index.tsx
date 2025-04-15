@@ -3,11 +3,13 @@ import { FC, useState } from "react";
 // import "./style.scss";
 import { DONATE_BNB_TYPE, DONATE_TYPE } from "@/shared/constant";
 import useDonate from "@/shared/hooks/useDonate";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   onClose: () => void;
 }
 const DonateDialog: FC<Props> = ({ onClose }) => {
+  const { getString } = useI18n();
   const { donate } = useDonate();
   const [donateType, setDonateType] = useState<DONATE_TYPE | DONATE_BNB_TYPE>(
     DONATE_TYPE.BROCCOLI
@@ -115,30 +117,30 @@ const DonateDialog: FC<Props> = ({ onClose }) => {
               donate(donateAmount, donateType);
             }}
           >
-            <span>Confirm Donation</span>
+            <span>{getString(_TL_('Confirm Donation'))}</span>
           </button>
           <div className="text">
             <p>
-              You can follow us on{" "}
-              <a
-                className="text-link"
-                href="https://x.com/Broccoli_NGO"
-                target="_blank"
-              >
-                X
-              </a>{" "}
-              to see how we help stray animals.
+              {getString(_TL_('You can follow us on {{link}} to see how we help stray animals.'), {
+                link: <a
+                  className="text-link"
+                  href="https://x.com/Broccoli_NGO"
+                  target="_blank"
+                >
+                  X
+                </a>
+              })}
             </p>
             <p>
-              You can also check our fund transfers on{" "}
-              <a
-                className="text-link"
-                href="https://bscscan.com/address/0x0022dc116bed13ddb7635298723b45a582d50c2e"
-                target="_blank"
-              >
-                https://bscscan.com.
-              </a>{" "}
-              — everything is open and transparent.
+              {getString(_TL_('You can also check our fund transfers on {{link}}. — everything is open and transparent.'), {
+                link: <a
+                  className="text-link"
+                  href="https://bscscan.com/address/0x0022dc116bed13ddb7635298723b45a582d50c2e"
+                  target="_blank"
+                >
+                  BscScan
+                </a>
+              })}
             </p>
           </div>
         </div>

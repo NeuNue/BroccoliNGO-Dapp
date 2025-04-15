@@ -15,12 +15,14 @@ import { toaster } from "@/components/ui/toaster";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { checkIsVoteOnchainMetadata, VoteOnchainMetadata } from "@/shared/task";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   tokenId: string;
   admin?: boolean;
 }
 export const FundRecordsView: FC<Props> = ({ tokenId, admin }) => {
+  const { getString } = useI18n();
   const { profile } = useGlobalCtx();
   const { uploadedFundRecords, parsedFundRecords } = useTaskDetailsCtx();
   const publicClient = usePublicClient();
@@ -46,8 +48,8 @@ export const FundRecordsView: FC<Props> = ({ tokenId, admin }) => {
 
       if (!ipfsLink) {
         toaster.create({
-          title: "Failed to upload FundRecord",
-          description: "Please try again later.",
+          title: getString(_TL_("Failed to upload FundRecord")),
+          description: getString(_TL_("Please try again later.")),
           type: "error",
         });
         return;
@@ -57,15 +59,15 @@ export const FundRecordsView: FC<Props> = ({ tokenId, admin }) => {
 
       if (res.code !== 0) {
         toaster.create({
-          title: "Failed to upload FundRecord",
-          description: "Please try again later.",
+          title: getString(_TL_("Failed to upload FundRecord")),
+          description: getString(_TL_("Please try again later.")),
           type: "error",
         });
         return;
       }
       toaster.create({
-        title: "Fund Records uploaded",
-        description: "Fund records has been uploaded successfully.",
+        title: getString(_TL_("Fund Records uploaded")),
+        description: getString(_TL_("Fund records has been uploaded successfully.")),
         type: "success",
       });
       location.reload();

@@ -19,6 +19,7 @@ import YesNoSelection from "../YesNoSection";
 import { useMemo, useState } from "react";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   onNext: () => void;
@@ -26,6 +27,7 @@ interface Props {
 }
 
 const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
+  const { getString } = useI18n();
   const { refreshProfile } = useGlobalCtx();
   const {
     requestForm,
@@ -64,42 +66,38 @@ const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
     <FormContainer onSubmit={handleSubmit}>
       <Main>
         <Header>
-          <Title>Funds Request</Title>
+          <Title>{getString(_TL_('Funds Request'))}</Title>
           <Description>
-            Please describe your situation and the rescue animal&apos;s
-            condition in detail. Photos/videos will help us process your request
-            faster.
+            {getString(_TL_("Please describe your situation and the rescue animal's condition in detail. Photos/videos will help us process your request faster."))}
           </Description>
         </Header>
         <Content>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>Supplies request
+              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Supplies request'))}
             </FormInputLabel>
             <FormTextarea
               required
               name="suppliesRequest"
               onChange={handleInputChange}
               value={requestForm.suppliesRequest}
-              placeholder={`What supplies are urgently needed?
-Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)")
-`}
+              placeholder={getString(_TL_('What supplies are urgently needed? Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken flavor), 10 sterile vet-grade bandages (5cm width), amoxicillin 250mg ×30 tablets, 20kg puppy milk powder (goat milk base)"')) as string}
               disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
-            <FormInputLabel>Additional Info</FormInputLabel>
+            <FormInputLabel>{getString(_TL_('Additional Info'))}</FormInputLabel>
             <FormTextarea
               name="additionalInfo"
               onChange={handleInputChange}
               value={requestForm.additionalInfo}
-              placeholder={`Please provide any other relevant details (e.g., special requirements, preferred brands, or delivery instructions)`}
+              placeholder={getString(_TL_('Please provide any other relevant details (e.g., special requirements, preferred brands, or delivery instructions)')) as string}
               disabled={isPreviewMode}
             />
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>Can you provide invoices?
+              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Can you provide invoices?'))}
             </FormInputLabel>
             <YesNoSelection
               value={requestForm.canProvideInvoices}
@@ -114,8 +112,7 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
           </FormGroup>
           <FormGroup>
             <FormInputLabel>
-              <RedAsterisk>*</RedAsterisk>Are public acknowledgments possible
-              for us (Broccoli Hope Foundation)?
+              <RedAsterisk>*</RedAsterisk>{getString(_TL_('Are public acknowledgments possible for us (Broccoli Hope Foundation)?'))}
             </FormInputLabel>
             <YesNoSelection
               value={requestForm.canProvidePublicAcknowledgments}
@@ -132,11 +129,11 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
       </Main>
       <Footer>
         <Button disabled={isSubmitting} onClick={onPrev}>
-          Prev
+          {getString(_TL_('Prev'))}
         </Button>
         {isPreviewMode ? (
           <Button disabled={isSubmitting} type="button" onClick={onNext}>
-            Next
+            {getString(_TL_('Next'))}
           </Button>
         ) : (
           <SubmitButton
@@ -144,7 +141,7 @@ Specify exact quantities and specifications (e.g. "200kg adult dog food (chicken
             disabled={isSubmitting}
             type="submit"
           >
-            Submit
+            {getString(_TL_('Submit'))}
           </SubmitButton>
         )}
       </Footer>

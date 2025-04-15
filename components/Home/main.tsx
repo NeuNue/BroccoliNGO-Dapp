@@ -267,7 +267,7 @@ function HomeMain() {
                 </div>
               )}
               <button type="button" className="request-btn" onClick={onOpen}>
-                <span>Rescue Request</span>
+                <span>{getString(_TL_("Rescue Request"))}</span>
                 {/* <Image
                 src="./request.svg"
                 width={130}
