@@ -51,15 +51,26 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    const isVoteEnabled =
+      !!task.vote_start_date &&
+      Date.now() >= new Date(task.vote_start_date).getTime();
+
     const isVoteEnded =
+      isVoteEnabled &&
       new Date(task.vote_end_date || "0").getTime() <= Date.now();
+
+    // check if vote is started
+    if (!isVoteEnabled) {
+      throw new Error("Vote is not started yet.", {
+        cause: { code: 403 },
+      });
+    }
 
     // check if vote is ended
     if (!isVoteEnded) {
-      return NextResponse.json(
-        { code: -1, error: "Vote is not ended yet." },
-        { status: 403 }
-      );
+      throw new Error("Vote is not ended yet.", {
+        cause: { code: 403 },
+      });
     }
 
     // get vote result

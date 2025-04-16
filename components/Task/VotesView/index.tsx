@@ -42,7 +42,6 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
   const { profile } = useGlobalCtx();
   const {
     task,
-    isAuthor,
     isVoteEnded,
     voteResult,
     onchainVoteResultURL,
@@ -621,7 +620,7 @@ const VotesPaginationBox = styled.div`
     align-items: center;
     gap: 10px;
     border-radius: 6px;
-    border: 1px solid rgba(50, 47, 44, 0.1);
+    // border: 1px solid rgba(50, 47, 44, 0.1);
 
     color: #322f2c;
     text-align: center;

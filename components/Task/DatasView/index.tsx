@@ -16,14 +16,8 @@ interface DatasViewProps {
 
 export const DatasView: FC<DatasViewProps> = ({ email }) => {
   const {
-    task,
     loading,
     taskMetaData,
-    isApproved,
-    error,
-    voteResult,
-    isVoteEnded,
-    voteFinalResult,
     taskStatus,
   } = useTaskDetailsCtx();
   const publicClient = usePublicClient();

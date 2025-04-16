@@ -24,14 +24,7 @@ export const ApprovalView: FC<Props> = ({ tokenId }) => {
   const { profile } = useGlobalCtx();
   const {
     task,
-    loading,
-    taskMetaData,
-    isApproved,
-    error,
-    voteResult,
     taskStatus,
-    isVoteEnded,
-    voteFinalResult,
   } = useTaskDetailsCtx();
 
   const publicClient = usePublicClient();
