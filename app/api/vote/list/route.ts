@@ -8,15 +8,26 @@ export async function GET(req: NextRequest) {
   const page = searchParams.get("page") as string;
   const pageSize = searchParams.get("pageSize") as string;
 
-  const { data, error: error1 } = await supabaseClient.from("Vote").select("*").eq("nftId", Number(nftId)).order("created_at", { ascending: false }).range(Number(page) - 1 * Number(pageSize), (Number(page)) * Number(pageSize) - 1);
+  const { data, error: error1 } = await supabaseClient
+    .from("Vote")
+    .select("*")
+    .eq("nftId", Number(nftId))
+    .order("created_at", { ascending: false })
+    .range(
+      (Number(page) - 1) * Number(pageSize),
+      Number(page) * Number(pageSize)
+    );
 
-  const { count, error: error2 } = await supabaseClient.from("Vote").select("*", { count: "exact" }).eq("nftId", Number(nftId))
+  const { count, error: error2 } = await supabaseClient
+    .from("Vote")
+    .select("*", { count: "exact" })
+    .eq("nftId", Number(nftId));
 
   if (error1 || error2) {
     return NextResponse.json({
       code: 1,
-      message: error1?.message ?? '' + error2?.message ?? ''
-    })
+      message: error1?.message ?? "" + error2?.message ?? "",
+    });
   }
 
   return NextResponse.json({
@@ -24,6 +35,6 @@ export async function GET(req: NextRequest) {
     data: {
       list: data,
       total: count,
-    }
+    },
   });
 }

@@ -42,6 +42,7 @@ export async function GET(
       Date.now() >= new Date(task.vote_start_date).getTime();
 
     const isVoteEnded =
+      isVoteEnabled &&
       new Date(task.vote_end_date || "0").getTime() <= Date.now();
 
     const voteLeftTime = Math.max(
@@ -49,7 +50,7 @@ export async function GET(
       new Date(task.vote_end_date || "0").getTime() - Date.now()
     );
 
-    const obfuscatedEmail = task.email ? obfuscateEmail(task.email) : '';
+    const obfuscatedEmail = task.email ? obfuscateEmail(task.email) : "";
 
     const isAuthor = !!user && user.email === task.email;
 

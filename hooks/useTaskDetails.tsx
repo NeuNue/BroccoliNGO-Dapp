@@ -90,17 +90,12 @@ export const TaskDetailsProvider = ({
   const [onchainVoteMetadata, setOnchainVoteMetadata] =
     useState<VoteOnchainMetadata | null>(null);
 
-  const isVoteEnded = useMemo(() => {
-    if (!task) return false;
-    return task.voteLeftTime <= 0;
-  }, [task]);
-
   const voteFinalResult = useMemo(() => {
-    if (!voteResult || !isVoteEnded) return "";
+    if (!voteResult || !task?.isVoteEnded) return "";
     if (voteResult[0] > voteResult[1]) return "Rejected";
     if (voteResult[1] > voteResult[0]) return "Approved";
     return "";
-  }, [isVoteEnded, voteResult]);
+  }, [task?.isVoteEnded, voteResult]);
 
   const taskStatus = useMemo(() => {
     if (!task) return "";
@@ -258,7 +253,7 @@ export const TaskDetailsProvider = ({
           parsingFundRecords,
         taskMetaData,
         voteResult,
-        isVoteEnded,
+        isVoteEnded: task?.isVoteEnded || false,
         taskStatus,
         voteFinalResult,
         parsedFundRecords,
