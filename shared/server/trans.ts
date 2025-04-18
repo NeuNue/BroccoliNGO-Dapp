@@ -191,22 +191,20 @@ export async function translateJsonData(
     return jsonData;
   }
 
-  // const textToTranslate = generateTemplateForTranslation(jsonData);
-  // console.log("-- textToTranslate", textToTranslate);
+  const textToTranslate = generateTemplateForTranslation(jsonData);
+  console.log("-- textToTranslate", textToTranslate);
 
   try {
     // translate text in one request
     const translatedText = await translateTextWithOpenAI(
-      JSON.stringify(jsonData),
+      // JSON.stringify(jsonData),
+      textToTranslate,
       targetLanguage,
       detectedLanguage
     );
 
-    // translate to target language, excluding the "name"
-    return {
-      ...JSON.parse(translatedText),
-      name: jsonData.name,
-    };
+    // restore translated text to json
+    return restoreTranslatedTextFromJson(jsonData, JSON.parse(translatedText));
   } catch (error) {
     console.error("Error during translation:", error);
     return jsonData;
@@ -240,7 +238,7 @@ function restoreTranslatedTextFromJson(
   debugger;
   
   if ('description' in translatedObj) {
-    translatedData.description = translatedObj.description;
+    translatedData.description = translatedObj.description.replaceAll('___$___', '\n');
   }
   
   if (translatedData.attributes && Array.isArray(translatedData.attributes)) {
@@ -248,7 +246,7 @@ function restoreTranslatedTextFromJson(
       if (attr.trait_type in translatedObj) {
         return {
           ...attr,
-          value: translatedObj[attr.trait_type]
+          value: translatedObj[attr.trait_type].replaceAll('___$___', '\n'),
         };
       }
       return attr;
