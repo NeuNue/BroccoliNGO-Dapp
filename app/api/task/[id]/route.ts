@@ -27,14 +27,11 @@ export async function GET(
 
     if (error) {
       console.error("Error fetching task:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch task" },
-        { status: 500 }
-      );
+      throw new Error("Failed to fetch task", { cause: 500 });
     }
 
     if (!task) {
-      return NextResponse.json({ error: "Task not found" }, { status: 404 });
+      throw new Error("Task not found", { cause: 404 });
     }
 
     const isVoteEnabled =
@@ -66,11 +63,14 @@ export async function GET(
         // voteLeftTime: 0,
       },
     });
-  } catch (error) {
-    console.error("Error:", error);
+  } catch (err: any) {
+    console.error("Error:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      {
+        code: err?.cause?.code || 500,
+        message: err.message || "Internal Server Error",
+      },
+      { status: err?.cause?.code || 500 }
     );
   }
 }
