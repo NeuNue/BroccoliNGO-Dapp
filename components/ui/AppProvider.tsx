@@ -8,6 +8,7 @@ import { Provider as ChakraProvider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
 import PrivyProviders from "./PrivyProvider";
 import { GlobalContextProvider } from "@/hooks/useGlobal";
+import { I18nProvider } from "./I18nProvider";
 
 const client = new QueryClient();
 
@@ -15,20 +16,22 @@ const rainbowKitTheme = {
   accentColor: "#FEC535",
 };
 
-function AppProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+function AppProvider({ locale, children }: Readonly<{ locale: string, children: React.ReactNode }>) {
   return (
-    <PrivyProviders>
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={client}>
-          <RainbowKitProvider locale="en-US" theme={darkTheme(rainbowKitTheme)}>
-            <ChakraProvider>
-              <Toaster />
-              <GlobalContextProvider>{children}</GlobalContextProvider>
-            </ChakraProvider>
-          </RainbowKitProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
-    </PrivyProviders>
+    <I18nProvider locale={locale}>
+      <PrivyProviders>
+        <WagmiProvider config={wagmiConfig}>
+          <QueryClientProvider client={client}>
+            <RainbowKitProvider locale="en-US" theme={darkTheme(rainbowKitTheme)}>
+              <ChakraProvider>
+                <Toaster />
+                <GlobalContextProvider>{children}</GlobalContextProvider>
+              </ChakraProvider>
+            </RainbowKitProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </PrivyProviders>
+    </I18nProvider>
   );
 }
 
