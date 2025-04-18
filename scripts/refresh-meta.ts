@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { refreshTaskMeta } from "@/shared/server/model";
+import { refreshTaskMeta, syncMultilangueTaskMeta } from "@/shared/server/model";
 import { supabaseClient } from "@/shared/supabase";
 
 async function doRefreshTaskMeta(tokenId: number) {
@@ -12,8 +12,13 @@ async function refreshAllTasks() {
   if (!data) return;
   for (const item of data) {
     const { nftId } = item;
-    await refreshTaskMeta(nftId!);
+    const parsed = await refreshTaskMeta(nftId!);
+    console.time(`syncMultilangueTaskMeta ${nftId}`);
+    await syncMultilangueTaskMeta(nftId!, parsed?.NFTMetaData);
+    console.timeEnd(`syncMultilangueTaskMeta ${nftId}`);
   }
+
+  // await syncMultilangueTaskMeta(11!);
 }
 
 refreshAllTasks();
