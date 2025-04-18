@@ -40,6 +40,7 @@
     "next": "15.2.0",
     "next-themes": "^0.4.6",
     "nodemailer": "^6.10.0",
+    "openai": "^4.95.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-countdown": "^2.3.6",

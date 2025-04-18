@@ -69,7 +69,9 @@ export const BSC_RPC_URL = isBeta
   ? "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
   : "https://broccoli.rpc.48.club";
 
-export const BSC_OFFICIAL_RPC_URL = "https://bsc-dataseed.bnbchain.org";
+export const BSC_OFFICIAL_RPC_URL = isBeta
+  ? "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+  : "https://bsc-dataseed.bnbchain.org";
 
 export const BROCCOLI_ADMIN_WHITELIST =
   process.env.BROCCOLI_ADMIN_WHITELIST?.split(",") || [];

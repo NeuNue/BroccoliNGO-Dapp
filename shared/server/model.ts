@@ -25,6 +25,7 @@ import { NFTMetaData2 } from "@/shared/types/help";
 import { redis } from "@/shared/server/redis";
 import { ethers } from "ethers";
 import { callDuneAPI, getTaskDate } from "./dune";
+import { detectLanguage, translateJsonData } from "./trans";
 
 export async function getConfig() {
   const { data, error } = await supabaseClient
@@ -111,6 +112,44 @@ export async function refreshTaskMeta(nftId: number) {
       break;
     }
   }
+  return parsed;
+}
+
+export async function syncMultilangueTaskMeta(
+  nftId: number,
+  taskMetaData?: NFTMetaData | NFTMetaData2 | RescueNFTMetaData
+) {
+  if (!taskMetaData) {
+    const { data: task } = await supabaseClient
+      .from("Task")
+      .select("URI")
+      .eq("nftId", nftId)
+      .single();
+    if (!task) return;
+    const { URI } = task;
+    if (!URI) return;
+    const parsed = await formatNFTMetadataToTaskRequest({ tokenUri: URI });
+    console.log("syncMultilangueTaskMeta parsed", parsed);
+    if (!parsed) return;
+    taskMetaData = parsed.NFTMetaData;
+  }
+
+  const sourceLang = await detectLanguage(taskMetaData.description);
+
+  const enMeta = await translateJsonData(taskMetaData, "en", sourceLang);
+  console.log("syncMultilangueTaskMeta enMeta", enMeta);
+
+  const cnMeta = await translateJsonData(taskMetaData, "zh-CN", sourceLang);
+
+  console.log("syncMultilangueTaskMeta cnMeta", cnMeta);
+
+  await supabaseClient
+    .from("Task")
+    .update({
+      metadata_en: enMeta as never as Json,
+      metadata_zh: cnMeta as never as Json,
+    })
+    .eq("nftId", nftId);
 }
 
 export async function createAndHandleEvents(receipt: TransactionReceipt) {

@@ -1,4 +1,3 @@
-import { Steps } from "@chakra-ui/react";
 import {
   FormContainer,
   Content,
@@ -19,6 +18,7 @@ import YesNoSelection from "../YesNoSection";
 import { useMemo, useState } from "react";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { syncMultilang } from "@/shared/api";
 import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
@@ -60,6 +60,7 @@ const FormRequest: React.FC<Props> = ({ onNext, onPrev }) => {
     if (!isSuccess) return;
     await refreshProfile();
     onNext();
+    await syncMultilang();
   };
 
   return (

@@ -3,6 +3,10 @@
     {
       "path": "/api/cron",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/multilang",
+      "schedule": "*/10 * * * *"
     }
   ],
   "git": {

@@ -1,7 +1,12 @@
 import { HelpRequest2, NFTMetaData2 } from "../types/help";
-import { HelpRequest, NFTMetaData, RescueNFTMetaData, RescueRequest } from "../types/rescue";
+import {
+  HelpRequest,
+  NFTMetaData,
+  RescueNFTMetaData,
+  RescueRequest,
+} from "../types/rescue";
 
-const BaseURI = '';
+const BaseURI = "";
 
 export const fetchXGenerateLink = async (referral_from?: string) => {
   const res = await fetch(`${BaseURI}/api/xoauth/generate`, {
@@ -20,7 +25,14 @@ export const fetchProfile = async () => {
 };
 
 export const uploadJson = async (
-  data: HelpRequest | NFTMetaData | HelpRequest2 | NFTMetaData2 | RescueRequest | RescueNFTMetaData | string[]
+  data:
+    | HelpRequest
+    | NFTMetaData
+    | HelpRequest2
+    | NFTMetaData2
+    | RescueRequest
+    | RescueNFTMetaData
+    | string[]
 ) => {
   const res = await fetch(`${BaseURI}/api/ipfs/json`, {
     method: "POST",
@@ -51,6 +63,13 @@ export const createTaskV1 = async (tokenURI: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ tokenURI }),
+  });
+  return res.json();
+};
+
+export const syncMultilang = async () => {
+  const res = await fetch(`${BaseURI}/api/cron/multilang`, {
+    method: "GET",
   });
   return res.json();
 };
