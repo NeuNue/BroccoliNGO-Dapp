@@ -18,7 +18,7 @@ async function refreshAllTasks() {
     console.timeEnd(`syncMultilangueTaskMeta ${nftId}`);
   }
 
-  // await syncMultilangueTaskMeta(11!);
+  await syncMultilangueTaskMeta(11);
 }
 
 refreshAllTasks();
