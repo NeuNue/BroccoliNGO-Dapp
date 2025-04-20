@@ -16,6 +16,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { isBeta, mainChain } from "@/shared/constant";
 import { BSC_RPC_URL } from "@/shared/constant";
 import { Trading } from "./trading";
+import { useI18n } from "../ui/I18nProvider";
+import Header from "../Header";
 // import { useDisclosure } from "@heroui/react";
 
 const TOTAL_COUNT = 76 + 65 + 500 + 400;
@@ -25,6 +27,7 @@ function HomeMain() {
   const mode = useSearchParams().get("mode");
   const { address, isConnected, connector } = useAccount();
   const { disconnect } = useDisconnect();
+  const { trans } = useI18n()
 
   // const { isOpen, onOpen, onClose } = useDisclosure();
   const [isOpen, setIsOpen] = useState(false);
@@ -151,8 +154,8 @@ function HomeMain() {
               </defs>
             </svg>
 
-            <h1>Broccoli</h1>
-            <h2>Is Helping Its Stray Animal Friends</h2>
+            <h1>{trans(_TL_('Broccoli'))}</h1>
+            <h2>{trans(_TL_('Is Helping Its Stray Animal Friends'))}</h2>
             {/* <h2>First Broccoli on BSC, $Broccoli token is managed and owned by its community, with love.</h2> */}
             {/* <Image
             className="header-h1"
@@ -180,7 +183,7 @@ function HomeMain() {
                   height={34}
                   alt="donate"
                 ></Image> */}
-                  <span>Donate Now</span>
+                  <span>{trans(_TL_('Donate Now'))}</span>
                 </button>
               ) : (
                 <div onClick={() => setAutoOpenStatus(true)}>
@@ -222,7 +225,7 @@ function HomeMain() {
                                     height={34}
                                     alt="donate"
                                   ></Image> */}
-                                    <span>Donate Now</span>
+                                    <span>{trans(_TL_('Donate Now'))}</span>
                                   </button>
                                 );
                               }
@@ -234,7 +237,7 @@ function HomeMain() {
                                     type="button"
                                     className="donate-btn"
                                   >
-                                    <span>Wrong network</span>
+                                    <span>{trans(_TL_('Wrong network'))}</span>
                                   </button>
                                 );
                               }
@@ -252,7 +255,7 @@ function HomeMain() {
                                     height={34}
                                     alt="donate"
                                   ></Image> */}
-                                    <span>Donate Now</span>
+                                    <span>{trans(_TL_('Donate Now'))}</span>
                                   </button>
                                 </div>
                               );
@@ -265,7 +268,7 @@ function HomeMain() {
                 </div>
               )}
               <button type="button" className="request-btn" onClick={onOpen}>
-                <span>Rescue Request</span>
+                <span>{trans(_TL_("Rescue Request"))}</span>
                 {/* <Image
                 src="./request.svg"
                 width={130}
@@ -281,7 +284,7 @@ function HomeMain() {
                 ></Image> */}
               </button>
             </div>
-            <div className="treasury"><p>Treasury address(bsc):</p><a href="https://bscscan.com/address/0x0022dc116bed13ddb7635298723b45a582d50c2e#asset-multichain" target="_blank">0x0022dc116bed13ddb7635298723b45a582d50c2e</a></div>
+            <div className="treasury"><p>{trans(_TL_('Treasury address'))}(bsc):</p><a href="https://bscscan.com/address/0x0022dc116bed13ddb7635298723b45a582d50c2e#asset-multichain" target="_blank">0x0022dc116bed13ddb7635298723b45a582d50c2e</a></div>
           </header>
           <div className="ngo-dog">
             <Image src="/ngo-dog.png" width={400} height={400} alt="dog" />
@@ -321,10 +324,12 @@ function HomeMain() {
             height={112}
             alt="helping"
           ></Image> */}
-            <h2>BROCCOLI</h2>
-            <h2>Rescued Stray Animals</h2>
+            <h2>{trans(_TL_('BROCCOLI'))}</h2>
+            <h2>{trans(_TL_('Rescued Stray Animals'))}</h2>
             <div className="counter-wrap">
-              A total of <span>{TOTAL_COUNT}</span> adorable souls rescued
+              {trans(_TL_('A total of {{count}} adorable souls rescued'), {
+                count: <span>{TOTAL_COUNT}</span>,
+              })}
             </div>
           </div>
           <Image
@@ -404,7 +409,7 @@ function HomeMain() {
                 href="https://x.com/cz_binance/status/1890071433214038103"
                 target="_blank"
               >
-                <p>Broccoli Dog&apos;s story</p>
+                <p>{trans(_TL_("Broccoli Dog's story"))}</p>
                 {/* <Image
               src="./dog-story.svg"
               width={334}
@@ -419,7 +424,7 @@ function HomeMain() {
                 alt="line"
               ></Image>
               <Link href="https://cz.dog" target="_blank">
-                <p>$Broccoli PFP Generator</p>
+                <p>{trans(_TL_("$Broccoli PFP Generator"))}</p>
                 {/* <Image
               src="./coin-story.svg"
               width={350}
@@ -452,6 +457,7 @@ function HomeMain() {
 export default function WrappedHomeMain() {
   return (
     <Suspense>
+      <Header />
       <HomeMain />
     </Suspense>
   );
