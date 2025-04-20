@@ -3,7 +3,13 @@ import Cookies from 'js-cookie';
 import localeEn from "@/dictionaries/en.json";
 import localeZh from "@/dictionaries/zh.json";
 
-const i18nContext = React.createContext<Record<string, string>>({});
+const i18nContext = React.createContext({
+  lang: 'en',
+  messages: localeEn,
+} as {
+  lang: string;
+  messages: Record<string, any>;
+});
 
 export function I18nProvider({ children, locale }: { children: React.ReactNode; locale: string }) {
 

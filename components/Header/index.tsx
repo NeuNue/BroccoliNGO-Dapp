@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -52,7 +54,7 @@ export default function Header() {
         <div className={styles.split}></div>
 
         <button className={styles.language} onClick={changeLang}>
-          {lang.toUpperCase()}
+          <span>{lang.toUpperCase()}</span>
         </button>
 
         <ConnectButton.Custom>

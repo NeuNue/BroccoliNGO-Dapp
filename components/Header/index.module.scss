@@ -12,6 +12,7 @@
 
   @media (max-width: 640px) {
     padding: 12px;
+    height: 54px;
   }
 
 }
@@ -103,6 +104,10 @@
   color: #fff;
   margin-right: 10px;
   cursor: pointer;
+
+  >span {
+    transform: translateY(-2px);
+  }
 
   @media (max-width: 640px) {
     width: 26px;
