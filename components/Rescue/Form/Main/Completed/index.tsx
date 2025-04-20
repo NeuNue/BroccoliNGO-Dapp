@@ -3,12 +3,14 @@ import Link from "next/link";
 
 import { Footer } from "@/components/Rescue/Form/Main/Layout";
 import RightIcon from "@/components/icons/right";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   tokenId: string | number;
 }
 
 const Completed: React.FC<Props> = ({ tokenId }) => {
+  const { trans } = useI18n();
   return (
     <Container>
       <Main>
@@ -16,33 +18,31 @@ const Completed: React.FC<Props> = ({ tokenId }) => {
           <RightIcon />
         </SuccessSymbol>
         <Content>
-          <Title>Request submitted</Title>
+          <Title>{trans(_TL_('Request submitted'))}</Title>
           <Description>
-            <p>Thank you for your passion for animal rescue efforts.</p>
+            <p>{trans(_TL_('Thank you for your passion for animal rescue efforts.'))}</p>
             <p>
-              Broccoli is committed to leveraging blockchain technology and the
-              cultural power of the meme community to bring more care and
-              compassion to the world.
+              {trans(_TL_('Broccoli is committed to leveraging blockchain technology and the cultural power of the meme community to bring more care and compassion to the world.'))}
             </p>
             <p>
-              Your application has been recorded at{" "}
-              <Link href={`/task/${tokenId}`} target="_blank">
-                broccoli.ngo/task/
-                {tokenId}
-              </Link>{" "}
-              and will be reviewed by the community.
+              {trans(_TL_('Your application has been recorded at {{link}} and will be reviewed by the community.'), {
+                link: (
+                  <Link href={`/task/${tokenId}`} target="_blank">
+                    broccoli.ngo/task/
+                    {tokenId}
+                  </Link>
+                ),
+              })}
             </p>
             <p>
-              You may visit this link at any time to check your progress.
-              Broccoli team will keep you updated via E-mail. Please check your
-              inbox (and spam folder) for our confirmation email.
+              {trans(_TL_('You may visit this link at any time to check your progress. Broccoli team will keep you updated via E-mail. Please check your inbox (and spam folder) for our confirmation email.'))}
             </p>
           </Description>
         </Content>
       </Main>
       <Footer>
         <CheckButtonLink href={`/task/${tokenId}`} target="_blank">
-          <CheckButton>Check your Application</CheckButton>
+          <CheckButton>{trans(_TL_('Check your Application'))}</CheckButton>
         </CheckButtonLink>
       </Footer>
     </Container>
@@ -143,3 +143,4 @@ const CheckButton = styled.button`
   line-height: 100%; /* 14px */
   letter-spacing: 0.14px;
 `;
+

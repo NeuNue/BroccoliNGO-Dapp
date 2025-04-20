@@ -32,6 +32,7 @@ import { ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useTaskDetailsCtx } from "@/hooks/useTaskDetails";
 import { useGlobalCtx } from "@/hooks/useGlobal";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface VotesViewProps {
   tokenId: string;
@@ -39,6 +40,7 @@ interface VotesViewProps {
 }
 
 export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
+  const { trans } = useI18n();
   const { profile } = useGlobalCtx();
   const {
     task,
@@ -82,7 +84,7 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
     return [
       {
         value: "1",
-        title: "Yes",
+        title: trans(_TL_("Yes")),
         num: voteResult[1] + (choose === "1" ? manualVotes : 0),
         winner: isVoteEnded && voteResult[1] > voteResult[0],
         winnerText: voteResult[1] > voteResult[0] ? "✌️" : "",
@@ -90,7 +92,7 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
       },
       {
         value: "0",
-        title: "No",
+        title: trans(_TL_("No")),
         num: voteResult[0] + (choose === "0" ? manualVotes : 0),
         winner: isVoteEnded && voteResult[0] > voteResult[1],
         winnerText: voteResult[0] > voteResult[1] ? "☹️" : "",
@@ -110,13 +112,13 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
     const res = await sumbitVoteResult(tokenId);
     if (res.code === 0) {
       toaster.create({
-        title: "Vote result uploaded",
-        description: "Vote result has been uploaded successfully.",
+        title: trans(_TL_("Vote result uploaded")),
+        description: trans(_TL_("Vote result has been uploaded successfully.")),
         type: "success",
       });
     } else {
       toaster.create({
-        title: "Failed to upload vote result",
+        title: trans(_TL_("Failed to upload vote result")),
         description: res.message,
         type: "error",
       });
@@ -128,7 +130,7 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
   const handleVote = async () => {
     if (choose === "-1") {
       toaster.create({
-        title: "Please select an option",
+        title: trans(_TL_("Please select an option")),
         type: "error",
       });
       return;
@@ -150,14 +152,14 @@ export const VotesView: FC<VotesViewProps> = ({ tokenId, admin }) => {
 
     if (res.code === 0) {
       toaster.create({
-        title: "Vote success",
+        title: trans(_TL_("Vote success")),
         type: "success",
       });
       getVotes(1, votesParams.ps);
       setIsVoted(true);
     } else {
       toaster.create({
-        title: "Vote failed",
+        title: trans(_TL_("Vote failed")),
         description: res.message,
         type: "error",
       });
