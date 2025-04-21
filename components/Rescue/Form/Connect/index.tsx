@@ -3,19 +3,21 @@ import { FC } from "react";
 import XIcon from "@/components/icons/x";
 import styled from "@emotion/styled";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   connectLabel?: string;
 }
 
 const FormConnect: FC<Props> = ({ connectLabel }) => {
+  const { trans } = useI18n();
   const { ready, authenticated, user, getAccessToken } = usePrivy();
   const { login } = useLogin();
   return (
     <Container>
       {!authenticated ? (
         <Button onClick={login}>
-          <span>{connectLabel || "Connect to start application"}</span>
+          <span>{connectLabel || trans(_TL_("Connect to start application"))}</span>
         </Button>
       ) : (
         <ProfileButton>{user?.email?.address}</ProfileButton>

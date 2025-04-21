@@ -7,30 +7,32 @@ import { FC, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { useGlobalCtx } from "@/hooks/useGlobal";
 import { useRescueRequestCtx } from "@/hooks/useRescue";
+import { useI18n } from "@/components/ui/I18nProvider";
 
 interface Props {
   onPrev?: () => void;
   onSubmitted?: () => void;
 }
 const FormMain: FC<Props> = ({ onPrev }) => {
+  const { trans } = useI18n();
   const { currentTask } = useRescueRequestCtx();
   const { isMobile } = useGlobalCtx();
   const [stepIdx, setStepIdx] = useState(0);
   const steps = useMemo(() => {
     return [
       {
-        title: isMobile ? "Contact" : "Contact Info",
-        description: "Step 1 description",
+        title: trans(isMobile ? _TL_('Contact') : _TL_("Contact Info")),
+        description: trans(_TL_("Step 1 description")),
         Component: FormContact,
       },
       {
-        title: isMobile ? "Background" : "Background Info",
-        description: "Step 2 description",
+        title: trans(isMobile ? _TL_('Background') : _TL_("Background Info")),
+        description: trans(_TL_("Step 2 description")),
         Component: FormBackground,
       },
       {
-        title: isMobile ? "Funds" : "Funds Request",
-        description: "Step 3 description",
+        title: trans(isMobile ? _TL_('Funds') : _TL_("Funds Request")),
+        description: trans(_TL_("Step 3 description")),
         Component: FormRequest,
       },
     ];
@@ -66,7 +68,7 @@ const FormMain: FC<Props> = ({ onPrev }) => {
               active={(stepIdx === index).toString()}
               key={index}
               index={index}
-              title={step.title}
+              title={step.title as string}
             >
               <StyledStepTitle
                 active={stepIdx === index}

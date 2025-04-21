@@ -14,6 +14,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.14.0
     version: 11.14.0(@emotion/react@11.14.0)(@types/react@19.0.10)(react@19.1.0)
+  '@formatjs/intl-localematcher':
+    specifier: ^0.6.1
+    version: 0.6.1
   '@privy-io/react-auth':
     specifier: ^2.8.3
     version: 2.8.3(@solana/web3.js@1.98.0)(@types/react@19.0.10)(@upstash/redis@1.34.6)(bs58@6.0.0)(react-dom@19.1.0)(react@19.1.0)(typescript@5.8.2)
@@ -74,6 +77,9 @@ dependencies:
   lucide-react:
     specifier: ^0.477.0
     version: 0.477.0(react@19.1.0)
+  negotiator:
+    specifier: ^1.0.0
+    version: 1.0.0
   next:
     specifier: 15.2.0
     version: 15.2.0(react-dom@19.1.0)(react@19.1.0)(sass@1.85.1)
@@ -136,6 +142,9 @@ devDependencies:
   '@types/jsonwebtoken':
     specifier: ^9.0.9
     version: 9.0.9
+  '@types/negotiator':
+    specifier: ^0.6.3
+    version: 0.6.3
   '@types/node':
     specifier: ^20
     version: 20.17.24
@@ -160,6 +169,9 @@ devDependencies:
   sass:
     specifier: ^1.85.1
     version: 1.85.1
+  ts-morph:
+    specifier: ^25.0.1
+    version: 25.0.1
   ts-node:
     specifier: ^10.9.2
     version: 10.9.2(@types/node@20.17.24)(typescript@5.8.2)
@@ -915,6 +927,12 @@ packages:
 
   /@floating-ui/utils@0.2.9:
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+    dev: false
+
+  /@formatjs/intl-localematcher@0.6.1:
+    resolution: {integrity: sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg==}
+    dependencies:
+      tslib: 2.8.1
     dev: false
 
   /@headlessui/react@2.2.1(react-dom@19.1.0)(react@19.1.0):
@@ -2578,6 +2596,14 @@ packages:
     resolution: {integrity: sha512-cnQUeWnhNP8tJ4WsGcYiX24Gjkc9ALstLbHcBj1t3E7EimN6n6kHH+DPV4PpDnuw00NApQp+ViojMj1GRdwYQg==}
     dev: false
 
+  /@ts-morph/common@0.26.1:
+    resolution: {integrity: sha512-Sn28TGl/4cFpcM+jwsH1wLncYq3FtN/BIpem+HOygfBWPT5pAeS5dB4VFVzV8FbnOKHpDLZmvAl4AjPEev5idA==}
+    dependencies:
+      fast-glob: 3.3.3
+      minimatch: 9.0.5
+      path-browserify: 1.0.1
+    dev: true
+
   /@tsconfig/node10@1.0.11:
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
     dev: true
@@ -2633,6 +2659,10 @@ packages:
 
   /@types/ms@2.1.0:
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
+
+  /@types/negotiator@0.6.3:
+    resolution: {integrity: sha512-JkXTOdKs5MF086b/pt8C3+yVp3iDUwG635L7oCH6HvJvvr6lSUU5oe/gLXnPEfYRROHjJIPgCV6cuAg8gGkntQ==}
+    dev: true
 
   /@types/node-fetch@2.6.12:
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
@@ -4544,6 +4574,10 @@ packages:
     resolution: {integrity: sha512-rtpaCbr164TPPh+zFdkWpCyZuKkjpAzODfaZCf/SVJZzJN+4bHQb/LP3Jzq5/+84um3XXY8r548XiWKSborwVw==}
     engines: {node: ^18.17.0 || >=20.5.0}
     dev: false
+
+  /code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
+    dev: true
 
   /color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -6823,6 +6857,11 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
+  /negotiator@1.0.0:
+    resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
   /next-themes@0.4.6(react-dom@19.1.0)(react@19.1.0):
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
     peerDependencies:
@@ -7175,6 +7214,10 @@ packages:
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
     dev: false
+
+  /path-browserify@1.0.1:
+    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
+    dev: true
 
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
@@ -8294,6 +8337,13 @@ packages:
   /ts-case-convert@2.1.0:
     resolution: {integrity: sha512-Ye79el/pHYXfoew6kqhMwCoxp4NWjKNcm2kBzpmEMIU9dd9aBmHNNFtZ+WTm0rz1ngyDmfqDXDlyUnBXayiD0w==}
     dev: false
+
+  /ts-morph@25.0.1:
+    resolution: {integrity: sha512-QJEiTdnz1YjrB3JFhd626gX4rKHDLSjSVMvGGG4v7ONc3RBwa0Eei98G9AT9uNFDMtV54JyuXsFeC+OH0n6bXQ==}
+    dependencies:
+      '@ts-morph/common': 0.26.1
+      code-block-writer: 13.0.3
+    dev: true
 
   /ts-node@10.9.2(@types/node@20.17.24)(typescript@5.8.2):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
