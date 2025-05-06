@@ -4,7 +4,8 @@ import { refreshTaskMeta, syncMultilangueTaskMeta } from "@/shared/server/model"
 import { supabaseClient } from "@/shared/supabase";
 
 async function doRefreshTaskMeta(tokenId: number) {
-  refreshTaskMeta(tokenId);
+  // refreshTaskMeta(tokenId);
+  await syncMultilangueTaskMeta(tokenId);
 }
 
 async function refreshAllTasks() {
@@ -21,4 +22,5 @@ async function refreshAllTasks() {
   await syncMultilangueTaskMeta(11);
 }
 
-refreshAllTasks();
+// refreshAllTasks();
+doRefreshTaskMeta(10)

@@ -246,7 +246,7 @@ function restoreTranslatedTextFromJson(
       if (attr.trait_type in translatedObj) {
         return {
           ...attr,
-          value: translatedObj[attr.trait_type].replaceAll('___$___', '\n'),
+          value: typeof translatedObj[attr.trait_type] === 'string' ? translatedObj[attr.trait_type].replaceAll('___$___', '\n') : translatedObj[attr.trait_type],
         };
       }
       return attr;
