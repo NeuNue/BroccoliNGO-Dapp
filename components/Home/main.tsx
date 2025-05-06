@@ -389,7 +389,7 @@ function HomeMain() {
               </Link>
               <Link
                 title="broccoli EN"
-                href="https://t.me/broccoliportal_bsc"
+                href="https://t.me/Broccoli_BNB"
                 target="_blank"
               >
                 <Image src="./tg.svg" width={34} height={34} alt="tg"></Image>

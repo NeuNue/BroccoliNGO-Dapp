@@ -40,7 +40,7 @@ export default function Header() {
           <Link title="broccoli CN" href="https://t.me/broccolicn" target="_blank" className={styles.socialIcon}>
             <Image src="/header-tg.svg" width={27} height={27} alt="tg"></Image>
           </Link>
-          <Link href="https://t.me/broccoliportal_bsc" target="_blank" className={styles.socialIcon}>
+          <Link href="https://t.me/Broccoli_BNB" target="_blank" className={styles.socialIcon}>
             <Image src="/header-tg.svg" width={27} height={27} alt="tg"></Image>
           </Link>
           <Link href="https://x.com/Broccoli_NGO" target="_blank" className={styles.socialIcon}>
